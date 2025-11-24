@@ -1,0 +1,12 @@
+version: "3"
+tasks:
+  go:test:
+    cmds:
+      - go test ./... -cover
+  proto:
+    cmds:
+      - buf lint
+      - buf generate
+  go:mocks:
+    cmds:
+      - mockery
