@@ -1,4 +1,4 @@
-package client
+package fence
 
 import (
 	"context"
@@ -13,16 +13,16 @@ type contextKeyType struct {
 var clientContextKey = contextKeyType{"client"}
 var principaContextKey = contextKeyType{"principal"}
 
-func ClientFromContext(ctx context.Context) *client {
+func ClientFromContext(ctx context.Context) *Client {
 	c := ctx.Value(clientContextKey)
-	cl, ok := c.(*client)
+	cl, ok := c.(*Client)
 	if !ok {
 		return nil
 	}
 	return cl
 }
 
-func ContextWithClient(ctx context.Context, cl *client) context.Context {
+func ContextWithClient(ctx context.Context, cl *Client) context.Context {
 	return context.WithValue(ctx, clientContextKey, cl)
 }
 

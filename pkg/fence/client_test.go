@@ -1,4 +1,4 @@
-package client
+package fence
 
 import (
 	"context"
@@ -12,9 +12,9 @@ import (
 	fencev1 "github.com/binarymatt/fence/gen/fence/v1"
 )
 
-func TestNew(t *testing.T) {
+func TestNewClient(t *testing.T) {
 	mock := NewMockFenceState(t)
-	c := New(mock)
+	c := NewClient(mock)
 	must.NotNil(t, c.state)
 }
 func TestIsAllowed(t *testing.T) {
@@ -38,7 +38,7 @@ func TestIsAllowed(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			mockState := NewMockFenceState(t)
 			mockState.EXPECT().IsAllowed(context.Background(), principal, action, resource).Return(tc.err)
-			c := New(mockState)
+			c := NewClient(mockState)
 			err := c.IsAllowed(context.Background(), principal, action, resource)
 			must.ErrorIs(t, err, tc.err)
 		})
@@ -81,7 +81,7 @@ func TestIsAllowedFromContext(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			mockState := NewMockFenceState(t)
 			tc.expectation(mockState)
-			c := New(mockState)
+			c := NewClient(mockState)
 			err := c.IsAllowedFromContext(tc.ctx, resource, action)
 			must.ErrorIs(t, err, tc.err)
 		})

@@ -1,8 +1,9 @@
-package client
+package fence
 
 import (
 	"context"
 	"encoding/json"
+	"log/slog"
 
 	"github.com/cedar-policy/cedar-go"
 	"github.com/spf13/afero"
@@ -39,14 +40,17 @@ func (s *FileState) IsAllowed(ctx context.Context, principal *fencev1.UID, actio
 func (s *FileState) refresh() error {
 	policyData, err := afero.ReadFile(s.fs, s.policyPath)
 	if err != nil {
+		slog.Error("failed to read file for policies", "path", s.policyPath)
 		return err
 	}
 	entityData, err := afero.ReadFile(s.fs, s.entityPath)
 	if err != nil {
+		slog.Error("failed to read file for entities", "path", s.entityPath)
 		return err
 	}
 	ps, err := cedar.NewPolicySetFromBytes(s.policyPath, policyData)
 	if err != nil {
+		slog.Error("failed to read policy file", "error", err, "data", string(policyData))
 		return err
 	}
 	s.ps = ps
