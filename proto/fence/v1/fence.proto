@@ -10,53 +10,80 @@ option go_package = "github.com/binarymatt/fence/gen/fence/v1;fencev1";
 service FenceService {
   rpc IsAllowed(IsAllowedRequest) returns (IsAllowedResponse) {}
   rpc CreateEntity(CreateEntityRequest) returns (CreateEntityResponse) {}
-  rpc DeleteEntity(DeleteEntityRequest) returns (DeleteEntityRequest) {}
+  rpc DeleteEntity(DeleteEntityRequest) returns (DeleteEntityResponse) {}
   rpc CreatePolicy(CreatePolicyRequest) returns (CreatePolicyResponse) {}
   rpc DeletePolicy(DeletePolicyRequest) returns (DeletePolicyResponse) {}
 }
 
 message IsAllowedRequest {
-  EntityUID principal = 1 [(buf.validate.field).required = true];
-  EntityUID resource = 2 [(buf.validate.field).required = true];
-  EntityUID action = 3 [(buf.validate.field).required = true];
-}
-message EntityUID {
-  string type = 1 [(buf.validate.field).required = true];
-  string id = 2 [(buf.validate.field).required = true];
-}
-message Entity {
-  EntityUID uid = 1 [(buf.validate.field).required = true];
-  repeated EntityUID parents = 2;
-  // TODO: attributes and tags
-  map<string, google.protobuf.Value> attributes = 3;
-  map<string, google.protobuf.Value> tags = 4;
-}
-message Policy {
-  string definition = 1 [(buf.validate.field).required = true];
-  string id = 2;
-}
-message Reason {
-  string policy_id = 1;
-  string message = 2;
+  UID principal = 1 [(buf.validate.field).required = true];
+  UID action = 2 [(buf.validate.field).required = true];
+  UID resource = 3 [(buf.validate.field).required = true];
 }
 
 message IsAllowedResponse {
   bool decision = 1;
-  repeated Reason reason = 2;
+  Diagnostics diagnostics = 2;
 }
+
+message Diagnostics {
+  repeated Reason reasons = 1;
+  repeated Error errors = 2;
+}
+
+message Reason {
+  string policy_id = 1;
+  Position position = 2;
+}
+
+message Position {
+  string file_name = 1;
+  int64 offset = 2;
+  int64 line = 3;
+  int64 column = 4;
+}
+
+message Error {
+  string policy_id = 1;
+  Position position = 2;
+  string message = 3;
+}
+
+message UID {
+  string type = 1 [(buf.validate.field).required = true];
+  string id = 2 [(buf.validate.field).required = true];
+}
+
+message Entity {
+  UID uid = 1 [(buf.validate.field).required = true];
+  repeated UID parents = 2;
+  map<string, google.protobuf.Value> attributes = 3;
+  map<string, google.protobuf.Value> tags = 4;
+}
+
+message Policy {
+  string definition = 1 [(buf.validate.field).required = true];
+  string id = 2;
+}
+
 message CreateEntityRequest {
+  Entity entity = 1 [(buf.validate.field).required = true];
+}
+
+message CreateEntityResponse {
   Entity entity = 1;
 }
-message CreateEntityResponse {}
 
 message DeleteEntityRequest {
-  EntityUID uid = 1;
+  UID uid = 1;
 }
 message DeleteEntityResponse {}
 
 message CreatePolicyRequest {
-  Policy policy = 1;
+  Policy policy = 1 [(buf.validate.field).required = true];
 }
 message CreatePolicyResponse {}
-message DeletePolicyRequest {}
+message DeletePolicyRequest {
+  string id = 1 [(buf.validate.field).required = true];
+}
 message DeletePolicyResponse {}

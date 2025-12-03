@@ -25,9 +25,9 @@ const (
 
 type IsAllowedRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Principal     *EntityUID             `protobuf:"bytes,1,opt,name=principal,proto3" json:"principal,omitempty"`
-	Resource      *EntityUID             `protobuf:"bytes,2,opt,name=resource,proto3" json:"resource,omitempty"`
-	Action        *EntityUID             `protobuf:"bytes,3,opt,name=action,proto3" json:"action,omitempty"`
+	Principal     *UID                   `protobuf:"bytes,1,opt,name=principal,proto3" json:"principal,omitempty"`
+	Action        *UID                   `protobuf:"bytes,2,opt,name=action,proto3" json:"action,omitempty"`
+	Resource      *UID                   `protobuf:"bytes,3,opt,name=resource,proto3" json:"resource,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -62,49 +62,49 @@ func (*IsAllowedRequest) Descriptor() ([]byte, []int) {
 	return file_fence_v1_fence_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *IsAllowedRequest) GetPrincipal() *EntityUID {
+func (x *IsAllowedRequest) GetPrincipal() *UID {
 	if x != nil {
 		return x.Principal
 	}
 	return nil
 }
 
-func (x *IsAllowedRequest) GetResource() *EntityUID {
-	if x != nil {
-		return x.Resource
-	}
-	return nil
-}
-
-func (x *IsAllowedRequest) GetAction() *EntityUID {
+func (x *IsAllowedRequest) GetAction() *UID {
 	if x != nil {
 		return x.Action
 	}
 	return nil
 }
 
-type EntityUID struct {
+func (x *IsAllowedRequest) GetResource() *UID {
+	if x != nil {
+		return x.Resource
+	}
+	return nil
+}
+
+type IsAllowedResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Type          string                 `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`
-	Id            string                 `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
+	Decision      bool                   `protobuf:"varint,1,opt,name=decision,proto3" json:"decision,omitempty"`
+	Diagnostics   *Diagnostics           `protobuf:"bytes,2,opt,name=diagnostics,proto3" json:"diagnostics,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *EntityUID) Reset() {
-	*x = EntityUID{}
+func (x *IsAllowedResponse) Reset() {
+	*x = IsAllowedResponse{}
 	mi := &file_fence_v1_fence_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *EntityUID) String() string {
+func (x *IsAllowedResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*EntityUID) ProtoMessage() {}
+func (*IsAllowedResponse) ProtoMessage() {}
 
-func (x *EntityUID) ProtoReflect() protoreflect.Message {
+func (x *IsAllowedResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_fence_v1_fence_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -116,19 +116,303 @@ func (x *EntityUID) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use EntityUID.ProtoReflect.Descriptor instead.
-func (*EntityUID) Descriptor() ([]byte, []int) {
+// Deprecated: Use IsAllowedResponse.ProtoReflect.Descriptor instead.
+func (*IsAllowedResponse) Descriptor() ([]byte, []int) {
 	return file_fence_v1_fence_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *EntityUID) GetType() string {
+func (x *IsAllowedResponse) GetDecision() bool {
+	if x != nil {
+		return x.Decision
+	}
+	return false
+}
+
+func (x *IsAllowedResponse) GetDiagnostics() *Diagnostics {
+	if x != nil {
+		return x.Diagnostics
+	}
+	return nil
+}
+
+type Diagnostics struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Reasons       []*Reason              `protobuf:"bytes,1,rep,name=reasons,proto3" json:"reasons,omitempty"`
+	Errors        []*Error               `protobuf:"bytes,2,rep,name=errors,proto3" json:"errors,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Diagnostics) Reset() {
+	*x = Diagnostics{}
+	mi := &file_fence_v1_fence_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Diagnostics) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Diagnostics) ProtoMessage() {}
+
+func (x *Diagnostics) ProtoReflect() protoreflect.Message {
+	mi := &file_fence_v1_fence_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Diagnostics.ProtoReflect.Descriptor instead.
+func (*Diagnostics) Descriptor() ([]byte, []int) {
+	return file_fence_v1_fence_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *Diagnostics) GetReasons() []*Reason {
+	if x != nil {
+		return x.Reasons
+	}
+	return nil
+}
+
+func (x *Diagnostics) GetErrors() []*Error {
+	if x != nil {
+		return x.Errors
+	}
+	return nil
+}
+
+type Reason struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PolicyId      string                 `protobuf:"bytes,1,opt,name=policy_id,json=policyId,proto3" json:"policy_id,omitempty"`
+	Position      *Position              `protobuf:"bytes,2,opt,name=position,proto3" json:"position,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Reason) Reset() {
+	*x = Reason{}
+	mi := &file_fence_v1_fence_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Reason) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Reason) ProtoMessage() {}
+
+func (x *Reason) ProtoReflect() protoreflect.Message {
+	mi := &file_fence_v1_fence_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Reason.ProtoReflect.Descriptor instead.
+func (*Reason) Descriptor() ([]byte, []int) {
+	return file_fence_v1_fence_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *Reason) GetPolicyId() string {
+	if x != nil {
+		return x.PolicyId
+	}
+	return ""
+}
+
+func (x *Reason) GetPosition() *Position {
+	if x != nil {
+		return x.Position
+	}
+	return nil
+}
+
+type Position struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	FileName      string                 `protobuf:"bytes,1,opt,name=file_name,json=fileName,proto3" json:"file_name,omitempty"`
+	Offset        int64                  `protobuf:"varint,2,opt,name=offset,proto3" json:"offset,omitempty"`
+	Line          int64                  `protobuf:"varint,3,opt,name=line,proto3" json:"line,omitempty"`
+	Column        int64                  `protobuf:"varint,4,opt,name=column,proto3" json:"column,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Position) Reset() {
+	*x = Position{}
+	mi := &file_fence_v1_fence_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Position) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Position) ProtoMessage() {}
+
+func (x *Position) ProtoReflect() protoreflect.Message {
+	mi := &file_fence_v1_fence_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Position.ProtoReflect.Descriptor instead.
+func (*Position) Descriptor() ([]byte, []int) {
+	return file_fence_v1_fence_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *Position) GetFileName() string {
+	if x != nil {
+		return x.FileName
+	}
+	return ""
+}
+
+func (x *Position) GetOffset() int64 {
+	if x != nil {
+		return x.Offset
+	}
+	return 0
+}
+
+func (x *Position) GetLine() int64 {
+	if x != nil {
+		return x.Line
+	}
+	return 0
+}
+
+func (x *Position) GetColumn() int64 {
+	if x != nil {
+		return x.Column
+	}
+	return 0
+}
+
+type Error struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PolicyId      string                 `protobuf:"bytes,1,opt,name=policy_id,json=policyId,proto3" json:"policy_id,omitempty"`
+	Position      *Position              `protobuf:"bytes,2,opt,name=position,proto3" json:"position,omitempty"`
+	Message       string                 `protobuf:"bytes,3,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Error) Reset() {
+	*x = Error{}
+	mi := &file_fence_v1_fence_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Error) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Error) ProtoMessage() {}
+
+func (x *Error) ProtoReflect() protoreflect.Message {
+	mi := &file_fence_v1_fence_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Error.ProtoReflect.Descriptor instead.
+func (*Error) Descriptor() ([]byte, []int) {
+	return file_fence_v1_fence_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *Error) GetPolicyId() string {
+	if x != nil {
+		return x.PolicyId
+	}
+	return ""
+}
+
+func (x *Error) GetPosition() *Position {
+	if x != nil {
+		return x.Position
+	}
+	return nil
+}
+
+func (x *Error) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+type UID struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Type          string                 `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`
+	Id            string                 `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UID) Reset() {
+	*x = UID{}
+	mi := &file_fence_v1_fence_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UID) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UID) ProtoMessage() {}
+
+func (x *UID) ProtoReflect() protoreflect.Message {
+	mi := &file_fence_v1_fence_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UID.ProtoReflect.Descriptor instead.
+func (*UID) Descriptor() ([]byte, []int) {
+	return file_fence_v1_fence_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *UID) GetType() string {
 	if x != nil {
 		return x.Type
 	}
 	return ""
 }
 
-func (x *EntityUID) GetId() string {
+func (x *UID) GetId() string {
 	if x != nil {
 		return x.Id
 	}
@@ -136,10 +420,9 @@ func (x *EntityUID) GetId() string {
 }
 
 type Entity struct {
-	state   protoimpl.MessageState `protogen:"open.v1"`
-	Uid     *EntityUID             `protobuf:"bytes,1,opt,name=uid,proto3" json:"uid,omitempty"`
-	Parents []*EntityUID           `protobuf:"bytes,2,rep,name=parents,proto3" json:"parents,omitempty"`
-	// TODO: attributes and tags
+	state         protoimpl.MessageState     `protogen:"open.v1"`
+	Uid           *UID                       `protobuf:"bytes,1,opt,name=uid,proto3" json:"uid,omitempty"`
+	Parents       []*UID                     `protobuf:"bytes,2,rep,name=parents,proto3" json:"parents,omitempty"`
 	Attributes    map[string]*structpb.Value `protobuf:"bytes,3,rep,name=attributes,proto3" json:"attributes,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	Tags          map[string]*structpb.Value `protobuf:"bytes,4,rep,name=tags,proto3" json:"tags,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	unknownFields protoimpl.UnknownFields
@@ -148,7 +431,7 @@ type Entity struct {
 
 func (x *Entity) Reset() {
 	*x = Entity{}
-	mi := &file_fence_v1_fence_proto_msgTypes[2]
+	mi := &file_fence_v1_fence_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -160,7 +443,7 @@ func (x *Entity) String() string {
 func (*Entity) ProtoMessage() {}
 
 func (x *Entity) ProtoReflect() protoreflect.Message {
-	mi := &file_fence_v1_fence_proto_msgTypes[2]
+	mi := &file_fence_v1_fence_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -173,17 +456,17 @@ func (x *Entity) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Entity.ProtoReflect.Descriptor instead.
 func (*Entity) Descriptor() ([]byte, []int) {
-	return file_fence_v1_fence_proto_rawDescGZIP(), []int{2}
+	return file_fence_v1_fence_proto_rawDescGZIP(), []int{7}
 }
 
-func (x *Entity) GetUid() *EntityUID {
+func (x *Entity) GetUid() *UID {
 	if x != nil {
 		return x.Uid
 	}
 	return nil
 }
 
-func (x *Entity) GetParents() []*EntityUID {
+func (x *Entity) GetParents() []*UID {
 	if x != nil {
 		return x.Parents
 	}
@@ -214,7 +497,7 @@ type Policy struct {
 
 func (x *Policy) Reset() {
 	*x = Policy{}
-	mi := &file_fence_v1_fence_proto_msgTypes[3]
+	mi := &file_fence_v1_fence_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -226,7 +509,7 @@ func (x *Policy) String() string {
 func (*Policy) ProtoMessage() {}
 
 func (x *Policy) ProtoReflect() protoreflect.Message {
-	mi := &file_fence_v1_fence_proto_msgTypes[3]
+	mi := &file_fence_v1_fence_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -239,7 +522,7 @@ func (x *Policy) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Policy.ProtoReflect.Descriptor instead.
 func (*Policy) Descriptor() ([]byte, []int) {
-	return file_fence_v1_fence_proto_rawDescGZIP(), []int{3}
+	return file_fence_v1_fence_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *Policy) GetDefinition() string {
@@ -256,110 +539,6 @@ func (x *Policy) GetId() string {
 	return ""
 }
 
-type Reason struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	PolicyId      string                 `protobuf:"bytes,1,opt,name=policy_id,json=policyId,proto3" json:"policy_id,omitempty"`
-	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *Reason) Reset() {
-	*x = Reason{}
-	mi := &file_fence_v1_fence_proto_msgTypes[4]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Reason) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Reason) ProtoMessage() {}
-
-func (x *Reason) ProtoReflect() protoreflect.Message {
-	mi := &file_fence_v1_fence_proto_msgTypes[4]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Reason.ProtoReflect.Descriptor instead.
-func (*Reason) Descriptor() ([]byte, []int) {
-	return file_fence_v1_fence_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *Reason) GetPolicyId() string {
-	if x != nil {
-		return x.PolicyId
-	}
-	return ""
-}
-
-func (x *Reason) GetMessage() string {
-	if x != nil {
-		return x.Message
-	}
-	return ""
-}
-
-type IsAllowedResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Decision      bool                   `protobuf:"varint,1,opt,name=decision,proto3" json:"decision,omitempty"`
-	Reason        []*Reason              `protobuf:"bytes,2,rep,name=reason,proto3" json:"reason,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IsAllowedResponse) Reset() {
-	*x = IsAllowedResponse{}
-	mi := &file_fence_v1_fence_proto_msgTypes[5]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IsAllowedResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IsAllowedResponse) ProtoMessage() {}
-
-func (x *IsAllowedResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_fence_v1_fence_proto_msgTypes[5]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IsAllowedResponse.ProtoReflect.Descriptor instead.
-func (*IsAllowedResponse) Descriptor() ([]byte, []int) {
-	return file_fence_v1_fence_proto_rawDescGZIP(), []int{5}
-}
-
-func (x *IsAllowedResponse) GetDecision() bool {
-	if x != nil {
-		return x.Decision
-	}
-	return false
-}
-
-func (x *IsAllowedResponse) GetReason() []*Reason {
-	if x != nil {
-		return x.Reason
-	}
-	return nil
-}
-
 type CreateEntityRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Entity        *Entity                `protobuf:"bytes,1,opt,name=entity,proto3" json:"entity,omitempty"`
@@ -369,7 +548,7 @@ type CreateEntityRequest struct {
 
 func (x *CreateEntityRequest) Reset() {
 	*x = CreateEntityRequest{}
-	mi := &file_fence_v1_fence_proto_msgTypes[6]
+	mi := &file_fence_v1_fence_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -381,7 +560,7 @@ func (x *CreateEntityRequest) String() string {
 func (*CreateEntityRequest) ProtoMessage() {}
 
 func (x *CreateEntityRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_fence_v1_fence_proto_msgTypes[6]
+	mi := &file_fence_v1_fence_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -394,7 +573,7 @@ func (x *CreateEntityRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateEntityRequest.ProtoReflect.Descriptor instead.
 func (*CreateEntityRequest) Descriptor() ([]byte, []int) {
-	return file_fence_v1_fence_proto_rawDescGZIP(), []int{6}
+	return file_fence_v1_fence_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *CreateEntityRequest) GetEntity() *Entity {
@@ -406,13 +585,14 @@ func (x *CreateEntityRequest) GetEntity() *Entity {
 
 type CreateEntityResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	Entity        *Entity                `protobuf:"bytes,1,opt,name=entity,proto3" json:"entity,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *CreateEntityResponse) Reset() {
 	*x = CreateEntityResponse{}
-	mi := &file_fence_v1_fence_proto_msgTypes[7]
+	mi := &file_fence_v1_fence_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -424,7 +604,7 @@ func (x *CreateEntityResponse) String() string {
 func (*CreateEntityResponse) ProtoMessage() {}
 
 func (x *CreateEntityResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_fence_v1_fence_proto_msgTypes[7]
+	mi := &file_fence_v1_fence_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -437,19 +617,26 @@ func (x *CreateEntityResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateEntityResponse.ProtoReflect.Descriptor instead.
 func (*CreateEntityResponse) Descriptor() ([]byte, []int) {
-	return file_fence_v1_fence_proto_rawDescGZIP(), []int{7}
+	return file_fence_v1_fence_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *CreateEntityResponse) GetEntity() *Entity {
+	if x != nil {
+		return x.Entity
+	}
+	return nil
 }
 
 type DeleteEntityRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Uid           *EntityUID             `protobuf:"bytes,1,opt,name=uid,proto3" json:"uid,omitempty"`
+	Uid           *UID                   `protobuf:"bytes,1,opt,name=uid,proto3" json:"uid,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *DeleteEntityRequest) Reset() {
 	*x = DeleteEntityRequest{}
-	mi := &file_fence_v1_fence_proto_msgTypes[8]
+	mi := &file_fence_v1_fence_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -461,7 +648,7 @@ func (x *DeleteEntityRequest) String() string {
 func (*DeleteEntityRequest) ProtoMessage() {}
 
 func (x *DeleteEntityRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_fence_v1_fence_proto_msgTypes[8]
+	mi := &file_fence_v1_fence_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -474,10 +661,10 @@ func (x *DeleteEntityRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteEntityRequest.ProtoReflect.Descriptor instead.
 func (*DeleteEntityRequest) Descriptor() ([]byte, []int) {
-	return file_fence_v1_fence_proto_rawDescGZIP(), []int{8}
+	return file_fence_v1_fence_proto_rawDescGZIP(), []int{11}
 }
 
-func (x *DeleteEntityRequest) GetUid() *EntityUID {
+func (x *DeleteEntityRequest) GetUid() *UID {
 	if x != nil {
 		return x.Uid
 	}
@@ -492,7 +679,7 @@ type DeleteEntityResponse struct {
 
 func (x *DeleteEntityResponse) Reset() {
 	*x = DeleteEntityResponse{}
-	mi := &file_fence_v1_fence_proto_msgTypes[9]
+	mi := &file_fence_v1_fence_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -504,7 +691,7 @@ func (x *DeleteEntityResponse) String() string {
 func (*DeleteEntityResponse) ProtoMessage() {}
 
 func (x *DeleteEntityResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_fence_v1_fence_proto_msgTypes[9]
+	mi := &file_fence_v1_fence_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -517,7 +704,7 @@ func (x *DeleteEntityResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteEntityResponse.ProtoReflect.Descriptor instead.
 func (*DeleteEntityResponse) Descriptor() ([]byte, []int) {
-	return file_fence_v1_fence_proto_rawDescGZIP(), []int{9}
+	return file_fence_v1_fence_proto_rawDescGZIP(), []int{12}
 }
 
 type CreatePolicyRequest struct {
@@ -529,7 +716,7 @@ type CreatePolicyRequest struct {
 
 func (x *CreatePolicyRequest) Reset() {
 	*x = CreatePolicyRequest{}
-	mi := &file_fence_v1_fence_proto_msgTypes[10]
+	mi := &file_fence_v1_fence_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -541,7 +728,7 @@ func (x *CreatePolicyRequest) String() string {
 func (*CreatePolicyRequest) ProtoMessage() {}
 
 func (x *CreatePolicyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_fence_v1_fence_proto_msgTypes[10]
+	mi := &file_fence_v1_fence_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -554,7 +741,7 @@ func (x *CreatePolicyRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreatePolicyRequest.ProtoReflect.Descriptor instead.
 func (*CreatePolicyRequest) Descriptor() ([]byte, []int) {
-	return file_fence_v1_fence_proto_rawDescGZIP(), []int{10}
+	return file_fence_v1_fence_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *CreatePolicyRequest) GetPolicy() *Policy {
@@ -572,7 +759,7 @@ type CreatePolicyResponse struct {
 
 func (x *CreatePolicyResponse) Reset() {
 	*x = CreatePolicyResponse{}
-	mi := &file_fence_v1_fence_proto_msgTypes[11]
+	mi := &file_fence_v1_fence_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -584,7 +771,7 @@ func (x *CreatePolicyResponse) String() string {
 func (*CreatePolicyResponse) ProtoMessage() {}
 
 func (x *CreatePolicyResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_fence_v1_fence_proto_msgTypes[11]
+	mi := &file_fence_v1_fence_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -597,18 +784,19 @@ func (x *CreatePolicyResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreatePolicyResponse.ProtoReflect.Descriptor instead.
 func (*CreatePolicyResponse) Descriptor() ([]byte, []int) {
-	return file_fence_v1_fence_proto_rawDescGZIP(), []int{11}
+	return file_fence_v1_fence_proto_rawDescGZIP(), []int{14}
 }
 
 type DeletePolicyRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *DeletePolicyRequest) Reset() {
 	*x = DeletePolicyRequest{}
-	mi := &file_fence_v1_fence_proto_msgTypes[12]
+	mi := &file_fence_v1_fence_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -620,7 +808,7 @@ func (x *DeletePolicyRequest) String() string {
 func (*DeletePolicyRequest) ProtoMessage() {}
 
 func (x *DeletePolicyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_fence_v1_fence_proto_msgTypes[12]
+	mi := &file_fence_v1_fence_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -633,7 +821,14 @@ func (x *DeletePolicyRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeletePolicyRequest.ProtoReflect.Descriptor instead.
 func (*DeletePolicyRequest) Descriptor() ([]byte, []int) {
-	return file_fence_v1_fence_proto_rawDescGZIP(), []int{12}
+	return file_fence_v1_fence_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *DeletePolicyRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
 }
 
 type DeletePolicyResponse struct {
@@ -644,7 +839,7 @@ type DeletePolicyResponse struct {
 
 func (x *DeletePolicyResponse) Reset() {
 	*x = DeletePolicyResponse{}
-	mi := &file_fence_v1_fence_proto_msgTypes[13]
+	mi := &file_fence_v1_fence_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -656,7 +851,7 @@ func (x *DeletePolicyResponse) String() string {
 func (*DeletePolicyResponse) ProtoMessage() {}
 
 func (x *DeletePolicyResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_fence_v1_fence_proto_msgTypes[13]
+	mi := &file_fence_v1_fence_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -669,24 +864,42 @@ func (x *DeletePolicyResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeletePolicyResponse.ProtoReflect.Descriptor instead.
 func (*DeletePolicyResponse) Descriptor() ([]byte, []int) {
-	return file_fence_v1_fence_proto_rawDescGZIP(), []int{13}
+	return file_fence_v1_fence_proto_rawDescGZIP(), []int{16}
 }
 
 var File_fence_v1_fence_proto protoreflect.FileDescriptor
 
 const file_fence_v1_fence_proto_rawDesc = "" +
 	"\n" +
-	"\x14fence/v1/fence.proto\x12\bfence.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\"\xbb\x01\n" +
-	"\x10IsAllowedRequest\x129\n" +
-	"\tprincipal\x18\x01 \x01(\v2\x13.fence.v1.EntityUIDB\x06\xbaH\x03\xc8\x01\x01R\tprincipal\x127\n" +
-	"\bresource\x18\x02 \x01(\v2\x13.fence.v1.EntityUIDB\x06\xbaH\x03\xc8\x01\x01R\bresource\x123\n" +
-	"\x06action\x18\x03 \x01(\v2\x13.fence.v1.EntityUIDB\x06\xbaH\x03\xc8\x01\x01R\x06action\"?\n" +
-	"\tEntityUID\x12\x1a\n" +
+	"\x14fence/v1/fence.proto\x12\bfence.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\"\xa9\x01\n" +
+	"\x10IsAllowedRequest\x123\n" +
+	"\tprincipal\x18\x01 \x01(\v2\r.fence.v1.UIDB\x06\xbaH\x03\xc8\x01\x01R\tprincipal\x12-\n" +
+	"\x06action\x18\x02 \x01(\v2\r.fence.v1.UIDB\x06\xbaH\x03\xc8\x01\x01R\x06action\x121\n" +
+	"\bresource\x18\x03 \x01(\v2\r.fence.v1.UIDB\x06\xbaH\x03\xc8\x01\x01R\bresource\"h\n" +
+	"\x11IsAllowedResponse\x12\x1a\n" +
+	"\bdecision\x18\x01 \x01(\bR\bdecision\x127\n" +
+	"\vdiagnostics\x18\x02 \x01(\v2\x15.fence.v1.DiagnosticsR\vdiagnostics\"b\n" +
+	"\vDiagnostics\x12*\n" +
+	"\areasons\x18\x01 \x03(\v2\x10.fence.v1.ReasonR\areasons\x12'\n" +
+	"\x06errors\x18\x02 \x03(\v2\x0f.fence.v1.ErrorR\x06errors\"U\n" +
+	"\x06Reason\x12\x1b\n" +
+	"\tpolicy_id\x18\x01 \x01(\tR\bpolicyId\x12.\n" +
+	"\bposition\x18\x02 \x01(\v2\x12.fence.v1.PositionR\bposition\"k\n" +
+	"\bPosition\x12\x1b\n" +
+	"\tfile_name\x18\x01 \x01(\tR\bfileName\x12\x16\n" +
+	"\x06offset\x18\x02 \x01(\x03R\x06offset\x12\x12\n" +
+	"\x04line\x18\x03 \x01(\x03R\x04line\x12\x16\n" +
+	"\x06column\x18\x04 \x01(\x03R\x06column\"n\n" +
+	"\x05Error\x12\x1b\n" +
+	"\tpolicy_id\x18\x01 \x01(\tR\bpolicyId\x12.\n" +
+	"\bposition\x18\x02 \x01(\v2\x12.fence.v1.PositionR\bposition\x12\x18\n" +
+	"\amessage\x18\x03 \x01(\tR\amessage\"9\n" +
+	"\x03UID\x12\x1a\n" +
 	"\x04type\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04type\x12\x16\n" +
-	"\x02id\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x02id\"\x80\x03\n" +
-	"\x06Entity\x12-\n" +
-	"\x03uid\x18\x01 \x01(\v2\x13.fence.v1.EntityUIDB\x06\xbaH\x03\xc8\x01\x01R\x03uid\x12-\n" +
-	"\aparents\x18\x02 \x03(\v2\x13.fence.v1.EntityUIDR\aparents\x12@\n" +
+	"\x02id\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x02id\"\xf4\x02\n" +
+	"\x06Entity\x12'\n" +
+	"\x03uid\x18\x01 \x01(\v2\r.fence.v1.UIDB\x06\xbaH\x03\xc8\x01\x01R\x03uid\x12'\n" +
+	"\aparents\x18\x02 \x03(\v2\r.fence.v1.UIDR\aparents\x12@\n" +
 	"\n" +
 	"attributes\x18\x03 \x03(\v2 .fence.v1.Entity.AttributesEntryR\n" +
 	"attributes\x12.\n" +
@@ -701,28 +914,24 @@ const file_fence_v1_fence_proto_rawDesc = "" +
 	"\n" +
 	"definition\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\n" +
 	"definition\x12\x0e\n" +
-	"\x02id\x18\x02 \x01(\tR\x02id\"?\n" +
-	"\x06Reason\x12\x1b\n" +
-	"\tpolicy_id\x18\x01 \x01(\tR\bpolicyId\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage\"Y\n" +
-	"\x11IsAllowedResponse\x12\x1a\n" +
-	"\bdecision\x18\x01 \x01(\bR\bdecision\x12(\n" +
-	"\x06reason\x18\x02 \x03(\v2\x10.fence.v1.ReasonR\x06reason\"?\n" +
-	"\x13CreateEntityRequest\x12(\n" +
-	"\x06entity\x18\x01 \x01(\v2\x10.fence.v1.EntityR\x06entity\"\x16\n" +
-	"\x14CreateEntityResponse\"<\n" +
-	"\x13DeleteEntityRequest\x12%\n" +
-	"\x03uid\x18\x01 \x01(\v2\x13.fence.v1.EntityUIDR\x03uid\"\x16\n" +
-	"\x14DeleteEntityResponse\"?\n" +
-	"\x13CreatePolicyRequest\x12(\n" +
-	"\x06policy\x18\x01 \x01(\v2\x10.fence.v1.PolicyR\x06policy\"\x16\n" +
-	"\x14CreatePolicyResponse\"\x15\n" +
-	"\x13DeletePolicyRequest\"\x16\n" +
-	"\x14DeletePolicyResponse2\x99\x03\n" +
+	"\x02id\x18\x02 \x01(\tR\x02id\"G\n" +
+	"\x13CreateEntityRequest\x120\n" +
+	"\x06entity\x18\x01 \x01(\v2\x10.fence.v1.EntityB\x06\xbaH\x03\xc8\x01\x01R\x06entity\"@\n" +
+	"\x14CreateEntityResponse\x12(\n" +
+	"\x06entity\x18\x01 \x01(\v2\x10.fence.v1.EntityR\x06entity\"6\n" +
+	"\x13DeleteEntityRequest\x12\x1f\n" +
+	"\x03uid\x18\x01 \x01(\v2\r.fence.v1.UIDR\x03uid\"\x16\n" +
+	"\x14DeleteEntityResponse\"G\n" +
+	"\x13CreatePolicyRequest\x120\n" +
+	"\x06policy\x18\x01 \x01(\v2\x10.fence.v1.PolicyB\x06\xbaH\x03\xc8\x01\x01R\x06policy\"\x16\n" +
+	"\x14CreatePolicyResponse\"-\n" +
+	"\x13DeletePolicyRequest\x12\x16\n" +
+	"\x02id\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x02id\"\x16\n" +
+	"\x14DeletePolicyResponse2\x9a\x03\n" +
 	"\fFenceService\x12F\n" +
 	"\tIsAllowed\x12\x1a.fence.v1.IsAllowedRequest\x1a\x1b.fence.v1.IsAllowedResponse\"\x00\x12O\n" +
-	"\fCreateEntity\x12\x1d.fence.v1.CreateEntityRequest\x1a\x1e.fence.v1.CreateEntityResponse\"\x00\x12N\n" +
-	"\fDeleteEntity\x12\x1d.fence.v1.DeleteEntityRequest\x1a\x1d.fence.v1.DeleteEntityRequest\"\x00\x12O\n" +
+	"\fCreateEntity\x12\x1d.fence.v1.CreateEntityRequest\x1a\x1e.fence.v1.CreateEntityResponse\"\x00\x12O\n" +
+	"\fDeleteEntity\x12\x1d.fence.v1.DeleteEntityRequest\x1a\x1e.fence.v1.DeleteEntityResponse\"\x00\x12O\n" +
 	"\fCreatePolicy\x12\x1d.fence.v1.CreatePolicyRequest\x1a\x1e.fence.v1.CreatePolicyResponse\"\x00\x12O\n" +
 	"\fDeletePolicy\x12\x1d.fence.v1.DeletePolicyRequest\x1a\x1e.fence.v1.DeletePolicyResponse\"\x00B\x8d\x01\n" +
 	"\fcom.fence.v1B\n" +
@@ -740,55 +949,63 @@ func file_fence_v1_fence_proto_rawDescGZIP() []byte {
 	return file_fence_v1_fence_proto_rawDescData
 }
 
-var file_fence_v1_fence_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
+var file_fence_v1_fence_proto_msgTypes = make([]protoimpl.MessageInfo, 19)
 var file_fence_v1_fence_proto_goTypes = []any{
 	(*IsAllowedRequest)(nil),     // 0: fence.v1.IsAllowedRequest
-	(*EntityUID)(nil),            // 1: fence.v1.EntityUID
-	(*Entity)(nil),               // 2: fence.v1.Entity
-	(*Policy)(nil),               // 3: fence.v1.Policy
-	(*Reason)(nil),               // 4: fence.v1.Reason
-	(*IsAllowedResponse)(nil),    // 5: fence.v1.IsAllowedResponse
-	(*CreateEntityRequest)(nil),  // 6: fence.v1.CreateEntityRequest
-	(*CreateEntityResponse)(nil), // 7: fence.v1.CreateEntityResponse
-	(*DeleteEntityRequest)(nil),  // 8: fence.v1.DeleteEntityRequest
-	(*DeleteEntityResponse)(nil), // 9: fence.v1.DeleteEntityResponse
-	(*CreatePolicyRequest)(nil),  // 10: fence.v1.CreatePolicyRequest
-	(*CreatePolicyResponse)(nil), // 11: fence.v1.CreatePolicyResponse
-	(*DeletePolicyRequest)(nil),  // 12: fence.v1.DeletePolicyRequest
-	(*DeletePolicyResponse)(nil), // 13: fence.v1.DeletePolicyResponse
-	nil,                          // 14: fence.v1.Entity.AttributesEntry
-	nil,                          // 15: fence.v1.Entity.TagsEntry
-	(*structpb.Value)(nil),       // 16: google.protobuf.Value
+	(*IsAllowedResponse)(nil),    // 1: fence.v1.IsAllowedResponse
+	(*Diagnostics)(nil),          // 2: fence.v1.Diagnostics
+	(*Reason)(nil),               // 3: fence.v1.Reason
+	(*Position)(nil),             // 4: fence.v1.Position
+	(*Error)(nil),                // 5: fence.v1.Error
+	(*UID)(nil),                  // 6: fence.v1.UID
+	(*Entity)(nil),               // 7: fence.v1.Entity
+	(*Policy)(nil),               // 8: fence.v1.Policy
+	(*CreateEntityRequest)(nil),  // 9: fence.v1.CreateEntityRequest
+	(*CreateEntityResponse)(nil), // 10: fence.v1.CreateEntityResponse
+	(*DeleteEntityRequest)(nil),  // 11: fence.v1.DeleteEntityRequest
+	(*DeleteEntityResponse)(nil), // 12: fence.v1.DeleteEntityResponse
+	(*CreatePolicyRequest)(nil),  // 13: fence.v1.CreatePolicyRequest
+	(*CreatePolicyResponse)(nil), // 14: fence.v1.CreatePolicyResponse
+	(*DeletePolicyRequest)(nil),  // 15: fence.v1.DeletePolicyRequest
+	(*DeletePolicyResponse)(nil), // 16: fence.v1.DeletePolicyResponse
+	nil,                          // 17: fence.v1.Entity.AttributesEntry
+	nil,                          // 18: fence.v1.Entity.TagsEntry
+	(*structpb.Value)(nil),       // 19: google.protobuf.Value
 }
 var file_fence_v1_fence_proto_depIdxs = []int32{
-	1,  // 0: fence.v1.IsAllowedRequest.principal:type_name -> fence.v1.EntityUID
-	1,  // 1: fence.v1.IsAllowedRequest.resource:type_name -> fence.v1.EntityUID
-	1,  // 2: fence.v1.IsAllowedRequest.action:type_name -> fence.v1.EntityUID
-	1,  // 3: fence.v1.Entity.uid:type_name -> fence.v1.EntityUID
-	1,  // 4: fence.v1.Entity.parents:type_name -> fence.v1.EntityUID
-	14, // 5: fence.v1.Entity.attributes:type_name -> fence.v1.Entity.AttributesEntry
-	15, // 6: fence.v1.Entity.tags:type_name -> fence.v1.Entity.TagsEntry
-	4,  // 7: fence.v1.IsAllowedResponse.reason:type_name -> fence.v1.Reason
-	2,  // 8: fence.v1.CreateEntityRequest.entity:type_name -> fence.v1.Entity
-	1,  // 9: fence.v1.DeleteEntityRequest.uid:type_name -> fence.v1.EntityUID
-	3,  // 10: fence.v1.CreatePolicyRequest.policy:type_name -> fence.v1.Policy
-	16, // 11: fence.v1.Entity.AttributesEntry.value:type_name -> google.protobuf.Value
-	16, // 12: fence.v1.Entity.TagsEntry.value:type_name -> google.protobuf.Value
-	0,  // 13: fence.v1.FenceService.IsAllowed:input_type -> fence.v1.IsAllowedRequest
-	6,  // 14: fence.v1.FenceService.CreateEntity:input_type -> fence.v1.CreateEntityRequest
-	8,  // 15: fence.v1.FenceService.DeleteEntity:input_type -> fence.v1.DeleteEntityRequest
-	10, // 16: fence.v1.FenceService.CreatePolicy:input_type -> fence.v1.CreatePolicyRequest
-	12, // 17: fence.v1.FenceService.DeletePolicy:input_type -> fence.v1.DeletePolicyRequest
-	5,  // 18: fence.v1.FenceService.IsAllowed:output_type -> fence.v1.IsAllowedResponse
-	7,  // 19: fence.v1.FenceService.CreateEntity:output_type -> fence.v1.CreateEntityResponse
-	8,  // 20: fence.v1.FenceService.DeleteEntity:output_type -> fence.v1.DeleteEntityRequest
-	11, // 21: fence.v1.FenceService.CreatePolicy:output_type -> fence.v1.CreatePolicyResponse
-	13, // 22: fence.v1.FenceService.DeletePolicy:output_type -> fence.v1.DeletePolicyResponse
-	18, // [18:23] is the sub-list for method output_type
-	13, // [13:18] is the sub-list for method input_type
-	13, // [13:13] is the sub-list for extension type_name
-	13, // [13:13] is the sub-list for extension extendee
-	0,  // [0:13] is the sub-list for field type_name
+	6,  // 0: fence.v1.IsAllowedRequest.principal:type_name -> fence.v1.UID
+	6,  // 1: fence.v1.IsAllowedRequest.action:type_name -> fence.v1.UID
+	6,  // 2: fence.v1.IsAllowedRequest.resource:type_name -> fence.v1.UID
+	2,  // 3: fence.v1.IsAllowedResponse.diagnostics:type_name -> fence.v1.Diagnostics
+	3,  // 4: fence.v1.Diagnostics.reasons:type_name -> fence.v1.Reason
+	5,  // 5: fence.v1.Diagnostics.errors:type_name -> fence.v1.Error
+	4,  // 6: fence.v1.Reason.position:type_name -> fence.v1.Position
+	4,  // 7: fence.v1.Error.position:type_name -> fence.v1.Position
+	6,  // 8: fence.v1.Entity.uid:type_name -> fence.v1.UID
+	6,  // 9: fence.v1.Entity.parents:type_name -> fence.v1.UID
+	17, // 10: fence.v1.Entity.attributes:type_name -> fence.v1.Entity.AttributesEntry
+	18, // 11: fence.v1.Entity.tags:type_name -> fence.v1.Entity.TagsEntry
+	7,  // 12: fence.v1.CreateEntityRequest.entity:type_name -> fence.v1.Entity
+	7,  // 13: fence.v1.CreateEntityResponse.entity:type_name -> fence.v1.Entity
+	6,  // 14: fence.v1.DeleteEntityRequest.uid:type_name -> fence.v1.UID
+	8,  // 15: fence.v1.CreatePolicyRequest.policy:type_name -> fence.v1.Policy
+	19, // 16: fence.v1.Entity.AttributesEntry.value:type_name -> google.protobuf.Value
+	19, // 17: fence.v1.Entity.TagsEntry.value:type_name -> google.protobuf.Value
+	0,  // 18: fence.v1.FenceService.IsAllowed:input_type -> fence.v1.IsAllowedRequest
+	9,  // 19: fence.v1.FenceService.CreateEntity:input_type -> fence.v1.CreateEntityRequest
+	11, // 20: fence.v1.FenceService.DeleteEntity:input_type -> fence.v1.DeleteEntityRequest
+	13, // 21: fence.v1.FenceService.CreatePolicy:input_type -> fence.v1.CreatePolicyRequest
+	15, // 22: fence.v1.FenceService.DeletePolicy:input_type -> fence.v1.DeletePolicyRequest
+	1,  // 23: fence.v1.FenceService.IsAllowed:output_type -> fence.v1.IsAllowedResponse
+	10, // 24: fence.v1.FenceService.CreateEntity:output_type -> fence.v1.CreateEntityResponse
+	12, // 25: fence.v1.FenceService.DeleteEntity:output_type -> fence.v1.DeleteEntityResponse
+	14, // 26: fence.v1.FenceService.CreatePolicy:output_type -> fence.v1.CreatePolicyResponse
+	16, // 27: fence.v1.FenceService.DeletePolicy:output_type -> fence.v1.DeletePolicyResponse
+	23, // [23:28] is the sub-list for method output_type
+	18, // [18:23] is the sub-list for method input_type
+	18, // [18:18] is the sub-list for extension type_name
+	18, // [18:18] is the sub-list for extension extendee
+	0,  // [0:18] is the sub-list for field type_name
 }
 
 func init() { file_fence_v1_fence_proto_init() }
@@ -802,7 +1019,7 @@ func file_fence_v1_fence_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_fence_v1_fence_proto_rawDesc), len(file_fence_v1_fence_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   16,
+			NumMessages:   19,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

@@ -1,0 +1,12 @@
+
+CREATE TABLE policies (
+  ID TEXT NOT NULL,
+  TYPE TEXT NOT NULL,
+  Parents TEXT,
+  Attributes TEXT,
+  TAGS TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  deleted_at TIMETAMP,
+  PRIMARY KEY (`id`,`type`)
+)

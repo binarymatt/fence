@@ -53,7 +53,7 @@ const (
 type FenceServiceClient interface {
 	IsAllowed(context.Context, *v1.IsAllowedRequest) (*v1.IsAllowedResponse, error)
 	CreateEntity(context.Context, *v1.CreateEntityRequest) (*v1.CreateEntityResponse, error)
-	DeleteEntity(context.Context, *v1.DeleteEntityRequest) (*v1.DeleteEntityRequest, error)
+	DeleteEntity(context.Context, *v1.DeleteEntityRequest) (*v1.DeleteEntityResponse, error)
 	CreatePolicy(context.Context, *v1.CreatePolicyRequest) (*v1.CreatePolicyResponse, error)
 	DeletePolicy(context.Context, *v1.DeletePolicyRequest) (*v1.DeletePolicyResponse, error)
 }
@@ -81,7 +81,7 @@ func NewFenceServiceClient(httpClient connect.HTTPClient, baseURL string, opts .
 			connect.WithSchema(fenceServiceMethods.ByName("CreateEntity")),
 			connect.WithClientOptions(opts...),
 		),
-		deleteEntity: connect.NewClient[v1.DeleteEntityRequest, v1.DeleteEntityRequest](
+		deleteEntity: connect.NewClient[v1.DeleteEntityRequest, v1.DeleteEntityResponse](
 			httpClient,
 			baseURL+FenceServiceDeleteEntityProcedure,
 			connect.WithSchema(fenceServiceMethods.ByName("DeleteEntity")),
@@ -106,7 +106,7 @@ func NewFenceServiceClient(httpClient connect.HTTPClient, baseURL string, opts .
 type fenceServiceClient struct {
 	isAllowed    *connect.Client[v1.IsAllowedRequest, v1.IsAllowedResponse]
 	createEntity *connect.Client[v1.CreateEntityRequest, v1.CreateEntityResponse]
-	deleteEntity *connect.Client[v1.DeleteEntityRequest, v1.DeleteEntityRequest]
+	deleteEntity *connect.Client[v1.DeleteEntityRequest, v1.DeleteEntityResponse]
 	createPolicy *connect.Client[v1.CreatePolicyRequest, v1.CreatePolicyResponse]
 	deletePolicy *connect.Client[v1.DeletePolicyRequest, v1.DeletePolicyResponse]
 }
@@ -130,7 +130,7 @@ func (c *fenceServiceClient) CreateEntity(ctx context.Context, req *v1.CreateEnt
 }
 
 // DeleteEntity calls fence.v1.FenceService.DeleteEntity.
-func (c *fenceServiceClient) DeleteEntity(ctx context.Context, req *v1.DeleteEntityRequest) (*v1.DeleteEntityRequest, error) {
+func (c *fenceServiceClient) DeleteEntity(ctx context.Context, req *v1.DeleteEntityRequest) (*v1.DeleteEntityResponse, error) {
 	response, err := c.deleteEntity.CallUnary(ctx, connect.NewRequest(req))
 	if response != nil {
 		return response.Msg, err
@@ -160,7 +160,7 @@ func (c *fenceServiceClient) DeletePolicy(ctx context.Context, req *v1.DeletePol
 type FenceServiceHandler interface {
 	IsAllowed(context.Context, *v1.IsAllowedRequest) (*v1.IsAllowedResponse, error)
 	CreateEntity(context.Context, *v1.CreateEntityRequest) (*v1.CreateEntityResponse, error)
-	DeleteEntity(context.Context, *v1.DeleteEntityRequest) (*v1.DeleteEntityRequest, error)
+	DeleteEntity(context.Context, *v1.DeleteEntityRequest) (*v1.DeleteEntityResponse, error)
 	CreatePolicy(context.Context, *v1.CreatePolicyRequest) (*v1.CreatePolicyResponse, error)
 	DeletePolicy(context.Context, *v1.DeletePolicyRequest) (*v1.DeletePolicyResponse, error)
 }
@@ -231,7 +231,7 @@ func (UnimplementedFenceServiceHandler) CreateEntity(context.Context, *v1.Create
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("fence.v1.FenceService.CreateEntity is not implemented"))
 }
 
-func (UnimplementedFenceServiceHandler) DeleteEntity(context.Context, *v1.DeleteEntityRequest) (*v1.DeleteEntityRequest, error) {
+func (UnimplementedFenceServiceHandler) DeleteEntity(context.Context, *v1.DeleteEntityRequest) (*v1.DeleteEntityResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("fence.v1.FenceService.DeleteEntity is not implemented"))
 }
 
