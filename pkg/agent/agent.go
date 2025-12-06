@@ -2,27 +2,56 @@ package agent
 
 import (
 	"context"
+	"database/sql"
 	"net/http"
 	"time"
 
+	"github.com/uptrace/bun"
+	"github.com/uptrace/bun/dialect/sqlitedialect"
+	"github.com/uptrace/bun/driver/sqliteshim"
 	"golang.org/x/sync/errgroup"
 
 	"github.com/binarymatt/fence/gen/fence/v1/fencev1connect"
 	"github.com/binarymatt/fence/internal/service"
 )
 
+func initDB(ctx context.Context, db *bun.DB) error {
+
+	_, err := db.NewCreateTable().Model((*service.Entity)(nil)).IfNotExists().Exec(ctx)
+	if err != nil {
+		return err
+	}
+	_, err = db.NewCreateTable().Model((*service.Policy)(nil)).IfNotExists().Exec(ctx)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+func New(ctx context.Context, cfg *Config) (*agent, error) {
+	sqlDB, err := sql.Open(sqliteshim.ShimName, cfg.DBPath)
+	if err != nil {
+		return nil, err
+	}
+	db := bun.NewDB(sqlDB, sqlitedialect.New())
+	if err := initDB(ctx, db); err != nil {
+		return nil, err
+	}
+	svc := service.New(db)
+	return &agent{cfg, svc}, nil
+}
+
 type agent struct {
-	cfg Config
+	cfg     *Config
+	service *service.Service
 }
 
 func (a *agent) Run(ctx context.Context) error {
 	eg, ctx := errgroup.WithContext(ctx)
-	server := service.New()
 	mux := http.NewServeMux()
-	mux.Handle(fencev1connect.NewFenceServiceHandler(server))
+	mux.Handle(fencev1connect.NewFenceServiceHandler(a.service))
 	p := new(http.Protocols)
 	s := http.Server{
-		Addr:      a.cfg.Address,
+		Addr:      a.cfg.ListenAddress,
 		Handler:   mux,
 		Protocols: p,
 	}

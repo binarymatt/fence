@@ -13,7 +13,7 @@ var (
 	ErrEntityAlreadyExists = errors.New("entity already exists")
 )
 
-func (s *service) CreateEntity(ctx context.Context, req *fencev1.CreateEntityRequest) (*fencev1.CreateEntityResponse, error) {
+func (s *Service) CreateEntity(ctx context.Context, req *fencev1.CreateEntityRequest) (*fencev1.CreateEntityResponse, error) {
 	parents := make([]UID, len(req.Entity.Parents))
 	for i, ui := range req.Entity.Parents {
 		parents[i] = fenceToDBUID(ui)
@@ -33,7 +33,7 @@ func (s *service) CreateEntity(ctx context.Context, req *fencev1.CreateEntityReq
 	}
 	return &fencev1.CreateEntityResponse{}, nil
 }
-func (s *service) DeleteEntity(ctx context.Context, req *fencev1.DeleteEntityRequest) (*fencev1.DeleteEntityResponse, error) {
+func (s *Service) DeleteEntity(ctx context.Context, req *fencev1.DeleteEntityRequest) (*fencev1.DeleteEntityResponse, error) {
 	if err := s.deleteEntity(ctx, req.GetUid().GetType(), req.GetUid().GetId()); err != nil {
 		return nil, connect.NewError(connect.CodeInvalidArgument, err)
 	}

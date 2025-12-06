@@ -12,20 +12,20 @@ import (
 	"github.com/binarymatt/fence/gen/fence/v1/fencev1connect"
 )
 
-var _ fencev1connect.FenceServiceHandler = (*service)(nil)
+var _ fencev1connect.FenceServiceHandler = (*Service)(nil)
 
-func New() *service {
-	return &service{}
+func New(db *bun.DB) *Service {
+	return &Service{}
 }
 
-type service struct {
+type Service struct {
 	db *bun.DB
 }
 
 func fenceToCedarUID(uid *fencev1.UID) cedar.EntityUID {
 	return cedar.NewEntityUID(cedar.EntityType(uid.GetType()), cedar.String(uid.GetId()))
 }
-func (s *service) IsAllowed(ctx context.Context, req *fencev1.IsAllowedRequest) (*fencev1.IsAllowedResponse, error) {
+func (s *Service) IsAllowed(ctx context.Context, req *fencev1.IsAllowedRequest) (*fencev1.IsAllowedResponse, error) {
 	ps, err := s.getPolicySet(ctx)
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, err)

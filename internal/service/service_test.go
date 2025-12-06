@@ -22,7 +22,7 @@ func TestParseUIDString(t *testing.T) {
 	expectedUID := cedar.NewEntityUID(cedar.EntityType("User"), cedar.String("bob"))
 	must.Eq(t, expectedUID, uid)
 }
-func setupTest(t *testing.T, loadFixtures bool) (*service, *sql.DB) {
+func setupTest(t *testing.T, loadFixtures bool) (*Service, *sql.DB) {
 	t.Helper()
 	ctx := context.Background()
 	sqldb, err := sql.Open(sqliteshim.ShimName, "file::memory:?cache=shared")
@@ -46,7 +46,7 @@ func setupTest(t *testing.T, loadFixtures bool) (*service, *sql.DB) {
 			t.Fatal(err)
 		}
 	}
-	return &service{db: db}, sqldb
+	return &Service{db: db}, sqldb
 
 }
 

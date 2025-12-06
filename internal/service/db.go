@@ -15,7 +15,7 @@ var (
 	ErrPolicyAlreadyExists = errors.New("policy already exists")
 )
 
-func (s *service) addPolicy(ctx context.Context, id string, content string) error {
+func (s *Service) addPolicy(ctx context.Context, id string, content string) error {
 	p := &Policy{
 		ID:      id,
 		Content: content,
@@ -30,7 +30,7 @@ func (s *service) addPolicy(ctx context.Context, id string, content string) erro
 	return nil
 }
 
-func (s *service) deletePolicy(ctx context.Context, id string) error {
+func (s *Service) deletePolicy(ctx context.Context, id string) error {
 	res, err := s.db.NewDelete().Model(&Policy{ID: id}).WherePK().Exec(ctx)
 	if err != nil {
 		return err
@@ -44,7 +44,7 @@ func (s *service) deletePolicy(ctx context.Context, id string) error {
 	}
 	return nil
 }
-func (s *service) getPolicySet(ctx context.Context) (*cedar.PolicySet, error) {
+func (s *Service) getPolicySet(ctx context.Context) (*cedar.PolicySet, error) {
 	ps := cedar.NewPolicySet()
 
 	var policies []Policy
@@ -61,7 +61,7 @@ func (s *service) getPolicySet(ctx context.Context) (*cedar.PolicySet, error) {
 	return ps, nil
 }
 
-func (s *service) getEntities(ctx context.Context) (cedar.EntityMap, error) {
+func (s *Service) getEntities(ctx context.Context) (cedar.EntityMap, error) {
 
 	var entities []Entity
 	if err := s.db.NewSelect().Model(&entities).Scan(ctx); err != nil {
@@ -86,7 +86,7 @@ func (s *service) getEntities(ctx context.Context) (cedar.EntityMap, error) {
 	return em, nil
 }
 
-func (s *service) addEntity(ctx context.Context, entity *Entity) error {
+func (s *Service) addEntity(ctx context.Context, entity *Entity) error {
 	_, err := s.db.NewInsert().Model(entity).Exec(ctx)
 	if err != nil {
 		if strings.Contains(err.Error(), "constraint failed: UNIQUE constraint failed: entities.id, entities.type") {
@@ -96,7 +96,7 @@ func (s *service) addEntity(ctx context.Context, entity *Entity) error {
 	}
 	return nil
 }
-func (s *service) deleteEntity(ctx context.Context, typ, id string) error {
+func (s *Service) deleteEntity(ctx context.Context, typ, id string) error {
 	res, err := s.db.NewDelete().Model(&Entity{ID: id, Type: typ}).WherePK().Exec(ctx)
 	if err != nil {
 		return err

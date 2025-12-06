@@ -9,7 +9,7 @@ import (
 	fencev1 "github.com/binarymatt/fence/gen/fence/v1"
 )
 
-func (s *service) CreatePolicy(ctx context.Context, req *fencev1.CreatePolicyRequest) (*fencev1.CreatePolicyResponse, error) {
+func (s *Service) CreatePolicy(ctx context.Context, req *fencev1.CreatePolicyRequest) (*fencev1.CreatePolicyResponse, error) {
 	if err := s.addPolicy(ctx, req.Policy.GetId(), req.Policy.GetDefinition()); err != nil {
 		if errors.Is(err, ErrPolicyAlreadyExists) {
 			return nil, connect.NewError(connect.CodeInvalidArgument, err)
@@ -18,7 +18,7 @@ func (s *service) CreatePolicy(ctx context.Context, req *fencev1.CreatePolicyReq
 	}
 	return &fencev1.CreatePolicyResponse{}, nil
 }
-func (s *service) DeletePolicy(ctx context.Context, req *fencev1.DeletePolicyRequest) (*fencev1.DeletePolicyResponse, error) {
+func (s *Service) DeletePolicy(ctx context.Context, req *fencev1.DeletePolicyRequest) (*fencev1.DeletePolicyResponse, error) {
 	if err := s.deletePolicy(ctx, req.Id); err != nil {
 		if errors.Is(err, ErrPolicyNotFound) {
 			return nil, connect.NewError(connect.CodeInvalidArgument, err)
