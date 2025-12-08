@@ -49,6 +49,9 @@ func (a *agent) Run(ctx context.Context) error {
 	eg, ctx := errgroup.WithContext(ctx)
 	mux := http.NewServeMux()
 	mux.Handle(fencev1connect.NewFenceServiceHandler(a.service))
+	mux.HandleFunc("/health", func(w http.ResponseWriter, _ *http.Request) {
+		w.Write([]byte("ok"))
+	})
 	p := new(http.Protocols)
 	s := http.Server{
 		Addr:      a.cfg.ListenAddress,
