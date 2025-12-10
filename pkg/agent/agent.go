@@ -3,6 +3,7 @@ package agent
 import (
 	"context"
 	"database/sql"
+	"log/slog"
 	"net/http"
 	"time"
 
@@ -46,10 +47,12 @@ type agent struct {
 }
 
 func (a *agent) Run(ctx context.Context) error {
+	slog.Info("starting agent run", "address", a.cfg.ListenAddress)
 	eg, ctx := errgroup.WithContext(ctx)
 	mux := http.NewServeMux()
 	mux.Handle(fencev1connect.NewFenceServiceHandler(a.service))
 	mux.HandleFunc("/health", func(w http.ResponseWriter, _ *http.Request) {
+		slog.Info("health check")
 		w.Write([]byte("ok"))
 	})
 	p := new(http.Protocols)
