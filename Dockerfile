@@ -7,5 +7,5 @@ RUN CGO_ENABLED=1 CC=gcc GOOS=linux go build -o agent -a -ldflags '-linkmode ext
  
 FROM scratch
 COPY --from=builder /src/agent ./agent
-EXPOSE 8080
+EXPOSE 8081
 CMD ["./agent"]
