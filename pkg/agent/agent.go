@@ -56,6 +56,9 @@ func (a *agent) Run(ctx context.Context) error {
 		w.Write([]byte("ok"))
 	})
 	p := new(http.Protocols)
+	p.SetHTTP1(true)
+	// For gRPC clients, it's convenient to support HTTP/2 without TLS.
+	p.SetUnencryptedHTTP2(true)
 	s := http.Server{
 		Addr:      a.cfg.ListenAddress,
 		Handler:   mux,
