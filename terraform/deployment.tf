@@ -22,24 +22,24 @@ resource "kubernetes_deployment_v1" "fence-agent" {
 
       spec {
         automount_service_account_token = false
-        enable_service_links = false
+        enable_service_links            = false
         container {
           name  = "fence-agent"
-          image = "registry.homelab.lan/fence-agent:58833f5"
+          image = "registry.homelab.lan/fence-agent:${var.container_version}"
           port {
-            container_port =  8081
+            container_port = 8081
           }
           volume_mount {
-            name = "storage"
+            name       = "storage"
             mount_path = "/fence"
           }
           volume_mount {
-            name = "config"
+            name       = "config"
             mount_path = "/config"
-            read_only = true
+            read_only  = true
           }
           env {
-            name = "FENCE_CONFIG"
+            name  = "FENCE_CONFIG"
             value = "/config/fence.yaml"
           }
 
@@ -49,7 +49,7 @@ resource "kubernetes_deployment_v1" "fence-agent" {
           config_map {
             name = "fence-config"
             items {
-              key = "fence.yaml"
+              key  = "fence.yaml"
               path = "fence.yaml"
             }
           }

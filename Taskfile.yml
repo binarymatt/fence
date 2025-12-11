@@ -10,3 +10,27 @@ tasks:
   go:mocks:
     cmds:
       - mockery
+  infra:plan:
+    cmds:
+      - cd terraform && terraform plan -var="container_image=registry.homelab.lan/fence-agent" -var="container_version={{.GIT_COMMIT}}"
+    vars:
+      GIT_COMMIT:
+        sh: git log -n 1 --format=%h
+  deploy:
+    deps:
+      - container:build
+    cmds:
+      - cd terraform && terraform plan -auto-approve -var="container_image=registry.homelab.lan/fence-agent" -var="container_version={{.GIT_COMMIT}}"
+    vars:
+      GIT_COMMIT:
+        sh: git log -n 1 --format=%h
+  container:build:
+    cmds:
+      - podman build -t fence-agent .
+      - podman tag fence-agent registry.homelab.lan/fence-agent:{{.GIT_COMMIT}}
+      - podman tag fence-agent registry.homelab.lan/fence-agent:latest
+      - podman push registry.homelab.lan/fence-agent:latest
+      - podman push registry.homelab.lan/fence-agent:{{.GIT_COMMIT}}
+    vars:
+      GIT_COMMIT:
+        sh: git log -n 1 --format=%h
