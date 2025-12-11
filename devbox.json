@@ -7,7 +7,10 @@
     "go-mockery@latest",
     "go-migrate@4.18.2",
     "go@1.25.3",
-    "go-task@3.45.5"
+    "go-task@3.45.5",
+    "kubectl@latest",
+    "terraform@1.14.1",
+    "tfk8s@0.1.10"
   ],
   "shell": {
     "init_hook": [
