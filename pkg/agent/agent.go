@@ -46,6 +46,18 @@ type agent struct {
 	service *service.Service
 }
 
+func corsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
 func (a *agent) Run(ctx context.Context) error {
 	slog.Info("starting agent run", "address", a.cfg.ListenAddress)
 	eg, ctx := errgroup.WithContext(ctx)
@@ -62,7 +74,7 @@ func (a *agent) Run(ctx context.Context) error {
 	p.SetUnencryptedHTTP2(true)
 	s := http.Server{
 		Addr:      a.cfg.ListenAddress,
-		Handler:   mux,
+		Handler:   corsMiddleware(mux),
 		Protocols: p,
 	}
 	eg.Go(s.ListenAndServe)
