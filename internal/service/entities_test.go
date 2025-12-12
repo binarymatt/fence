@@ -70,10 +70,10 @@ func TestCreateEntity(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			s, db := setupTest(t, tc.loadFixutres)
 
-			req := &fencev1.CreateEntityRequest{
-				Entity: tc.entity,
+			req := &fencev1.CreateEntitiesRequest{
+				Entities: []*fencev1.Entity{tc.entity},
 			}
-			_, err := s.CreateEntity(context.Background(), req)
+			_, err := s.CreateEntities(context.Background(), req)
 			tc.validate(t, db, tc.entity, err)
 
 		})

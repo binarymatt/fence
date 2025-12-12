@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/cedar-policy/cedar-go"
+	"github.com/uptrace/bun"
 )
 
 var (
@@ -15,12 +16,12 @@ var (
 	ErrPolicyAlreadyExists = errors.New("policy already exists")
 )
 
-func (s *Service) addPolicy(ctx context.Context, id string, content string) error {
+func (s *Service) addPolicy(ctx context.Context, tx bun.Tx, id string, content string) error {
 	p := &Policy{
 		ID:      id,
 		Content: content,
 	}
-	_, err := s.db.NewInsert().Model(p).Exec(ctx)
+	_, err := tx.NewInsert().Model(p).Exec(ctx)
 	if err != nil {
 		if strings.Contains(err.Error(), "constraint failed: UNIQUE constraint failed: policies.id") {
 			return fmt.Errorf("%w: policy %s", ErrPolicyAlreadyExists, id)
@@ -45,12 +46,12 @@ func (s *Service) deletePolicy(ctx context.Context, id string) error {
 	return nil
 }
 func (s *Service) getPolicySet(ctx context.Context) (*cedar.PolicySet, error) {
-	ps := cedar.NewPolicySet()
 
-	var policies []Policy
-	if err := s.db.NewSelect().Model(&policies).Scan(ctx); err != nil {
+	policies, err := s.getPolicies(ctx)
+	if err != nil {
 		return nil, err
 	}
+	ps := cedar.NewPolicySet()
 	for _, rawPolicy := range policies {
 		var policy cedar.Policy
 		if err := policy.UnmarshalCedar([]byte(rawPolicy.Content)); err != nil {
@@ -59,6 +60,13 @@ func (s *Service) getPolicySet(ctx context.Context) (*cedar.PolicySet, error) {
 		ps.Add(cedar.PolicyID(rawPolicy.ID), &policy)
 	}
 	return ps, nil
+}
+func (s *Service) getPolicies(ctx context.Context) ([]Policy, error) {
+	var policies []Policy
+	if err := s.db.NewSelect().Model(&policies).Scan(ctx); err != nil {
+		return nil, err
+	}
+	return policies, nil
 }
 
 func (s *Service) getEntities(ctx context.Context) (cedar.EntityMap, error) {
@@ -86,8 +94,8 @@ func (s *Service) getEntities(ctx context.Context) (cedar.EntityMap, error) {
 	return em, nil
 }
 
-func (s *Service) addEntity(ctx context.Context, entity *Entity) error {
-	_, err := s.db.NewInsert().Model(entity).Exec(ctx)
+func (s *Service) addEntity(ctx context.Context, tx bun.Tx, entity *Entity) error {
+	_, err := tx.NewInsert().Model(entity).Exec(ctx)
 	if err != nil {
 		if strings.Contains(err.Error(), "constraint failed: UNIQUE constraint failed: entities.id, entities.type") {
 			return fmt.Errorf(`%w: %s::"%s"`, ErrEntityAlreadyExists, entity.Type, entity.ID)

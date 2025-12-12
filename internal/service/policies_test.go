@@ -52,10 +52,10 @@ func TestCreatePolicy(t *testing.T) {
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
 			s, db := setupTest(t, tc.loadFixtures)
-			req := &fencev1.CreatePolicyRequest{
-				Policy: tc.policy,
+			req := &fencev1.CreatePoliciesRequest{
+				Policies: []*fencev1.Policy{tc.policy},
 			}
-			_, err := s.CreatePolicy(context.Background(), req)
+			_, err := s.CreatePolicies(context.Background(), req)
 			tc.validate(t, db, err)
 		})
 	}

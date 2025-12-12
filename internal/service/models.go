@@ -24,6 +24,13 @@ type Policy struct {
 	Base
 }
 
+func (p *Policy) ToProto() *fencev1.Policy {
+	return &fencev1.Policy{
+		Id:         p.ID,
+		Definition: p.Content,
+	}
+}
+
 type Entity struct {
 	bun.BaseModel `bun:"table:entities,alias:e"`
 	ID            string       `bun:",pk"`

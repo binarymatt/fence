@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package fence.v1;
+
+import "buf/validate/validate.proto";
+import "fence/v1/fence.proto";
+import "google/protobuf/struct.proto";
+
+option go_package = "github.com/binarymatt/fence/gen/fence/v1;fencev1";
+
+service FenceAdminService {
+  rpc CreateEntities(CreateEntitiesRequest) returns (CreateEntitiesResponse) {}
+  rpc DeleteEntity(DeleteEntityRequest) returns (DeleteEntityResponse) {}
+  rpc ListEntities(ListEntitiesRequest) returns (ListEntitiesResponse) {}
+  rpc GetEntity(GetEntityRequest) returns (GetEntityResponse) {}
+  rpc CreatePolicies(CreatePoliciesRequest) returns (CreatePoliciesResponse) {}
+  rpc DeletePolicy(DeletePolicyRequest) returns (DeletePolicyResponse) {}
+  rpc ListPolicies(ListPoliciesRequest) returns (ListPoliciesResponse) {}
+  rpc GetPolicy(GetPolicyRequest) returns (GetPolicyResponse) {}
+}
+
+message CreateEntitiesRequest {
+  repeated Entity entities = 1 [(buf.validate.field).required = true];
+}
+
+message CreateEntitiesResponse {
+  repeated Entity entities = 1;
+}
+
+message DeleteEntityRequest {
+  UID uid = 1;
+}
+message DeleteEntityResponse {}
+
+message ListEntitiesRequest {}
+message ListEntitiesResponse {
+  repeated Entity entities = 1;
+}
+message GetEntityRequest {}
+message GetEntityResponse {}
+
+message CreatePoliciesRequest {
+  repeated Policy policies = 1 [(buf.validate.field).required = true];
+}
+message CreatePoliciesResponse {
+  repeated string ids = 1;
+}
+message DeletePolicyRequest {
+  string id = 1 [(buf.validate.field).required = true];
+}
+message DeletePolicyResponse {}
+
+// TODO: pagination
+message ListPoliciesRequest {}
+message ListPoliciesResponse {
+  repeated Policy policies = 1;
+}
+message GetPolicyRequest {
+  string id = 1 [(buf.validate.field).required = true];
+}
+message GetPolicyResponse {
+  Policy policy = 1;
+}

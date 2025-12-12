@@ -13,6 +13,7 @@ import (
 )
 
 var _ fencev1connect.FenceServiceHandler = (*Service)(nil)
+var _ fencev1connect.FenceAdminServiceHandler = (*Service)(nil)
 
 func New(db *bun.DB) *Service {
 	return &Service{}

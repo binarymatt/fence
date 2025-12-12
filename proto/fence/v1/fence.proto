@@ -9,10 +9,10 @@ option go_package = "github.com/binarymatt/fence/gen/fence/v1;fencev1";
 
 service FenceService {
   rpc IsAllowed(IsAllowedRequest) returns (IsAllowedResponse) {}
-  rpc CreateEntity(CreateEntityRequest) returns (CreateEntityResponse) {}
-  rpc DeleteEntity(DeleteEntityRequest) returns (DeleteEntityResponse) {}
-  rpc CreatePolicy(CreatePolicyRequest) returns (CreatePolicyResponse) {}
-  rpc DeletePolicy(DeletePolicyRequest) returns (DeletePolicyResponse) {}
+  // rpc CreateEntity(CreateEntityRequest) returns (CreateEntityResponse) {}
+  // rpc DeleteEntity(DeleteEntityRequest) returns (DeleteEntityResponse) {}
+  // rpc CreatePolicy(CreatePolicyRequest) returns (CreatePolicyResponse) {}
+  // rpc DeletePolicy(DeletePolicyRequest) returns (DeletePolicyResponse) {}
 }
 
 message IsAllowedRequest {
@@ -65,25 +65,26 @@ message Policy {
   string definition = 1 [(buf.validate.field).required = true];
   string id = 2;
 }
+/*
+   message CreateEntityRequest {
+     Entity entity = 1 [(buf.validate.field).required = true];
+   }
 
-message CreateEntityRequest {
-  Entity entity = 1 [(buf.validate.field).required = true];
-}
+   message CreateEntityResponse {
+     Entity entity = 1;
+   }
 
-message CreateEntityResponse {
-  Entity entity = 1;
-}
+   message DeleteEntityRequest {
+     UID uid = 1;
+   }
+   message DeleteEntityResponse {}
 
-message DeleteEntityRequest {
-  UID uid = 1;
-}
-message DeleteEntityResponse {}
-
-message CreatePolicyRequest {
-  Policy policy = 1 [(buf.validate.field).required = true];
-}
-message CreatePolicyResponse {}
-message DeletePolicyRequest {
-  string id = 1 [(buf.validate.field).required = true];
-}
-message DeletePolicyResponse {}
+   message CreatePolicyRequest {
+     Policy policy = 1 [(buf.validate.field).required = true];
+   }
+   message CreatePolicyResponse {}
+   message DeletePolicyRequest {
+     string id = 1 [(buf.validate.field).required = true];
+   }
+   message DeletePolicyResponse {}
+*/
