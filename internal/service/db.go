@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"strings"
 
 	"github.com/cedar-policy/cedar-go"
@@ -62,6 +63,7 @@ func (s *Service) getPolicySet(ctx context.Context) (*cedar.PolicySet, error) {
 	return ps, nil
 }
 func (s *Service) getPolicies(ctx context.Context) ([]Policy, error) {
+	slog.Info("getting policies", "db", s.db)
 	var policies []Policy
 	if err := s.db.NewSelect().Model(&policies).Scan(ctx); err != nil {
 		return nil, err

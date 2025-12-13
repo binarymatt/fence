@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"log/slog"
 
 	"connectrpc.com/connect"
 
@@ -45,6 +46,7 @@ func (s *Service) DeletePolicy(ctx context.Context, req *fencev1.DeletePolicyReq
 }
 
 func (s *Service) ListPolicies(ctx context.Context, _ *fencev1.ListPoliciesRequest) (*fencev1.ListPoliciesResponse, error) {
+	slog.Info("listing policies")
 	policies, err := s.getPolicies(ctx)
 	if err != nil {
 		return nil, err

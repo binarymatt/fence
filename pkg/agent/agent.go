@@ -46,6 +46,12 @@ type agent struct {
 	service *service.Service
 }
 
+func loggingMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		slog.Info("processing request", "method", r.Method, "uri", r.RequestURI)
+		next.ServeHTTP(w, r)
+	})
+}
 func corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
