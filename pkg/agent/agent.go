@@ -80,7 +80,7 @@ func (a *agent) Run(ctx context.Context) error {
 	p.SetUnencryptedHTTP2(true)
 	s := http.Server{
 		Addr:      a.cfg.ListenAddress,
-		Handler:   corsMiddleware(mux),
+		Handler:   loggingMiddleware(corsMiddleware(mux)),
 		Protocols: p,
 	}
 	eg.Go(s.ListenAndServe)

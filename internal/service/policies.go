@@ -19,7 +19,7 @@ func (s *Service) CreatePolicies(ctx context.Context, req *fencev1.CreatePolicie
 	}
 	ids := make([]string, len(req.GetPolicies()))
 	for i, policy := range req.GetPolicies() {
-
+		slog.Info("creating policy", "data", *policy)
 		if err := s.addPolicy(ctx, tx, policy.GetId(), policy.GetDefinition()); err != nil {
 			if errors.Is(err, ErrPolicyAlreadyExists) {
 				return nil, connect.NewError(connect.CodeInvalidArgument, err)
