@@ -70,11 +70,26 @@ func (s *Service) getPolicies(ctx context.Context) ([]Policy, error) {
 	}
 	return policies, nil
 }
+func (s *Service) getPolicy(ctx context.Context, id string) (*Policy, error) {
+	var policy Policy
+	if err := s.db.NewSelect().Model(&policy).Where("id = ?", id).Scan(ctx); err != nil {
+		return nil, err
+	}
+	return &policy, nil
+}
 
-func (s *Service) getEntities(ctx context.Context) (cedar.EntityMap, error) {
-
+func (s *Service) getEntities(ctx context.Context) ([]Entity, error) {
 	var entities []Entity
 	if err := s.db.NewSelect().Model(&entities).Scan(ctx); err != nil {
+		return nil, err
+	}
+	return entities, nil
+}
+func (s *Service) getEntityMap(ctx context.Context) (cedar.EntityMap, error) {
+
+	var entities []Entity
+	entities, err := s.getEntities(ctx)
+	if err != nil {
 		return nil, err
 	}
 	em := cedar.EntityMap{}

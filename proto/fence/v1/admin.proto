@@ -4,7 +4,6 @@ package fence.v1;
 
 import "buf/validate/validate.proto";
 import "fence/v1/fence.proto";
-import "google/protobuf/struct.proto";
 
 option go_package = "github.com/binarymatt/fence/gen/fence/v1;fencev1";
 

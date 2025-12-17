@@ -31,6 +31,11 @@ func (p *Policy) ToProto() *fencev1.Policy {
 	}
 }
 
+type UID struct {
+	ID   string `json:"id"`
+	Type string `json:"type"`
+}
+
 type Entity struct {
 	bun.BaseModel `bun:"table:entities,alias:e"`
 	ID            string       `bun:",pk"`
@@ -39,6 +44,17 @@ type Entity struct {
 	Attributes    cedar.Record `bun:"attributes,type:json"`
 	Tags          cedar.Record `bun:"tags,type:json"`
 	Base
+}
+
+func (e *Entity) ToProto() *fencev1.Entity {
+	parents := make([]*fencev1.UID, len(e.Parents))
+	for i, p := range e.Parents {
+		parents[i] = &fencev1.UID{Id: p.ID, Type: p.Type}
+	}
+	return &fencev1.Entity{
+		Uid:     &fencev1.UID{Id: e.ID, Type: e.Type},
+		Parents: parents,
+	}
 }
 
 func isWhole(x float64) bool {
@@ -76,9 +92,4 @@ func fenceToDBUID(ui *fencev1.UID) UID {
 		ID:   ui.GetId(),
 		Type: ui.GetType(),
 	}
-}
-
-type UID struct {
-	ID   string `json:"id"`
-	Type string `json:"type"`
 }

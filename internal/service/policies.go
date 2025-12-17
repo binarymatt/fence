@@ -61,6 +61,11 @@ func (s *Service) ListPolicies(ctx context.Context, _ *fencev1.ListPoliciesReque
 		Policies: protoPolicies,
 	}, nil
 }
-func (s *Service) GetPolicy(context.Context, *fencev1.GetPolicyRequest) (*fencev1.GetPolicyResponse, error) {
-	return nil, nil
+func (s *Service) GetPolicy(ctx context.Context, req *fencev1.GetPolicyRequest) (*fencev1.GetPolicyResponse, error) {
+	policy, err := s.getPolicy(ctx, req.GetId())
+	if err != nil {
+		return nil, err
+	}
+	p := policy.ToProto()
+	return &fencev1.GetPolicyResponse{Policy: p}, nil
 }

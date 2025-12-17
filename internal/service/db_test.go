@@ -44,7 +44,7 @@ func TestGetEntities(t *testing.T) {
 		alice.UID: alice,
 		photo.UID: photo,
 	}
-	em, err := s.getEntities(ctx)
+	em, err := s.getEntityMap(ctx)
 	must.NoError(t, err)
 	must.Eq(t, expectedMap, em)
 }

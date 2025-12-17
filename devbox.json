@@ -10,7 +10,8 @@
     "go-task@3.45.5",
     "kubectl@latest",
     "terraform@1.14.1",
-    "tfk8s@0.1.10"
+    "tfk8s@0.1.10",
+    "grpcui@1.4.3"
   ],
   "shell": {
     "init_hook": [

@@ -31,7 +31,7 @@ func (s *Service) IsAllowed(ctx context.Context, req *fencev1.IsAllowedRequest) 
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
-	em, err := s.getEntities(ctx)
+	em, err := s.getEntityMap(ctx)
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}

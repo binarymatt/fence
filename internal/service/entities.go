@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"log/slog"
 
 	"connectrpc.com/connect"
 
@@ -32,6 +33,7 @@ func (s *Service) CreateEntities(ctx context.Context, req *fencev1.CreateEntitie
 			Tags:       fenceToRecord(entity.Tags),
 		}
 		if err := s.addEntity(ctx, tx, dbEnt); err != nil {
+			slog.Error("failed to add entity", "record", dbEnt, "error", err)
 			if errors.Is(err, ErrEntityAlreadyExists) {
 				return nil, connect.NewError(connect.CodeInvalidArgument, err)
 			}
@@ -39,6 +41,7 @@ func (s *Service) CreateEntities(ctx context.Context, req *fencev1.CreateEntitie
 		}
 	}
 	if err := tx.Commit(); err != nil {
+		slog.Error("failed to commit ", "error", err)
 		return nil, err
 	}
 	return &fencev1.CreateEntitiesResponse{}, nil
@@ -51,7 +54,15 @@ func (s *Service) DeleteEntity(ctx context.Context, req *fencev1.DeleteEntityReq
 }
 
 func (s *Service) ListEntities(ctx context.Context, req *fencev1.ListEntitiesRequest) (*fencev1.ListEntitiesResponse, error) {
-	return nil, nil
+	entities, err := s.getEntities(ctx)
+	if err != nil {
+		return nil, err
+	}
+	pes := make([]*fencev1.Entity, len(entities))
+	for i, e := range entities {
+		pes[i] = e.ToProto()
+	}
+	return &fencev1.ListEntitiesResponse{Entities: pes}, nil
 }
 func (s *Service) GetEntity(context.Context, *fencev1.GetEntityRequest) (*fencev1.GetEntityResponse, error) {
 	return nil, nil

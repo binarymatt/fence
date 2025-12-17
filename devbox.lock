@@ -245,6 +245,54 @@
         }
       }
     },
+    "grpcui@1.4.3": {
+      "last_modified": "2025-07-28T17:09:23Z",
+      "resolved": "github:NixOS/nixpkgs/648f70160c03151bc2121d179291337ad6bc564b#grpcui",
+      "source": "devbox-search",
+      "version": "1.4.3",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/1lchwn0n9v8fb0szck8000s7r4sbbzca-grpcui-1.4.3",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/1lchwn0n9v8fb0szck8000s7r4sbbzca-grpcui-1.4.3"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/idpy4llq8c7982r8gr2h5jywacds0sna-grpcui-1.4.3",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/idpy4llq8c7982r8gr2h5jywacds0sna-grpcui-1.4.3"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/p3v4d8imyqibary1985nlwrbq75rhacy-grpcui-1.4.3",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/p3v4d8imyqibary1985nlwrbq75rhacy-grpcui-1.4.3"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/0z7f5fm2fq5cfxbxij738q4j0rysg5n8-grpcui-1.4.3",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/0z7f5fm2fq5cfxbxij738q4j0rysg5n8-grpcui-1.4.3"
+        }
+      }
+    },
     "kubectl@latest": {
       "last_modified": "2025-11-23T21:50:36Z",
       "resolved": "github:NixOS/nixpkgs/ee09932cedcef15aaf476f9343d1dea2cb77e261#kubectl",
