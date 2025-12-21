@@ -1,6 +1,8 @@
 package service
 
 import (
+	"encoding/json"
+	"log/slog"
 	"math"
 	"time"
 
@@ -51,9 +53,13 @@ func (e *Entity) ToProto() *fencev1.Entity {
 	for i, p := range e.Parents {
 		parents[i] = &fencev1.UID{Id: p.ID, Type: p.Type}
 	}
+	attrs := recordToMap(e.Attributes)
+	tags := recordToMap(e.Tags)
 	return &fencev1.Entity{
-		Uid:     &fencev1.UID{Id: e.ID, Type: e.Type},
-		Parents: parents,
+		Uid:        &fencev1.UID{Id: e.ID, Type: e.Type},
+		Parents:    parents,
+		Attributes: attrs,
+		Tags:       tags,
 	}
 }
 
@@ -86,6 +92,23 @@ func fenceToRecord(values map[string]*structpb.Value) cedar.Record {
 		m[cedar.String(k)] = structToCedarValue(v)
 	}
 	return cedar.NewRecord(m)
+}
+func recordToMap(r cedar.Record) map[string]*structpb.Value {
+	data, err := r.MarshalJSON()
+	if err != nil {
+		slog.Error("could not marshal cedar record")
+		return nil
+	}
+	var m map[string]any
+	if err := json.Unmarshal(data, &m); err != nil {
+		slog.Error("could not unmarshal record data")
+		return nil
+	}
+	s, err := structpb.NewStruct(m)
+	if err != nil {
+		slog.Error("coudld not create struct")
+	}
+	return s.GetFields()
 }
 func fenceToDBUID(ui *fencev1.UID) UID {
 	return UID{

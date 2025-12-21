@@ -21,6 +21,7 @@ func (s *Service) CreateEntities(ctx context.Context, req *fencev1.CreateEntitie
 	}
 	defer tx.Rollback()
 	for _, entity := range req.Entities {
+		slog.Debug("creating entity", "uid", entity.Uid, "attrs", entity.GetAttributes())
 		parents := make([]UID, len(entity.Parents))
 		for i, ui := range entity.Parents {
 			parents[i] = fenceToDBUID(ui)

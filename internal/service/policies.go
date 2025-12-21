@@ -18,7 +18,7 @@ func (s *Service) CreatePolicies(ctx context.Context, req *fencev1.CreatePolicie
 		return nil, err
 	}
 	ids := make([]string, len(req.GetPolicies()))
-	slog.Info("creating policies", "data", req.Policies)
+	slog.Debug("creating policies", "data", req.Policies)
 
 	for i, policy := range req.GetPolicies() {
 		if err := s.addPolicy(ctx, tx, policy.GetId(), policy.GetDefinition()); err != nil {
@@ -47,7 +47,7 @@ func (s *Service) DeletePolicy(ctx context.Context, req *fencev1.DeletePolicyReq
 }
 
 func (s *Service) ListPolicies(ctx context.Context, _ *fencev1.ListPoliciesRequest) (*fencev1.ListPoliciesResponse, error) {
-	slog.Info("listing policies")
+	slog.Debug("listing policies")
 	policies, err := s.getPolicies(ctx)
 	if err != nil {
 		return nil, err

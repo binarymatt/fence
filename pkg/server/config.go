@@ -1,8 +1,6 @@
-package agent
+package server
 
 import (
-	"log/slog"
-
 	"github.com/knadh/koanf/parsers/yaml"
 	"github.com/knadh/koanf/providers/file"
 	"github.com/knadh/koanf/v2"
@@ -28,6 +26,5 @@ func LoadConfig(path string) (*Config, error) {
 	if err := k.UnmarshalWithConf("", &c, koanf.UnmarshalConf{Tag: "koanf"}); err != nil {
 		return nil, err
 	}
-	slog.Info("config details", "cfg", c)
 	return &c, nil
 }

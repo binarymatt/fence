@@ -20,7 +20,7 @@ tasks:
     deps:
       - container:build
     cmds:
-      - cd terraform && terraform plan -auto-approve -var="container_image=registry.homelab.lan/fence-agent" -var="container_version={{.GIT_COMMIT}}"
+      - cd terraform && terraform apply -var="container_image=registry.homelab.lan/fence-agent" -var="container_version={{.GIT_COMMIT}}" -auto-approve
     vars:
       GIT_COMMIT:
         sh: git log -n 1 --format=%h

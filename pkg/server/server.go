@@ -1,4 +1,4 @@
-package agent
+package server
 
 import (
 	"context"
@@ -28,7 +28,7 @@ func initDB(ctx context.Context, db *bun.DB) error {
 	}
 	return nil
 }
-func New(ctx context.Context, cfg *Config) (*agent, error) {
+func New(ctx context.Context, cfg *Config) (*server, error) {
 	sqlDB, err := sql.Open(sqliteshim.ShimName, cfg.DBPath)
 	if err != nil {
 		return nil, err
@@ -38,17 +38,17 @@ func New(ctx context.Context, cfg *Config) (*agent, error) {
 		return nil, err
 	}
 	svc := service.New(db)
-	return &agent{cfg, svc}, nil
+	return &server{cfg, svc}, nil
 }
 
-type agent struct {
+type server struct {
 	cfg     *Config
 	service *service.Service
 }
 
 func loggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		slog.Info("processing request", "method", r.Method, "uri", r.RequestURI)
+		slog.Debug("processing request", "method", r.Method, "uri", r.RequestURI)
 		next.ServeHTTP(w, r)
 	})
 }
@@ -64,14 +64,14 @@ func corsMiddleware(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
-func (a *agent) Run(ctx context.Context) error {
+func (a *server) Run(ctx context.Context) error {
 	slog.Info("starting agent run", "address", a.cfg.ListenAddress)
 	eg, ctx := errgroup.WithContext(ctx)
 	mux := http.NewServeMux()
 	mux.Handle(fencev1connect.NewFenceServiceHandler(a.service))
 	mux.Handle(fencev1connect.NewFenceAdminServiceHandler(a.service))
 	mux.HandleFunc("/health", func(w http.ResponseWriter, _ *http.Request) {
-		slog.Info("health check")
+		slog.Debug("health check")
 		w.Write([]byte("ok"))
 	})
 	p := new(http.Protocols)

@@ -7,7 +7,7 @@ import (
 
 	"github.com/urfave/cli/v3"
 
-	"github.com/binarymatt/fence/pkg/agent"
+	"github.com/binarymatt/fence/pkg/server"
 )
 
 func main() {
@@ -33,14 +33,14 @@ func main() {
 }
 func action(ctx context.Context, cmd *cli.Command) error {
 	configPath := cmd.String("config")
-	cfg, err := agent.LoadConfig(configPath)
+	cfg, err := server.LoadConfig(configPath)
 	if err != nil {
 		return err
 	}
-	agt, err := agent.New(ctx, cfg)
+	srv, err := server.New(ctx, cfg)
 	if err != nil {
 		return err
 	}
-	return agt.Run(ctx)
+	return srv.Run(ctx)
 
 }

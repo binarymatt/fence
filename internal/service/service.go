@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"log/slog"
 	"strings"
 
 	"connectrpc.com/connect"
@@ -29,6 +30,7 @@ func fenceToCedarUID(uid *fencev1.UID) cedar.EntityUID {
 func (s *Service) IsAllowed(ctx context.Context, req *fencev1.IsAllowedRequest) (*fencev1.IsAllowedResponse, error) {
 	ps, err := s.getPolicySet(ctx)
 	if err != nil {
+		slog.Error("failed to get policy set", "eror", err)
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
 	em, err := s.getEntityMap(ctx)
@@ -44,6 +46,7 @@ func (s *Service) IsAllowed(ctx context.Context, req *fencev1.IsAllowedRequest) 
 		Resource:  fenceToCedarUID(resource),
 	}
 	decision, diag := cedar.Authorize(ps, em, cedarReq)
+	slog.Debug("authorize call finished", "decision", decision, "diagnostics", diag, "request", req)
 	reasons := make([]*fencev1.Reason, len(diag.Reasons))
 	for i, r := range diag.Reasons {
 		reasons[i] = cedarToFenceReason(r)
