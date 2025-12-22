@@ -23,28 +23,14 @@ func (cfs *CachedState) IsAllowed(ctx context.Context, principal, action, resour
 }
 
 func (cfs *CachedState) Refresh(ctx context.Context) error {
-	ticker := time.NewTicker(cfs.refreshDuration)
-	for {
-		select {
-		case <-ctx.Done():
-			return ctx.Err()
-		case <-ticker.C:
-			if err := cfs.refresh(); err != nil {
-				return err
-			}
-		}
-	}
-}
-
-func (cfs *CachedState) refresh() error {
 	cfs.mu.Lock()
 	defer cfs.mu.Unlock()
-	return cfs.fs.refresh()
+	return cfs.fs.Refresh(ctx)
 }
 
 func NewCachedState(state FenceState, refreshDuration time.Duration) (*CachedState, error) {
 	wrapper := &CachedState{fs: state, refreshDuration: refreshDuration}
-	err := wrapper.refresh()
+	err := wrapper.Refresh(context.Background())
 	if err != nil {
 		return nil, err
 	}

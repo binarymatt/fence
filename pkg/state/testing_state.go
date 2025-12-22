@@ -21,6 +21,3 @@ func (ts *TestingState) IsAllowed(ctx context.Context, principal, action, resour
 func (ts *TestingState) Refresh(context.Context) error {
 	return nil
 }
-func (ts *TestingState) refresh() error {
-	return nil
-}

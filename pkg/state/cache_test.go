@@ -14,7 +14,7 @@ import (
 
 func TestNewCachedState(t *testing.T) {
 	mockedState := NewMockFenceState(t)
-	mockedState.EXPECT().refresh().Return(nil)
+	mockedState.EXPECT().Refresh(context.Background()).Return(nil)
 	state, err := NewCachedState(mockedState, 1*time.Second)
 	must.NoError(t, err)
 	must.NotNil(t, state)
@@ -23,7 +23,7 @@ func TestNewCachedState(t *testing.T) {
 func TestNewCachedState_RefreshError(t *testing.T) {
 	returnedErr := errors.New("oops")
 	mockedState := NewMockFenceState(t)
-	mockedState.EXPECT().refresh().Return(returnedErr)
+	mockedState.EXPECT().Refresh(context.Background()).Return(returnedErr)
 	state, err := NewCachedState(mockedState, 1*time.Second)
 	must.ErrorIs(t, err, returnedErr)
 	must.Nil(t, state)
@@ -32,15 +32,10 @@ func TestNewCachedState_RefreshError(t *testing.T) {
 func TestRefresh(t *testing.T) {
 	synctest.Test(t, func(t *testing.T) {
 		mockedState := NewMockFenceState(t)
-		mockedState.EXPECT().refresh().Return(nil).Times(2)
+		mockedState.EXPECT().Refresh(context.Background()).Return(nil)
 		state, err := NewCachedState(mockedState, time.Second)
 		must.NoError(t, err)
-
-		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-		defer cancel()
-		time.Sleep(4 * time.Second)
-		err = state.Refresh(ctx)
-		must.ErrorIs(t, err, context.DeadlineExceeded)
+		must.NotNil(t, state)
 	})
 }
 
@@ -59,7 +54,7 @@ func TestCachedIsAllowed(t *testing.T) {
 		Id:   "view",
 	}
 	mockedState := NewMockFenceState(t)
-	mockedState.EXPECT().refresh().Return(nil).Once()
+	mockedState.EXPECT().Refresh(context.Background()).Return(nil).Once()
 	state, err := NewCachedState(mockedState, time.Second)
 	must.NoError(t, err)
 	mockedState.EXPECT().IsAllowed(t.Context(), bob, action, resource).Return(nil)

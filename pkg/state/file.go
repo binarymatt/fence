@@ -37,7 +37,7 @@ func (s *FileState) IsAllowed(ctx context.Context, principal *fencev1.UID, actio
 	}
 	return nil
 }
-func (s *FileState) refresh() error {
+func (s *FileState) Refresh(ctx context.Context) error {
 	policyData, err := afero.ReadFile(s.fs, s.policyPath)
 	if err != nil {
 		slog.Error("failed to read file for policies", "path", s.policyPath)
@@ -62,16 +62,13 @@ func (s *FileState) refresh() error {
 	s.entities = entities
 	return nil
 }
-func (s *FileState) Refresh(context.Context) error {
-	return nil
-}
 func NewFileState(fs afero.Fs, policyPath, entityPath string) (*FileState, error) {
 	state := &FileState{
 		policyPath: policyPath,
 		entityPath: entityPath,
 		fs:         fs,
 	}
-	if err := state.refresh(); err != nil {
+	if err := state.Refresh(context.Background()); err != nil {
 		return nil, err
 	}
 	return state, nil

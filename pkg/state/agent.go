@@ -44,6 +44,3 @@ func (a *RemoteServerState) IsAllowed(ctx context.Context, principal *fencev1.UI
 func (a *RemoteServerState) Refresh(_ context.Context) error {
 	return nil
 }
-func (a *RemoteServerState) refresh() error {
-	return nil
-}
