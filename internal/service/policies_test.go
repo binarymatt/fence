@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"testing"
-	"time"
 
 	"github.com/shoenig/test/must"
 
@@ -15,8 +14,9 @@ func TestCreatePolicy(t *testing.T) {
 	cases := []struct {
 		name         string
 		policy       *fencev1.Policy
-		validate     func(t *testing.T, db *sql.DB, err error)
 		loadFixtures bool
+		setupMock    func(*MockDataStore)
+		err          error
 	}{
 		{
 			name: "happy path",
@@ -24,17 +24,8 @@ func TestCreatePolicy(t *testing.T) {
 				Id:         "testPolicy",
 				Definition: `permit(principal == User::"alice",action == Action::"view",resource in Album::"jane_vacation");`,
 			},
-			validate: func(t *testing.T, db *sql.DB, err error) {
-				must.NoError(t, err)
-				var dbID, dbContent string
-				n := time.Now().UTC()
-				var createdAt, updatedAt time.Time
-				db.QueryRow("Select id, content, created_at, updated_at from policies").Scan(&dbID, &dbContent, &createdAt, &updatedAt)
-				must.Eq(t, "testPolicy", dbID)
-				must.Eq(t, `permit(principal == User::"alice",action == Action::"view",resource in Album::"jane_vacation");`, dbContent)
-				must.Eq(t, createdAt.Format(time.RFC3339), n.Format(time.RFC3339))
-				must.Eq(t, updatedAt.Format(time.RFC3339), n.Format(time.RFC3339))
-
+			setupMock: func(ds *MockDataStore) {
+				ds.EXPECT().addPolicy(context.Background(), "testPolicy", `permit(principal == User::"alice",action == Action::"view",resource in Album::"jane_vacation");`).Return(nil).Once()
 			},
 		},
 		{
@@ -51,12 +42,13 @@ func TestCreatePolicy(t *testing.T) {
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			s, db := setupTest(t, tc.loadFixtures)
+			s, ds := setupTest(t, tc.loadFixtures)
 			req := &fencev1.CreatePoliciesRequest{
 				Policies: []*fencev1.Policy{tc.policy},
 			}
+			tc.setupMock(ds)
 			_, err := s.CreatePolicies(context.Background(), req)
-			tc.validate(t, db, err)
+			must.ErrorIs(t, err, tc.err)
 		})
 	}
 }

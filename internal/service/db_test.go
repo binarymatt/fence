@@ -9,9 +9,10 @@ import (
 )
 
 func TestGetPolicySet(t *testing.T) {
-	s, db := setupTest(t, true)
+	db := setupDB(t, true)
 	defer db.Close()
-	ps, err := s.getPolicySet(context.Background())
+	ds := NewSqlDatastore(db)
+	ps, err := ds.getPolicySet(context.Background())
 	must.NoError(t, err)
 	p := ps.Get("policy0")
 	data := p.MarshalCedar()
@@ -25,8 +26,9 @@ func TestGetPolicySet(t *testing.T) {
 
 func TestGetEntities(t *testing.T) {
 	ctx := context.Background()
-	s, db := setupTest(t, true)
+	db := setupDB(t, true)
 	defer db.Close()
+	ds := NewSqlDatastore(db)
 
 	bob := cedar.Entity{
 		UID:     cedar.NewEntityUID(cedar.EntityType("User"), cedar.String("bob")),
@@ -44,7 +46,7 @@ func TestGetEntities(t *testing.T) {
 		alice.UID: alice,
 		photo.UID: photo,
 	}
-	em, err := s.getEntityMap(ctx)
+	em, err := ds.getEntityMap(ctx)
 	must.NoError(t, err)
 	must.Eq(t, expectedMap, em)
 }

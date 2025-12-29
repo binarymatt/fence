@@ -15,11 +15,6 @@ var (
 )
 
 func (s *Service) CreateEntities(ctx context.Context, req *fencev1.CreateEntitiesRequest) (*fencev1.CreateEntitiesResponse, error) {
-	tx, err := s.db.Begin()
-	if err != nil {
-		return nil, err
-	}
-	defer tx.Rollback()
 	for _, entity := range req.Entities {
 		slog.Debug("creating entity", "uid", entity.Uid, "attrs", entity.GetAttributes())
 		parents := make([]UID, len(entity.Parents))
@@ -33,7 +28,7 @@ func (s *Service) CreateEntities(ctx context.Context, req *fencev1.CreateEntitie
 			Attributes: fenceToRecord(entity.GetAttributes()),
 			Tags:       fenceToRecord(entity.Tags),
 		}
-		if err := s.addEntity(ctx, tx, dbEnt); err != nil {
+		if err := s.ds.addEntity(ctx, entity); err != nil {
 			slog.Error("failed to add entity", "record", dbEnt, "error", err)
 			if errors.Is(err, ErrEntityAlreadyExists) {
 				return nil, connect.NewError(connect.CodeInvalidArgument, err)
@@ -41,29 +36,21 @@ func (s *Service) CreateEntities(ctx context.Context, req *fencev1.CreateEntitie
 			return nil, connect.NewError(connect.CodeUnknown, err)
 		}
 	}
-	if err := tx.Commit(); err != nil {
-		slog.Error("failed to commit ", "error", err)
-		return nil, err
-	}
 	return &fencev1.CreateEntitiesResponse{}, nil
 }
 func (s *Service) DeleteEntity(ctx context.Context, req *fencev1.DeleteEntityRequest) (*fencev1.DeleteEntityResponse, error) {
-	if err := s.deleteEntity(ctx, req.GetUid().GetType(), req.GetUid().GetId()); err != nil {
+	if err := s.ds.deleteEntity(ctx, req.GetUid()); err != nil {
 		return nil, connect.NewError(connect.CodeInvalidArgument, err)
 	}
 	return &fencev1.DeleteEntityResponse{}, nil
 }
 
 func (s *Service) ListEntities(ctx context.Context, req *fencev1.ListEntitiesRequest) (*fencev1.ListEntitiesResponse, error) {
-	entities, err := s.getEntities(ctx)
+	entities, err := s.ds.getEntities(ctx)
 	if err != nil {
 		return nil, err
 	}
-	pes := make([]*fencev1.Entity, len(entities))
-	for i, e := range entities {
-		pes[i] = e.ToProto()
-	}
-	return &fencev1.ListEntitiesResponse{Entities: pes}, nil
+	return &fencev1.ListEntitiesResponse{Entities: entities}, nil
 }
 func (s *Service) GetEntity(context.Context, *fencev1.GetEntityRequest) (*fencev1.GetEntityResponse, error) {
 	return nil, nil

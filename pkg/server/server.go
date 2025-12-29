@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/dgraph-io/badger/v4"
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/sqlitedialect"
 	"github.com/uptrace/bun/driver/sqliteshim"
@@ -15,6 +16,8 @@ import (
 	"github.com/binarymatt/fence/gen/fence/v1/fencev1connect"
 	"github.com/binarymatt/fence/internal/service"
 )
+
+func initBadger() {}
 
 func initDB(ctx context.Context, db *bun.DB) error {
 
@@ -29,15 +32,27 @@ func initDB(ctx context.Context, db *bun.DB) error {
 	return nil
 }
 func New(ctx context.Context, cfg *Config) (*server, error) {
-	sqlDB, err := sql.Open(sqliteshim.ShimName, cfg.DBPath)
-	if err != nil {
-		return nil, err
+	var store service.DataStore
+	if cfg.DBType == "sql" {
+
+		sqlDB, err := sql.Open(sqliteshim.ShimName, cfg.DBPath)
+		if err != nil {
+			return nil, err
+		}
+		db := bun.NewDB(sqlDB, sqlitedialect.New())
+		if err := initDB(ctx, db); err != nil {
+			return nil, err
+		}
+		store = service.NewSqlDatastore(db)
 	}
-	db := bun.NewDB(sqlDB, sqlitedialect.New())
-	if err := initDB(ctx, db); err != nil {
-		return nil, err
+	if cfg.DBType == "badger" {
+		db, err := badger.Open(badger.DefaultOptions(cfg.DBPath))
+		if err != nil {
+			return nil, err
+		}
+		store = service.NewBaderStore(db)
 	}
-	svc := service.New(db)
+	svc := service.New(store)
 	return &server{cfg, svc}, nil
 }
 
@@ -65,7 +80,6 @@ func corsMiddleware(next http.Handler) http.Handler {
 	})
 }
 func (a *server) Run(ctx context.Context) error {
-	slog.Info("starting agent run", "address", a.cfg.ListenAddress)
 	eg, ctx := errgroup.WithContext(ctx)
 	mux := http.NewServeMux()
 	mux.Handle(fencev1connect.NewFenceServiceHandler(a.service))
@@ -83,7 +97,10 @@ func (a *server) Run(ctx context.Context) error {
 		Handler:   loggingMiddleware(corsMiddleware(mux)),
 		Protocols: p,
 	}
-	eg.Go(s.ListenAndServe)
+	eg.Go(func() error {
+		slog.Info("starting server listen goroutine", "address", a.cfg.ListenAddress)
+		return s.ListenAndServe()
+	})
 	eg.Go(func() error {
 		// Graceful shutdown
 		<-ctx.Done()

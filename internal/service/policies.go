@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 	"log/slog"
 
@@ -12,16 +11,11 @@ import (
 )
 
 func (s *Service) CreatePolicies(ctx context.Context, req *fencev1.CreatePoliciesRequest) (*fencev1.CreatePoliciesResponse, error) {
-	tx, err := s.db.BeginTx(ctx, &sql.TxOptions{})
-	defer tx.Rollback()
-	if err != nil {
-		return nil, err
-	}
 	ids := make([]string, len(req.GetPolicies()))
 	slog.Debug("creating policies", "data", req.Policies)
 
 	for i, policy := range req.GetPolicies() {
-		if err := s.addPolicy(ctx, tx, policy.GetId(), policy.GetDefinition()); err != nil {
+		if err := s.ds.addPolicy(ctx, policy.GetId(), policy.GetDefinition()); err != nil {
 			if errors.Is(err, ErrPolicyAlreadyExists) {
 				return nil, connect.NewError(connect.CodeInvalidArgument, err)
 			}
@@ -29,15 +23,12 @@ func (s *Service) CreatePolicies(ctx context.Context, req *fencev1.CreatePolicie
 		}
 		ids[i] = policy.GetId()
 	}
-	if err := tx.Commit(); err != nil {
-		return nil, err
-	}
 	return &fencev1.CreatePoliciesResponse{
 		Ids: ids,
 	}, nil
 }
 func (s *Service) DeletePolicy(ctx context.Context, req *fencev1.DeletePolicyRequest) (*fencev1.DeletePolicyResponse, error) {
-	if err := s.deletePolicy(ctx, req.Id); err != nil {
+	if err := s.ds.deletePolicy(ctx, req.Id); err != nil {
 		if errors.Is(err, ErrPolicyNotFound) {
 			return nil, connect.NewError(connect.CodeInvalidArgument, err)
 		}
@@ -48,24 +39,24 @@ func (s *Service) DeletePolicy(ctx context.Context, req *fencev1.DeletePolicyReq
 
 func (s *Service) ListPolicies(ctx context.Context, _ *fencev1.ListPoliciesRequest) (*fencev1.ListPoliciesResponse, error) {
 	slog.Debug("listing policies")
-	policies, err := s.getPolicies(ctx)
+	policies, err := s.ds.getPolicies(ctx)
 	if err != nil {
 		return nil, err
-	}
-	protoPolicies := make([]*fencev1.Policy, len(policies))
-	for i, p := range policies {
-		protoPolicies[i] = p.ToProto()
 	}
 
 	return &fencev1.ListPoliciesResponse{
-		Policies: protoPolicies,
+		Policies: policies,
 	}, nil
 }
 func (s *Service) GetPolicy(ctx context.Context, req *fencev1.GetPolicyRequest) (*fencev1.GetPolicyResponse, error) {
-	policy, err := s.getPolicy(ctx, req.GetId())
+	policy, err := s.ds.getPolicy(ctx, req.GetId())
 	if err != nil {
 		return nil, err
 	}
-	p := policy.ToProto()
+	data := policy.MarshalCedar()
+	p := &fencev1.Policy{
+		Id:         req.GetId(),
+		Definition: string(data),
+	}
 	return &fencev1.GetPolicyResponse{Policy: p}, nil
 }
