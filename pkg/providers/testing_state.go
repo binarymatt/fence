@@ -1,4 +1,4 @@
-package state
+package providers
 
 import (
 	"context"
@@ -6,18 +6,18 @@ import (
 	fencev1 "github.com/binarymatt/fence/gen/fence/v1"
 )
 
-var _ FenceState = (*TestingState)(nil)
+var _ FenceProvider = (*TestingProvider)(nil)
 
-type TestingState struct {
+type TestingProvider struct {
 	AllowCall bool
 }
 
-func (ts *TestingState) IsAllowed(ctx context.Context, principal, action, resource *fencev1.UID) error {
+func (ts *TestingProvider) IsAllowed(ctx context.Context, principal, action, resource *fencev1.UID) error {
 	if !ts.AllowCall {
 		return NewAuthzError(principal, action, resource)
 	}
 	return nil
 }
-func (ts *TestingState) Refresh(context.Context) error {
+func (ts *TestingProvider) Refresh(context.Context) error {
 	return nil
 }

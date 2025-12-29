@@ -1,4 +1,4 @@
-package state
+package providers
 
 import (
 	"context"
@@ -10,25 +10,25 @@ import (
 	"github.com/binarymatt/fence/gen/fence/v1/fencev1connect"
 )
 
-var _ FenceState = (*RemoteServerState)(nil)
+var _ FenceProvider = (*RemoteServerProvider)(nil)
 
 type RemoteServerConfig struct {
 	Address string
 	Timeout time.Duration
 }
 
-func NewRemoteServerState(cfg RemoteServerConfig) *RemoteServerState {
+func NewRemoteServerProvider(cfg RemoteServerConfig) *RemoteServerProvider {
 	retyrable := retryablehttp.NewClient()
 	httpClient := retyrable.StandardClient()
 	cl := fencev1connect.NewFenceServiceClient(httpClient, cfg.Address)
-	return &RemoteServerState{client: cl}
+	return &RemoteServerProvider{client: cl}
 }
 
-type RemoteServerState struct {
+type RemoteServerProvider struct {
 	client fencev1connect.FenceServiceClient
 }
 
-func (a *RemoteServerState) IsAllowed(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID) error {
+func (a *RemoteServerProvider) IsAllowed(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID) error {
 	req := &fencev1.IsAllowedRequest{
 		Principal: principal,
 		Action:    action,
@@ -41,6 +41,6 @@ func (a *RemoteServerState) IsAllowed(ctx context.Context, principal *fencev1.UI
 	return nil
 }
 
-func (a *RemoteServerState) Refresh(_ context.Context) error {
+func (a *RemoteServerProvider) Refresh(_ context.Context) error {
 	return nil
 }

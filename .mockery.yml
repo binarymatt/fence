@@ -11,7 +11,7 @@ require-template-schema-exists: true
 template: testify
 template-schema: "{{.Template}}.schema.json"
 packages:
-  github.com/binarymatt/fence/pkg/state:
+  github.com/binarymatt/fence/pkg/providers:
     config:
       all: true
   github.com/binarymatt/fence/internal/service:

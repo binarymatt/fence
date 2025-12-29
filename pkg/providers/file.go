@@ -1,4 +1,4 @@
-package state
+package providers
 
 import (
 	"context"
@@ -11,9 +11,9 @@ import (
 	fencev1 "github.com/binarymatt/fence/gen/fence/v1"
 )
 
-var _ FenceState = (*FileState)(nil)
+var _ FenceProvider = (*FileProvider)(nil)
 
-type FileState struct {
+type FileProvider struct {
 	entityPath string
 	policyPath string
 	ps         *cedar.PolicySet
@@ -21,7 +21,7 @@ type FileState struct {
 	fs         afero.Fs
 }
 
-func (s *FileState) IsAllowed(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID) error {
+func (s *FileProvider) IsAllowed(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID) error {
 	cPrincipal := uidToCedar(principal)
 	cResource := uidToCedar(resource)
 	cAction := uidToCedar(action)
@@ -37,7 +37,7 @@ func (s *FileState) IsAllowed(ctx context.Context, principal *fencev1.UID, actio
 	}
 	return nil
 }
-func (s *FileState) Refresh(ctx context.Context) error {
+func (s *FileProvider) Refresh(ctx context.Context) error {
 	policyData, err := afero.ReadFile(s.fs, s.policyPath)
 	if err != nil {
 		slog.Error("failed to read file for policies", "path", s.policyPath)
@@ -62,8 +62,8 @@ func (s *FileState) Refresh(ctx context.Context) error {
 	s.entities = entities
 	return nil
 }
-func NewFileState(fs afero.Fs, policyPath, entityPath string) (*FileState, error) {
-	state := &FileState{
+func NewFileProvider(fs afero.Fs, policyPath, entityPath string) (*FileProvider, error) {
+	state := &FileProvider{
 		policyPath: policyPath,
 		entityPath: entityPath,
 		fs:         fs,

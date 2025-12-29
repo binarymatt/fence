@@ -9,13 +9,13 @@ import (
 	"github.com/shoenig/test/must"
 
 	fencev1 "github.com/binarymatt/fence/gen/fence/v1"
-	"github.com/binarymatt/fence/pkg/state"
+	"github.com/binarymatt/fence/pkg/providers"
 )
 
 func TestNewClient(t *testing.T) {
-	mock := state.NewMockFenceState(t)
+	mock := providers.NewMockFenceProvider(t)
 	c := NewClient(mock)
-	must.NotNil(t, c.state)
+	must.NotNil(t, c.provider)
 }
 func TestIsAllowed(t *testing.T) {
 	principal := &fencev1.UID{}
@@ -36,7 +36,7 @@ func TestIsAllowed(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			mockState := state.NewMockFenceState(t)
+			mockState := providers.NewMockFenceProvider(t)
 			mockState.EXPECT().IsAllowed(context.Background(), principal, action, resource).Return(tc.err)
 			c := NewClient(mockState)
 			err := c.IsAllowed(context.Background(), principal, action, resource)

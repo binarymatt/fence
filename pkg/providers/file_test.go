@@ -1,4 +1,4 @@
-package state
+package providers
 
 import (
 	"context"
@@ -65,7 +65,7 @@ func TestNewFileState(t *testing.T) {
 		Attributes: cedar.NewRecord(cedar.RecordMap{}),
 		Parents:    cedar.NewEntityUIDSet(cedar.NewEntityUID(cedar.EntityType("Album"), cedar.String("vacation"))),
 	}
-	state, err := NewFileState(fs, "./policies.cedar", "./entities.json")
+	state, err := NewFileProvider(fs, "./policies.cedar", "./entities.json")
 	must.NoError(t, err)
 	expectedEntities := cedar.EntityMap{
 		bob.UID:   bob,
@@ -77,7 +77,7 @@ func TestNewFileState(t *testing.T) {
 }
 func TestFileIsAllowed(t *testing.T) {
 	fs := createTestFS(t)
-	state, err := NewFileState(fs, "policies.cedar", "entities.json")
+	state, err := NewFileProvider(fs, "policies.cedar", "entities.json")
 	must.NoError(t, err)
 	bob := &fencev1.UID{
 		Type: "User",

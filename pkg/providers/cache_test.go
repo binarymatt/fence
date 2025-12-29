@@ -1,4 +1,4 @@
-package state
+package providers
 
 import (
 	"context"
@@ -13,27 +13,27 @@ import (
 )
 
 func TestNewCachedState(t *testing.T) {
-	mockedState := NewMockFenceState(t)
+	mockedState := NewMockFenceProvider(t)
 	mockedState.EXPECT().Refresh(context.Background()).Return(nil)
-	state, err := NewCachedState(mockedState, 1*time.Second)
+	state, err := NewCachedProvider(mockedState, 1*time.Second)
 	must.NoError(t, err)
 	must.NotNil(t, state)
 
 }
 func TestNewCachedState_RefreshError(t *testing.T) {
 	returnedErr := errors.New("oops")
-	mockedState := NewMockFenceState(t)
+	mockedState := NewMockFenceProvider(t)
 	mockedState.EXPECT().Refresh(context.Background()).Return(returnedErr)
-	state, err := NewCachedState(mockedState, 1*time.Second)
+	state, err := NewCachedProvider(mockedState, 1*time.Second)
 	must.ErrorIs(t, err, returnedErr)
 	must.Nil(t, state)
 }
 
 func TestRefresh(t *testing.T) {
 	synctest.Test(t, func(t *testing.T) {
-		mockedState := NewMockFenceState(t)
+		mockedState := NewMockFenceProvider(t)
 		mockedState.EXPECT().Refresh(context.Background()).Return(nil)
-		state, err := NewCachedState(mockedState, time.Second)
+		state, err := NewCachedProvider(mockedState, time.Second)
 		must.NoError(t, err)
 		must.NotNil(t, state)
 	})
@@ -53,9 +53,9 @@ func TestCachedIsAllowed(t *testing.T) {
 		Type: "Action",
 		Id:   "view",
 	}
-	mockedState := NewMockFenceState(t)
+	mockedState := NewMockFenceProvider(t)
 	mockedState.EXPECT().Refresh(context.Background()).Return(nil).Once()
-	state, err := NewCachedState(mockedState, time.Second)
+	state, err := NewCachedProvider(mockedState, time.Second)
 	must.NoError(t, err)
 	mockedState.EXPECT().IsAllowed(t.Context(), bob, action, resource).Return(nil)
 	err = state.IsAllowed(t.Context(), bob, action, resource)
