@@ -21,15 +21,7 @@ func (s *Service) CreateEntities(ctx context.Context, req *fencev1.CreateEntitie
 		for i, ui := range entity.Parents {
 			parents[i] = fenceToDBUID(ui)
 		}
-		dbEnt := &Entity{
-			Type:       entity.GetUid().GetType(),
-			ID:         entity.GetUid().GetId(),
-			Parents:    parents,
-			Attributes: fenceToRecord(entity.GetAttributes()),
-			Tags:       fenceToRecord(entity.Tags),
-		}
 		if err := s.ds.addEntity(ctx, entity); err != nil {
-			slog.Error("failed to add entity", "record", dbEnt, "error", err)
 			if errors.Is(err, ErrEntityAlreadyExists) {
 				return nil, connect.NewError(connect.CodeInvalidArgument, err)
 			}

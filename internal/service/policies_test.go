@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"database/sql"
 	"testing"
 
 	"github.com/shoenig/test/must"
@@ -15,7 +14,7 @@ func TestCreatePolicy(t *testing.T) {
 		name         string
 		policy       *fencev1.Policy
 		loadFixtures bool
-		setupMock    func(*MockDataStore)
+		setupMock    func(context.Context, *MockDataStore)
 		err          error
 	}{
 		{
@@ -24,8 +23,8 @@ func TestCreatePolicy(t *testing.T) {
 				Id:         "testPolicy",
 				Definition: `permit(principal == User::"alice",action == Action::"view",resource in Album::"jane_vacation");`,
 			},
-			setupMock: func(ds *MockDataStore) {
-				ds.EXPECT().addPolicy(context.Background(), "testPolicy", `permit(principal == User::"alice",action == Action::"view",resource in Album::"jane_vacation");`).Return(nil).Once()
+			setupMock: func(ctx context.Context, ds *MockDataStore) {
+				ds.EXPECT().addPolicy(ctx, "testPolicy", `permit(principal == User::"alice",action == Action::"view",resource in Album::"jane_vacation");`).Return(nil).Once()
 			},
 		},
 		{
@@ -35,19 +34,20 @@ func TestCreatePolicy(t *testing.T) {
 				Id:         "policy0",
 				Definition: `permit(principal == User::"alice",action == Action::"view",resource in Album::"jane_vacation");`,
 			},
-			validate: func(t *testing.T, db *sql.DB, err error) {
-				must.ErrorIs(t, err, ErrPolicyAlreadyExists)
+			setupMock: func(ctx context.Context, ds *MockDataStore) {
+				ds.EXPECT().addPolicy(ctx, "policy0", `permit(principal == User::"alice",action == Action::"view",resource in Album::"jane_vacation");`).Return(ErrPolicyAlreadyExists)
 			},
+			err: ErrPolicyAlreadyExists,
 		},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			s, ds := setupTest(t, tc.loadFixtures)
+			s, ds := setupTest(t)
 			req := &fencev1.CreatePoliciesRequest{
 				Policies: []*fencev1.Policy{tc.policy},
 			}
-			tc.setupMock(ds)
-			_, err := s.CreatePolicies(context.Background(), req)
+			tc.setupMock(t.Context(), ds)
+			_, err := s.CreatePolicies(t.Context(), req)
 			must.ErrorIs(t, err, tc.err)
 		})
 	}
@@ -55,42 +55,38 @@ func TestCreatePolicy(t *testing.T) {
 
 func TestDeletePolicy(t *testing.T) {
 	cases := []struct {
-		name     string
-		id       string
-		validate func(t *testing.T, db *sql.DB, err error)
+		name      string
+		id        string
+		setupMock func(context.Context, *MockDataStore)
+		err       error
 	}{
 		{
 			name: "happy path",
 			id:   "policy0",
-			validate: func(t *testing.T, db *sql.DB, err error) {
-				must.NoError(t, err)
-				var count int
-				db.QueryRow("select count(*) from policies").Scan(&count)
-				must.Eq(t, 0, count)
-
+			setupMock: func(ctx context.Context, ds *MockDataStore) {
+				ds.EXPECT().deletePolicy(ctx, "policy0").Return(nil)
 			},
 		},
 		{
 			name: "does not exist",
 			id:   "testPolicy",
-			validate: func(t *testing.T, db *sql.DB, err error) {
-				must.ErrorIs(t, err, ErrPolicyNotFound)
-				var count int
-				db.QueryRow("select count(*) from policies").Scan(&count)
-				must.Eq(t, 1, count)
+			setupMock: func(ctx context.Context, ds *MockDataStore) {
+				ds.EXPECT().deletePolicy(ctx, "testPolicy").Return(ErrPolicyNotFound)
+
 			},
+			err: ErrPolicyNotFound,
 		},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-
-			s, db := setupTest(t, true)
+			s, ds := setupTest(t)
+			tc.setupMock(t.Context(), ds)
 
 			req := &fencev1.DeletePolicyRequest{
 				Id: tc.id,
 			}
-			_, err := s.DeletePolicy(context.Background(), req)
-			tc.validate(t, db, err)
+			_, err := s.DeletePolicy(t.Context(), req)
+			must.ErrorIs(t, err, tc.err)
 		})
 	}
 

@@ -104,9 +104,7 @@ func (s *sqlDataStore) getEntities(ctx context.Context) ([]*fencev1.Entity, erro
 	// ents := make([]cedar.Entity, len(entities))
 	ents := make([]*fencev1.Entity, len(entities))
 	for i, e := range entities {
-		ents[i] = &fencev1.Entity{
-			Uid: &fencev1.UID{Type: e.Type, Id: e.ID},
-		}
+		ents[i] = e.ToProto()
 	}
 	return ents, nil
 }

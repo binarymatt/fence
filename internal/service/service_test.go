@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"os"
 	"testing"
 
@@ -17,6 +18,37 @@ import (
 	fencev1 "github.com/binarymatt/fence/gen/fence/v1"
 )
 
+const entitiesJSON = `[
+  {
+    "uid": { "type": "User", "id": "alice" },
+    "attrs": { "age": 18 },
+    "parents": []
+  },
+  {
+    "uid": { "type": "Photo", "id": "VacationPhoto94.jpg" },
+    "attrs": {},
+    "parents": [{ "type": "Album", "id": "jane_vacation" }]
+  },
+  {
+  	"uid": {"type":"User","id":"bob"},
+  	"parents": [{"type":"Group","id":"people"}]
+  }
+]`
+const policyCedar = `permit(principal == User::"alice",action == Action::"view",resource in Album::"jane_vacation");`
+
+func policySet() *cedar.PolicySet {
+
+	ps := cedar.NewPolicySet()
+	var policy cedar.Policy
+	policy.UnmarshalCedar([]byte(policyCedar))
+	ps.Add("policy0", &policy)
+	return ps
+}
+func entityMap() cedar.EntityMap {
+	var entities cedar.EntityMap
+	json.Unmarshal([]byte(entitiesJSON), &entities)
+	return entities
+}
 func TestParseUIDString(t *testing.T) {
 	uid := parseUIDString(`User::"bob"`)
 	expectedUID := cedar.NewEntityUID(cedar.EntityType("User"), cedar.String("bob"))
@@ -26,7 +58,7 @@ func setupDB(t *testing.T, loadFixtures bool) *bun.DB {
 
 	t.Helper()
 	ctx := context.Background()
-	sqldb, err := sql.Open(sqliteshim.ShimName, "file::memory:?cache=shared")
+	sqldb, err := sql.Open(sqliteshim.ShimName, ":memory:")
 	// sqldb, err := sql.Open(sqliteshim.ShimName, "../../test.db")
 	must.NoError(t, err)
 	t.Cleanup(func() {
@@ -49,7 +81,7 @@ func setupDB(t *testing.T, loadFixtures bool) *bun.DB {
 	}
 	return db
 }
-func setupTest(t *testing.T, loadFixtures bool) (*Service, *MockDataStore) {
+func setupTest(t *testing.T) (*Service, *MockDataStore) {
 	t.Helper()
 	mockStore := NewMockDataStore(t)
 	return &Service{ds: mockStore}, mockStore
@@ -57,24 +89,28 @@ func setupTest(t *testing.T, loadFixtures bool) (*Service, *MockDataStore) {
 }
 
 func TestIsAllowed_Deny(t *testing.T) {
-	s, _ := setupTest(t, true)
+	s, ds := setupTest(t)
 	req := &fencev1.IsAllowedRequest{
 		Principal: &fencev1.UID{Id: "bob", Type: "User"},
 		Action:    &fencev1.UID{Type: "Action", Id: "view"},
 		Resource:  &fencev1.UID{Type: "Photo", Id: "VacationPhoto94.jpg"},
 	}
-	resp, err := s.IsAllowed(context.Background(), req)
+	ds.EXPECT().getPolicySet(t.Context()).Return(policySet(), nil)
+	ds.EXPECT().getEntityMap(t.Context()).Return(entityMap(), nil)
+	resp, err := s.IsAllowed(t.Context(), req)
 	must.NoError(t, err)
 	must.False(t, resp.Decision)
 }
 func TestIsAllowed_Allow(t *testing.T) {
-	s, _ := setupTest(t, true)
+	s, ds := setupTest(t)
 	req := &fencev1.IsAllowedRequest{
 		Principal: &fencev1.UID{Id: "alice", Type: "User"},
 		Action:    &fencev1.UID{Type: "Action", Id: "view"},
 		Resource:  &fencev1.UID{Type: "Photo", Id: "VacationPhoto94.jpg"},
 	}
-	resp, err := s.IsAllowed(context.Background(), req)
+	ds.EXPECT().getPolicySet(t.Context()).Return(policySet(), nil)
+	ds.EXPECT().getEntityMap(t.Context()).Return(entityMap(), nil)
+	resp, err := s.IsAllowed(t.Context(), req)
 	must.NoError(t, err)
 	must.True(t, resp.Decision)
 }
