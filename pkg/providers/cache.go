@@ -2,6 +2,7 @@ package providers
 
 import (
 	"context"
+	"fmt"
 	"sync"
 	"time"
 
@@ -11,7 +12,7 @@ import (
 var _ FenceProvider = (*CachedProvider)(nil)
 
 type CachedProvider struct {
-	fs              FenceProvider
+	ip              FenceProvider
 	mu              sync.Mutex
 	refreshDuration time.Duration
 }
@@ -19,18 +20,34 @@ type CachedProvider struct {
 func (cfs *CachedProvider) IsAllowed(ctx context.Context, principal, action, resource *fencev1.UID) error {
 	cfs.mu.Lock()
 	defer cfs.mu.Unlock()
-	return cfs.fs.IsAllowed(ctx, principal, action, resource)
+	return cfs.ip.IsAllowed(ctx, principal, action, resource)
 }
 
 func (cfs *CachedProvider) Refresh(ctx context.Context) error {
+	ticker := time.NewTicker(cfs.refreshDuration)
+	defer ticker.Stop()
+	for {
+		select {
+		case <-ctx.Done():
+			fmt.Println("done with context")
+			return nil
+		case <-ticker.C:
+			fmt.Println("ticked")
+			if err := cfs.refreshInternalProvider(ctx); err != nil {
+				return err
+			}
+		}
+	}
+}
+func (cfs *CachedProvider) refreshInternalProvider(ctx context.Context) error {
 	cfs.mu.Lock()
 	defer cfs.mu.Unlock()
-	return cfs.fs.Refresh(ctx)
+	return cfs.ip.Refresh(ctx)
 }
 
 func NewCachedProvider(provider FenceProvider, refreshDuration time.Duration) (*CachedProvider, error) {
-	wrapper := &CachedProvider{fs: provider, refreshDuration: refreshDuration}
-	err := wrapper.Refresh(context.Background())
+	wrapper := &CachedProvider{ip: provider, refreshDuration: refreshDuration}
+	err := wrapper.refreshInternalProvider(context.Background())
 	if err != nil {
 		return nil, err
 	}

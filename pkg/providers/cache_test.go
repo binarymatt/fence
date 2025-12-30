@@ -3,6 +3,7 @@ package providers
 import (
 	"context"
 	"errors"
+	"fmt"
 	"testing"
 	"testing/synctest"
 	"time"
@@ -12,30 +13,33 @@ import (
 	fencev1 "github.com/binarymatt/fence/gen/fence/v1"
 )
 
-func TestNewCachedState(t *testing.T) {
-	mockedState := NewMockFenceProvider(t)
-	mockedState.EXPECT().Refresh(context.Background()).Return(nil)
-	state, err := NewCachedProvider(mockedState, 1*time.Second)
+func TestNewCachedProvider(t *testing.T) {
+	mockedProvider := NewMockFenceProvider(t)
+	mockedProvider.EXPECT().Refresh(context.Background()).Return(nil)
+	cp, err := NewCachedProvider(mockedProvider, 1*time.Second)
 	must.NoError(t, err)
-	must.NotNil(t, state)
-
+	must.NotNil(t, cp)
 }
-func TestNewCachedState_RefreshError(t *testing.T) {
+func TestNewCachedProvider_RefreshError(t *testing.T) {
 	returnedErr := errors.New("oops")
-	mockedState := NewMockFenceProvider(t)
-	mockedState.EXPECT().Refresh(context.Background()).Return(returnedErr)
-	state, err := NewCachedProvider(mockedState, 1*time.Second)
+	mockedProvider := NewMockFenceProvider(t)
+	mockedProvider.EXPECT().Refresh(context.Background()).Return(returnedErr)
+	state, err := NewCachedProvider(mockedProvider, 1*time.Second)
 	must.ErrorIs(t, err, returnedErr)
 	must.Nil(t, state)
 }
 
 func TestRefresh(t *testing.T) {
 	synctest.Test(t, func(t *testing.T) {
-		mockedState := NewMockFenceProvider(t)
-		mockedState.EXPECT().Refresh(context.Background()).Return(nil)
-		state, err := NewCachedProvider(mockedState, time.Second)
-		must.NoError(t, err)
-		must.NotNil(t, state)
+		mockedProvider := NewMockFenceProvider(t)
+		ctx, cancel := context.WithCancel(t.Context())
+		defer cancel()
+		mockedProvider.EXPECT().Refresh(ctx).Return(nil).Twice()
+		cp := &CachedProvider{ip: mockedProvider, refreshDuration: 10 * time.Second}
+		go cp.Refresh(ctx)
+		fmt.Println("sleeping")
+		time.Sleep(20 * time.Second)
+		synctest.Wait()
 	})
 }
 
@@ -53,11 +57,11 @@ func TestCachedIsAllowed(t *testing.T) {
 		Type: "Action",
 		Id:   "view",
 	}
-	mockedState := NewMockFenceProvider(t)
-	mockedState.EXPECT().Refresh(context.Background()).Return(nil).Once()
-	state, err := NewCachedProvider(mockedState, time.Second)
+	mockedProvider := NewMockFenceProvider(t)
+	mockedProvider.EXPECT().Refresh(context.Background()).Return(nil).Once()
+	state, err := NewCachedProvider(mockedProvider, time.Second)
 	must.NoError(t, err)
-	mockedState.EXPECT().IsAllowed(t.Context(), bob, action, resource).Return(nil)
+	mockedProvider.EXPECT().IsAllowed(t.Context(), bob, action, resource).Return(nil)
 	err = state.IsAllowed(t.Context(), bob, action, resource)
 	must.NoError(t, err)
 }
