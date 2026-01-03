@@ -32,7 +32,6 @@ func (cfs *CachedProvider) Refresh(ctx context.Context) error {
 			fmt.Println("done with context")
 			return nil
 		case <-ticker.C:
-			fmt.Println("ticked")
 			if err := cfs.refreshInternalProvider(ctx); err != nil {
 				return err
 			}
