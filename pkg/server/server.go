@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"log/slog"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/dgraph-io/badger/v4"
@@ -18,7 +19,20 @@ import (
 )
 
 func initBadger() {}
-
+func initializeLogging(cfg *Config) {
+	// h := slog.NewJSONHandler(os.Stderr, &slog.HandlerOptions{Level: programLevel})
+	level := slog.LevelInfo
+	levelStr := strings.ToLower(cfg.LogLevel)
+	switch levelStr {
+	case "debug":
+		level = slog.LevelDebug
+	case "warn":
+		level = slog.LevelWarn
+	}
+	slog.SetLogLoggerLevel(level)
+}
+func initializeMetrics() {}
+func initializeTracing() {}
 func initDB(ctx context.Context, db *bun.DB) error {
 
 	_, err := db.NewCreateTable().Model((*service.Entity)(nil)).IfNotExists().Exec(ctx)
@@ -32,6 +46,9 @@ func initDB(ctx context.Context, db *bun.DB) error {
 	return nil
 }
 func New(ctx context.Context, cfg *Config) (*server, error) {
+	initializeLogging(cfg)
+	initializeMetrics()
+	initializeTracing()
 	var store service.DataStore
 	if cfg.DBType == "sql" {
 

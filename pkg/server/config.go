@@ -12,6 +12,7 @@ type Config struct {
 	ListenAddress string `koanf:"listen_address"`
 	DBPath        string `koanf:"db_path"`
 	DBType        string `koanf:"db_type"`
+	LogLevel      string `koanf:"log_level"`
 	ProxyConfig   struct {
 		ServerAddress string `koanf:"address"`
 		Token         string `koanf:"token"`
@@ -28,6 +29,7 @@ func LoadConfig(path string) (*Config, error) {
 		ListenAddress: ":8081",
 		DBPath:        "./fence.db",
 		DBType:        "badger",
+		LogLevel:      "info",
 	}
 	if err := k.UnmarshalWithConf("", &c, koanf.UnmarshalConf{Tag: "koanf"}); err != nil {
 		return nil, err
