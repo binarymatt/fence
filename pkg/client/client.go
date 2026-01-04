@@ -1,4 +1,4 @@
-package state
+package client
 
 import (
 	"context"
@@ -19,7 +19,7 @@ func (c *Client) IsAllowed(ctx context.Context, principal *fencev1.UID, action *
 	return c.provider.IsAllowed(ctx, principal, resource, action)
 }
 
-func NewClient(provider providers.FenceProvider) *Client {
+func New(provider providers.FenceProvider) *Client {
 	return &Client{provider: provider}
 }
 func fenceToCedarUID(fuid *fencev1.UID) cedar.EntityUID {

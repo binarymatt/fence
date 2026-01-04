@@ -1,4 +1,4 @@
-package state
+package client
 
 import (
 	"context"
@@ -12,9 +12,9 @@ import (
 	"github.com/binarymatt/fence/pkg/providers"
 )
 
-func TestNewClient(t *testing.T) {
+func TestNew(t *testing.T) {
 	mock := providers.NewMockFenceProvider(t)
-	c := NewClient(mock)
+	c := New(mock)
 	must.NotNil(t, c.provider)
 }
 func TestIsAllowed(t *testing.T) {
@@ -38,7 +38,7 @@ func TestIsAllowed(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			mockState := providers.NewMockFenceProvider(t)
 			mockState.EXPECT().IsAllowed(context.Background(), principal, action, resource).Return(tc.err)
-			c := NewClient(mockState)
+			c := New(mockState)
 			err := c.IsAllowed(context.Background(), principal, action, resource)
 			must.ErrorIs(t, err, tc.err)
 		})
