@@ -2,6 +2,8 @@ package providers
 
 import (
 	"context"
+	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/hashicorp/go-retryablehttp"
@@ -12,14 +14,28 @@ import (
 
 var _ FenceProvider = (*RemoteServerProvider)(nil)
 
+type authorizedRoundTripper struct {
+	baseTripper *retryablehttp.RoundTripper
+	token       string
+}
+
+func (art *authorizedRoundTripper) RoundTrip(req *http.Request) (res *http.Response, err error) {
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", art.token))
+	res, err = art.baseTripper.RoundTrip(req)
+	return
+}
+
 type RemoteServerConfig struct {
-	Address string
-	Timeout time.Duration
+	Address     string
+	BearerToken string
+	Timeout     time.Duration
 }
 
 func NewRemoteServerProvider(cfg RemoteServerConfig) *RemoteServerProvider {
-	retyrable := retryablehttp.NewClient()
-	httpClient := retyrable.StandardClient()
+	retryable := retryablehttp.NewClient()
+	httpClient := &http.Client{
+		Transport: &authorizedRoundTripper{baseTripper: &retryablehttp.RoundTripper{Client: retryable}, token: cfg.BearerToken},
+	}
 	cl := fencev1connect.NewFenceServiceClient(httpClient, cfg.Address)
 	return &RemoteServerProvider{client: cl}
 }
