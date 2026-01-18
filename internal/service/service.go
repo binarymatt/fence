@@ -10,6 +10,7 @@ import (
 
 	fencev1 "github.com/binarymatt/fence/gen/fence/v1"
 	"github.com/binarymatt/fence/gen/fence/v1/fencev1connect"
+	"github.com/binarymatt/fence/internal/translation"
 )
 
 var _ fencev1connect.FenceServiceHandler = (*Service)(nil)
@@ -39,28 +40,18 @@ func (s *Service) IsAllowed(ctx context.Context, req *fencev1.IsAllowedRequest) 
 	principal := req.GetPrincipal()
 	action := req.GetAction()
 	resource := req.GetResource()
+
+	cedarContext := fenceToRecord(req.GetContext())
+
 	cedarReq := cedar.Request{
 		Principal: fenceToCedarUID(principal),
 		Action:    fenceToCedarUID(action),
 		Resource:  fenceToCedarUID(resource),
+		Context:   cedarContext,
 	}
 	decision, diag := cedar.Authorize(ps, em, cedarReq)
 	slog.Debug("authorize call finished", "decision", decision, "diagnostics", diag, "request", req)
-	reasons := make([]*fencev1.Reason, len(diag.Reasons))
-	for i, r := range diag.Reasons {
-		reasons[i] = cedarToFenceReason(r)
-	}
-	errors := make([]*fencev1.Error, len(diag.Errors))
-	for i, err := range diag.Errors {
-		errors[i] = cedarToFenceError(err)
-	}
-	resp := &fencev1.IsAllowedResponse{
-		Decision: bool(decision),
-		Diagnostics: &fencev1.Diagnostics{
-			Reasons: reasons,
-			Errors:  errors,
-		},
-	}
+	resp := translation.TranslateAuthorizeResponse(decision, diag)
 	return resp, nil
 }
 func parseUIDString(uidStr string) cedar.EntityUID {
@@ -71,27 +62,4 @@ func parseUIDString(uidStr string) cedar.EntityUID {
 		id = id[1 : len(id)-1]
 	}
 	return cedar.NewEntityUID(cedar.EntityType(uidType), cedar.String(id))
-}
-func cedarToFenceReason(reason cedar.DiagnosticReason) *fencev1.Reason {
-	return &fencev1.Reason{
-		PolicyId: string(reason.PolicyID),
-		Position: &fencev1.Position{
-			FileName: reason.Position.Filename,
-			Line:     int64(reason.Position.Line),
-			Column:   int64(reason.Position.Column),
-			Offset:   int64(reason.Position.Offset),
-		},
-	}
-}
-func cedarToFenceError(err cedar.DiagnosticError) *fencev1.Error {
-	return &fencev1.Error{
-		PolicyId: string(err.PolicyID),
-		Position: &fencev1.Position{
-			FileName: err.Position.Filename,
-			Line:     int64(err.Position.Line),
-			Column:   int64(err.Position.Column),
-			Offset:   int64(err.Position.Offset),
-		},
-		Message: err.Message,
-	}
 }

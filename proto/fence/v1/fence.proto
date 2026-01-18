@@ -9,21 +9,19 @@ option go_package = "github.com/binarymatt/fence/gen/fence/v1;fencev1";
 
 service FenceService {
   rpc IsAllowed(IsAllowedRequest) returns (IsAllowedResponse) {}
-  // rpc CreateEntity(CreateEntityRequest) returns (CreateEntityResponse) {}
-  // rpc DeleteEntity(DeleteEntityRequest) returns (DeleteEntityResponse) {}
-  // rpc CreatePolicy(CreatePolicyRequest) returns (CreatePolicyResponse) {}
-  // rpc DeletePolicy(DeletePolicyRequest) returns (DeletePolicyResponse) {}
 }
 
 message IsAllowedRequest {
   UID principal = 1 [(buf.validate.field).required = true];
   UID action = 2 [(buf.validate.field).required = true];
   UID resource = 3 [(buf.validate.field).required = true];
+  map<string, google.protobuf.Value> context = 4;
 }
 
 message IsAllowedResponse {
   bool decision = 1;
   Diagnostics diagnostics = 2;
+  string message = 3;
 }
 
 message Diagnostics {
@@ -34,6 +32,7 @@ message Diagnostics {
 message Reason {
   string policy_id = 1;
   Position position = 2;
+  string message = 3;
 }
 
 message Position {
