@@ -7,6 +7,6 @@ import (
 )
 
 type FenceProvider interface {
-	IsAllowed(ctx context.Context, principal, action, resource *fencev1.UID) error
+	IsAllowed(ctx context.Context, principal, action, resource *fencev1.UID) (*fencev1.IsAllowedResponse, error)
 	Refresh(context.Context) error
 }

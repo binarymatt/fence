@@ -61,7 +61,8 @@ func TestCachedIsAllowed(t *testing.T) {
 	mockedProvider.EXPECT().Refresh(context.Background()).Return(nil).Once()
 	state, err := NewCachedProvider(mockedProvider, time.Second)
 	must.NoError(t, err)
-	mockedProvider.EXPECT().IsAllowed(t.Context(), bob, action, resource).Return(nil)
-	err = state.IsAllowed(t.Context(), bob, action, resource)
+	mockedProvider.EXPECT().IsAllowed(t.Context(), bob, action, resource).Return(&fencev1.IsAllowedResponse{Decision: true}, nil)
+	resp, err := state.IsAllowed(t.Context(), bob, action, resource)
 	must.NoError(t, err)
+	must.True(t, resp.Decision)
 }

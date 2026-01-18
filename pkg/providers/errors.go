@@ -11,13 +11,17 @@ var (
 	ErrInvalidPrincipal = errors.New("invalid principal")
 )
 
-func NewAuthzError(principal, action, resource *fencev1.UID) FenceAuthzError {
-	message := fmt.Sprintf("%s not allowed to %s on %s", UIDToString(principal), UIDToString(action), UIDToString(resource))
+func DeniedMessage(principal, action, resource *fencev1.UID) string {
+	return fmt.Sprintf("%s not allowed to %s on %s", UIDToString(principal), UIDToString(action), UIDToString(resource))
+}
+func NewAuthzError(principal, action, resource *fencev1.UID, internal error) FenceAuthzError {
+	message := DeniedMessage(principal, action, resource)
 	return FenceAuthzError{message: message}
 }
 
 type FenceAuthzError struct {
-	message string
+	message  string
+	internal error
 }
 
 func (az FenceAuthzError) Error() string {

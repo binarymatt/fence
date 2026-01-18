@@ -39,20 +39,31 @@ func (_m *MockFenceProvider) EXPECT() *MockFenceProvider_Expecter {
 }
 
 // IsAllowed provides a mock function for the type MockFenceProvider
-func (_mock *MockFenceProvider) IsAllowed(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID) error {
+func (_mock *MockFenceProvider) IsAllowed(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID) (*fencev1.IsAllowedResponse, error) {
 	ret := _mock.Called(ctx, principal, action, resource)
 
 	if len(ret) == 0 {
 		panic("no return value specified for IsAllowed")
 	}
 
-	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, *fencev1.UID, *fencev1.UID, *fencev1.UID) error); ok {
+	var r0 *fencev1.IsAllowedResponse
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *fencev1.UID, *fencev1.UID, *fencev1.UID) (*fencev1.IsAllowedResponse, error)); ok {
+		return returnFunc(ctx, principal, action, resource)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *fencev1.UID, *fencev1.UID, *fencev1.UID) *fencev1.IsAllowedResponse); ok {
 		r0 = returnFunc(ctx, principal, action, resource)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*fencev1.IsAllowedResponse)
+		}
 	}
-	return r0
+	if returnFunc, ok := ret.Get(1).(func(context.Context, *fencev1.UID, *fencev1.UID, *fencev1.UID) error); ok {
+		r1 = returnFunc(ctx, principal, action, resource)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
 }
 
 // MockFenceProvider_IsAllowed_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'IsAllowed'
@@ -97,12 +108,12 @@ func (_c *MockFenceProvider_IsAllowed_Call) Run(run func(ctx context.Context, pr
 	return _c
 }
 
-func (_c *MockFenceProvider_IsAllowed_Call) Return(err error) *MockFenceProvider_IsAllowed_Call {
-	_c.Call.Return(err)
+func (_c *MockFenceProvider_IsAllowed_Call) Return(isAllowedResponse *fencev1.IsAllowedResponse, err error) *MockFenceProvider_IsAllowed_Call {
+	_c.Call.Return(isAllowedResponse, err)
 	return _c
 }
 
-func (_c *MockFenceProvider_IsAllowed_Call) RunAndReturn(run func(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID) error) *MockFenceProvider_IsAllowed_Call {
+func (_c *MockFenceProvider_IsAllowed_Call) RunAndReturn(run func(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID) (*fencev1.IsAllowedResponse, error)) *MockFenceProvider_IsAllowed_Call {
 	_c.Call.Return(run)
 	return _c
 }

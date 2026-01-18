@@ -17,7 +17,7 @@ type CachedProvider struct {
 	refreshDuration time.Duration
 }
 
-func (cfs *CachedProvider) IsAllowed(ctx context.Context, principal, action, resource *fencev1.UID) error {
+func (cfs *CachedProvider) IsAllowed(ctx context.Context, principal, action, resource *fencev1.UID) (*fencev1.IsAllowedResponse, error) {
 	cfs.mu.Lock()
 	defer cfs.mu.Unlock()
 	return cfs.ip.IsAllowed(ctx, principal, action, resource)

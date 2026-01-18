@@ -44,17 +44,17 @@ type RemoteServerProvider struct {
 	client fencev1connect.FenceServiceClient
 }
 
-func (a *RemoteServerProvider) IsAllowed(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID) error {
+func (a *RemoteServerProvider) IsAllowed(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID) (*fencev1.IsAllowedResponse, error) {
 	req := &fencev1.IsAllowedRequest{
 		Principal: principal,
 		Action:    action,
 		Resource:  resource,
 	}
-	_, err := a.client.IsAllowed(ctx, req)
+	resp, err := a.client.IsAllowed(ctx, req)
 	if err != nil {
-		return err
+		return resp, NewAuthzError(principal, action, resource, err)
 	}
-	return nil
+	return resp, nil
 }
 
 func (a *RemoteServerProvider) Refresh(_ context.Context) error {

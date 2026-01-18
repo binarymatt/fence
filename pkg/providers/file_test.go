@@ -77,7 +77,7 @@ func TestNewFileState(t *testing.T) {
 }
 func TestFileIsAllowed(t *testing.T) {
 	fs := createTestFS(t)
-	state, err := NewFileProvider(fs, "policies.cedar", "entities.json")
+	p, err := NewFileProvider(fs, "policies.cedar", "entities.json")
 	must.NoError(t, err)
 	bob := &fencev1.UID{
 		Type: "User",
@@ -95,12 +95,13 @@ func TestFileIsAllowed(t *testing.T) {
 		Type: "Action",
 		Id:   "view",
 	}
-	err = state.IsAllowed(context.Background(), bob, action, resource)
+	resp, err := p.IsAllowed(context.Background(), bob, action, resource)
 	must.NoError(t, err)
+	must.True(t, resp.Decision)
 
-	err = state.IsAllowed(context.Background(), jane, action, resource)
-	must.Error(t, err)
-	var fe FenceAuthzError
-	must.ErrorAs(t, err, &fe)
-	must.Eq(t, `User::"jane" not allowed to Action::"view" on Photo::"VacationPhoto94.jpg"`, fe.Error())
+	resp, err = p.IsAllowed(context.Background(), jane, action, resource)
+	must.NoError(t, err)
+	must.False(t, resp.Decision)
+	must.Eq(t, `User::"jane" not allowed to Action::"view" on Photo::"VacationPhoto94.jpg"`, resp.Message)
+	must.Eq(t, []*fencev1.Reason{{PolicyId: "no policy", Message: "default deny"}}, resp.Diagnostics.GetReasons())
 }

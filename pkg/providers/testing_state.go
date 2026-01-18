@@ -12,11 +12,8 @@ type TestingProvider struct {
 	AllowCall bool
 }
 
-func (ts *TestingProvider) IsAllowed(ctx context.Context, principal, action, resource *fencev1.UID) error {
-	if !ts.AllowCall {
-		return NewAuthzError(principal, action, resource)
-	}
-	return nil
+func (ts *TestingProvider) IsAllowed(ctx context.Context, principal, action, resource *fencev1.UID) (*fencev1.IsAllowedResponse, error) {
+	return &fencev1.IsAllowedResponse{Decision: ts.AllowCall}, nil
 }
 func (ts *TestingProvider) Refresh(context.Context) error {
 	return nil

@@ -9,6 +9,7 @@ import (
 	"github.com/spf13/afero"
 
 	fencev1 "github.com/binarymatt/fence/gen/fence/v1"
+	"github.com/binarymatt/fence/internal/translation"
 )
 
 var _ FenceProvider = (*FileProvider)(nil)
@@ -21,7 +22,7 @@ type FileProvider struct {
 	fs         afero.Fs
 }
 
-func (s *FileProvider) IsAllowed(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID) error {
+func (s *FileProvider) IsAllowed(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID) (*fencev1.IsAllowedResponse, error) {
 	cPrincipal := uidToCedar(principal)
 	cResource := uidToCedar(resource)
 	cAction := uidToCedar(action)
@@ -30,12 +31,12 @@ func (s *FileProvider) IsAllowed(ctx context.Context, principal *fencev1.UID, ac
 		Resource:  cResource,
 		Action:    cAction,
 	}
-	decision, _ := cedar.Authorize(s.ps, s.entities, req)
-
+	decision, diag := cedar.Authorize(s.ps, s.entities, req)
+	resp := translation.TranslateAuthorizeResponse(decision, diag)
 	if !decision {
-		return NewAuthzError(principal, action, resource)
+		resp.Message = DeniedMessage(principal, action, resource)
 	}
-	return nil
+	return resp, nil
 }
 func (s *FileProvider) Refresh(ctx context.Context) error {
 	policyData, err := afero.ReadFile(s.fs, s.policyPath)

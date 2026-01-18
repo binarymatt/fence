@@ -37,10 +37,11 @@ func TestIsAllowed(t *testing.T) {
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
 			mockState := providers.NewMockFenceProvider(t)
-			mockState.EXPECT().IsAllowed(context.Background(), principal, action, resource).Return(tc.err)
+			mockState.EXPECT().IsAllowed(context.Background(), principal, action, resource).Return(&fencev1.IsAllowedResponse{Decision: true}, tc.err)
 			c := New(mockState)
-			err := c.IsAllowed(context.Background(), principal, action, resource)
+			resp, err := c.IsAllowed(context.Background(), principal, action, resource)
 			must.ErrorIs(t, err, tc.err)
+			must.True(t, resp.Decision)
 		})
 	}
 }

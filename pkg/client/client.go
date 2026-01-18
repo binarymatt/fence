@@ -15,8 +15,8 @@ type Client struct {
 	provider providers.FenceProvider
 }
 
-func (c *Client) IsAllowed(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID) error {
-	return c.provider.IsAllowed(ctx, principal, resource, action)
+func (c *Client) IsAllowed(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID) (*fencev1.IsAllowedResponse, error) {
+	return c.provider.IsAllowed(ctx, principal, action, resource)
 }
 
 func New(provider providers.FenceProvider) *Client {
