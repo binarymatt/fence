@@ -27,6 +27,8 @@ func TranslateAuthorizeResponse(decision cedar.Decision, diag cedar.Diagnostic) 
 		},
 	}
 }
+func TranslateFromIsAllowedResponse(resp *fencev1.IsAllowedResponse) (cedar.Decision, cedar.Diagnostic) {
+}
 
 func cedarToFenceReason(reason cedar.DiagnosticReason) *fencev1.Reason {
 	return &fencev1.Reason{

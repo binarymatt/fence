@@ -19,6 +19,10 @@ func (c *Client) IsAllowed(ctx context.Context, principal *fencev1.UID, action *
 	return c.provider.IsAllowed(ctx, principal, action, resource)
 }
 
+func (c *Client) Authorize(req cedar.Request) (cedar.Decision, cedar.Diagnostic) {
+	return false, cedar.Diagnostic{}
+}
+
 func New(provider providers.FenceProvider) *Client {
 	return &Client{provider: provider}
 }
