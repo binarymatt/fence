@@ -10,8 +10,8 @@
     "terraform@1.14.1",
     "tfk8s@0.1.10",
     "grpcui@1.4.3",
-    "go@1.27.1",
-    "go-mockery@3.9.1"
+    "go-mockery@3.9.1",
+    "go@1.27.3"
   ],
   "shell": {
     "init_hook": [
