@@ -13,7 +13,7 @@ service FenceAdminService {
   rpc ListPolicies(ListPoliciesRequest) returns (ListPoliciesResponse) {}
   rpc GetPolicy(GetPolicyRequest) returns (GetPolicyResponse) {}
 
-  rpc CreateUser(CreatUserRequest) returns (CreateUserResponse) {}
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {}
   rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {}
   rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {}
 
@@ -24,26 +24,6 @@ service FenceAdminService {
   rpc CreateTenant(CreateTenantRequest) returns (CreateTenantResponse) {}
   rpc GetTenant(GetTenantRequest) returns (GetTenantResponse) {}
 }
-
-message CreateEntitiesRequest {
-  repeated Entity entities = 1 [(buf.validate.field).required = true];
-}
-
-message CreateEntitiesResponse {
-  repeated Entity entities = 1;
-}
-
-message DeleteEntityRequest {
-  UID uid = 1;
-}
-message DeleteEntityResponse {}
-
-message ListEntitiesRequest {}
-message ListEntitiesResponse {
-  repeated Entity entities = 1;
-}
-message GetEntityRequest {}
-message GetEntityResponse {}
 
 message CreatePoliciesRequest {
   repeated Policy policies = 1 [(buf.validate.field).required = true];
@@ -68,7 +48,36 @@ message GetPolicyResponse {
   Policy policy = 1;
 }
 
+message CreateTenantRequest {
+  Entity tenant = 1 [(buf.validate.field).required = true];
+}
+message CreateTenantResponse {}
+
+message GetTenantRequest {
+  UID id = 1 [(buf.validate.field).required = true];
+}
+message GetTenantResponse {
+  Entity tenant = 1;
+}
+
 message CreateUserRequest {
-  Entity user = 1;
+  Entity tenant = 1 [(buf.validate.field).required = true];
+
+  Entity user = 2 [(buf.validate.field).required = true];
 }
 message CreateUserResponse {}
+
+message DeleteUserRequest {
+  UID uid = 1;
+}
+message DeleteUserResponse {}
+message ListUsersRequest {}
+message ListUsersResponse {
+  repeated Entity users = 1;
+}
+message CreateRoleRequest {}
+message CreateRoleResponse {}
+message DeleteRoleRequest {}
+message DeleteRoleResponse {}
+message ListRolesRequest {}
+message ListRolesResponse {}

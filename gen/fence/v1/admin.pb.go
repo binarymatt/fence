@@ -22,326 +22,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type CreateEntitiesRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Entities      []*Entity              `protobuf:"bytes,1,rep,name=entities,proto3" json:"entities,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *CreateEntitiesRequest) Reset() {
-	*x = CreateEntitiesRequest{}
-	mi := &file_fence_v1_admin_proto_msgTypes[0]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *CreateEntitiesRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CreateEntitiesRequest) ProtoMessage() {}
-
-func (x *CreateEntitiesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_fence_v1_admin_proto_msgTypes[0]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use CreateEntitiesRequest.ProtoReflect.Descriptor instead.
-func (*CreateEntitiesRequest) Descriptor() ([]byte, []int) {
-	return file_fence_v1_admin_proto_rawDescGZIP(), []int{0}
-}
-
-func (x *CreateEntitiesRequest) GetEntities() []*Entity {
-	if x != nil {
-		return x.Entities
-	}
-	return nil
-}
-
-type CreateEntitiesResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Entities      []*Entity              `protobuf:"bytes,1,rep,name=entities,proto3" json:"entities,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *CreateEntitiesResponse) Reset() {
-	*x = CreateEntitiesResponse{}
-	mi := &file_fence_v1_admin_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *CreateEntitiesResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CreateEntitiesResponse) ProtoMessage() {}
-
-func (x *CreateEntitiesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_fence_v1_admin_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use CreateEntitiesResponse.ProtoReflect.Descriptor instead.
-func (*CreateEntitiesResponse) Descriptor() ([]byte, []int) {
-	return file_fence_v1_admin_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *CreateEntitiesResponse) GetEntities() []*Entity {
-	if x != nil {
-		return x.Entities
-	}
-	return nil
-}
-
-type DeleteEntityRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Uid           *UID                   `protobuf:"bytes,1,opt,name=uid,proto3" json:"uid,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *DeleteEntityRequest) Reset() {
-	*x = DeleteEntityRequest{}
-	mi := &file_fence_v1_admin_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *DeleteEntityRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*DeleteEntityRequest) ProtoMessage() {}
-
-func (x *DeleteEntityRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_fence_v1_admin_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use DeleteEntityRequest.ProtoReflect.Descriptor instead.
-func (*DeleteEntityRequest) Descriptor() ([]byte, []int) {
-	return file_fence_v1_admin_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *DeleteEntityRequest) GetUid() *UID {
-	if x != nil {
-		return x.Uid
-	}
-	return nil
-}
-
-type DeleteEntityResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *DeleteEntityResponse) Reset() {
-	*x = DeleteEntityResponse{}
-	mi := &file_fence_v1_admin_proto_msgTypes[3]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *DeleteEntityResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*DeleteEntityResponse) ProtoMessage() {}
-
-func (x *DeleteEntityResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_fence_v1_admin_proto_msgTypes[3]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use DeleteEntityResponse.ProtoReflect.Descriptor instead.
-func (*DeleteEntityResponse) Descriptor() ([]byte, []int) {
-	return file_fence_v1_admin_proto_rawDescGZIP(), []int{3}
-}
-
-type ListEntitiesRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ListEntitiesRequest) Reset() {
-	*x = ListEntitiesRequest{}
-	mi := &file_fence_v1_admin_proto_msgTypes[4]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ListEntitiesRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ListEntitiesRequest) ProtoMessage() {}
-
-func (x *ListEntitiesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_fence_v1_admin_proto_msgTypes[4]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ListEntitiesRequest.ProtoReflect.Descriptor instead.
-func (*ListEntitiesRequest) Descriptor() ([]byte, []int) {
-	return file_fence_v1_admin_proto_rawDescGZIP(), []int{4}
-}
-
-type ListEntitiesResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Entities      []*Entity              `protobuf:"bytes,1,rep,name=entities,proto3" json:"entities,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ListEntitiesResponse) Reset() {
-	*x = ListEntitiesResponse{}
-	mi := &file_fence_v1_admin_proto_msgTypes[5]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ListEntitiesResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ListEntitiesResponse) ProtoMessage() {}
-
-func (x *ListEntitiesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_fence_v1_admin_proto_msgTypes[5]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ListEntitiesResponse.ProtoReflect.Descriptor instead.
-func (*ListEntitiesResponse) Descriptor() ([]byte, []int) {
-	return file_fence_v1_admin_proto_rawDescGZIP(), []int{5}
-}
-
-func (x *ListEntitiesResponse) GetEntities() []*Entity {
-	if x != nil {
-		return x.Entities
-	}
-	return nil
-}
-
-type GetEntityRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GetEntityRequest) Reset() {
-	*x = GetEntityRequest{}
-	mi := &file_fence_v1_admin_proto_msgTypes[6]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetEntityRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetEntityRequest) ProtoMessage() {}
-
-func (x *GetEntityRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_fence_v1_admin_proto_msgTypes[6]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetEntityRequest.ProtoReflect.Descriptor instead.
-func (*GetEntityRequest) Descriptor() ([]byte, []int) {
-	return file_fence_v1_admin_proto_rawDescGZIP(), []int{6}
-}
-
-type GetEntityResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GetEntityResponse) Reset() {
-	*x = GetEntityResponse{}
-	mi := &file_fence_v1_admin_proto_msgTypes[7]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetEntityResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetEntityResponse) ProtoMessage() {}
-
-func (x *GetEntityResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_fence_v1_admin_proto_msgTypes[7]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetEntityResponse.ProtoReflect.Descriptor instead.
-func (*GetEntityResponse) Descriptor() ([]byte, []int) {
-	return file_fence_v1_admin_proto_rawDescGZIP(), []int{7}
-}
-
 type CreatePoliciesRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Policies      []*Policy              `protobuf:"bytes,1,rep,name=policies,proto3" json:"policies,omitempty"`
@@ -351,7 +31,7 @@ type CreatePoliciesRequest struct {
 
 func (x *CreatePoliciesRequest) Reset() {
 	*x = CreatePoliciesRequest{}
-	mi := &file_fence_v1_admin_proto_msgTypes[8]
+	mi := &file_fence_v1_admin_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -363,7 +43,7 @@ func (x *CreatePoliciesRequest) String() string {
 func (*CreatePoliciesRequest) ProtoMessage() {}
 
 func (x *CreatePoliciesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_fence_v1_admin_proto_msgTypes[8]
+	mi := &file_fence_v1_admin_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -376,7 +56,7 @@ func (x *CreatePoliciesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreatePoliciesRequest.ProtoReflect.Descriptor instead.
 func (*CreatePoliciesRequest) Descriptor() ([]byte, []int) {
-	return file_fence_v1_admin_proto_rawDescGZIP(), []int{8}
+	return file_fence_v1_admin_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *CreatePoliciesRequest) GetPolicies() []*Policy {
@@ -395,7 +75,7 @@ type CreatePoliciesResponse struct {
 
 func (x *CreatePoliciesResponse) Reset() {
 	*x = CreatePoliciesResponse{}
-	mi := &file_fence_v1_admin_proto_msgTypes[9]
+	mi := &file_fence_v1_admin_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -407,7 +87,7 @@ func (x *CreatePoliciesResponse) String() string {
 func (*CreatePoliciesResponse) ProtoMessage() {}
 
 func (x *CreatePoliciesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_fence_v1_admin_proto_msgTypes[9]
+	mi := &file_fence_v1_admin_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -420,7 +100,7 @@ func (x *CreatePoliciesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreatePoliciesResponse.ProtoReflect.Descriptor instead.
 func (*CreatePoliciesResponse) Descriptor() ([]byte, []int) {
-	return file_fence_v1_admin_proto_rawDescGZIP(), []int{9}
+	return file_fence_v1_admin_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *CreatePoliciesResponse) GetIds() []string {
@@ -439,7 +119,7 @@ type DeletePolicyRequest struct {
 
 func (x *DeletePolicyRequest) Reset() {
 	*x = DeletePolicyRequest{}
-	mi := &file_fence_v1_admin_proto_msgTypes[10]
+	mi := &file_fence_v1_admin_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -451,7 +131,7 @@ func (x *DeletePolicyRequest) String() string {
 func (*DeletePolicyRequest) ProtoMessage() {}
 
 func (x *DeletePolicyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_fence_v1_admin_proto_msgTypes[10]
+	mi := &file_fence_v1_admin_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -464,7 +144,7 @@ func (x *DeletePolicyRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeletePolicyRequest.ProtoReflect.Descriptor instead.
 func (*DeletePolicyRequest) Descriptor() ([]byte, []int) {
-	return file_fence_v1_admin_proto_rawDescGZIP(), []int{10}
+	return file_fence_v1_admin_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *DeletePolicyRequest) GetId() string {
@@ -482,7 +162,7 @@ type DeletePolicyResponse struct {
 
 func (x *DeletePolicyResponse) Reset() {
 	*x = DeletePolicyResponse{}
-	mi := &file_fence_v1_admin_proto_msgTypes[11]
+	mi := &file_fence_v1_admin_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -494,7 +174,7 @@ func (x *DeletePolicyResponse) String() string {
 func (*DeletePolicyResponse) ProtoMessage() {}
 
 func (x *DeletePolicyResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_fence_v1_admin_proto_msgTypes[11]
+	mi := &file_fence_v1_admin_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -507,7 +187,7 @@ func (x *DeletePolicyResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeletePolicyResponse.ProtoReflect.Descriptor instead.
 func (*DeletePolicyResponse) Descriptor() ([]byte, []int) {
-	return file_fence_v1_admin_proto_rawDescGZIP(), []int{11}
+	return file_fence_v1_admin_proto_rawDescGZIP(), []int{3}
 }
 
 // TODO: pagination
@@ -519,7 +199,7 @@ type ListPoliciesRequest struct {
 
 func (x *ListPoliciesRequest) Reset() {
 	*x = ListPoliciesRequest{}
-	mi := &file_fence_v1_admin_proto_msgTypes[12]
+	mi := &file_fence_v1_admin_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -531,7 +211,7 @@ func (x *ListPoliciesRequest) String() string {
 func (*ListPoliciesRequest) ProtoMessage() {}
 
 func (x *ListPoliciesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_fence_v1_admin_proto_msgTypes[12]
+	mi := &file_fence_v1_admin_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -544,7 +224,7 @@ func (x *ListPoliciesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListPoliciesRequest.ProtoReflect.Descriptor instead.
 func (*ListPoliciesRequest) Descriptor() ([]byte, []int) {
-	return file_fence_v1_admin_proto_rawDescGZIP(), []int{12}
+	return file_fence_v1_admin_proto_rawDescGZIP(), []int{4}
 }
 
 type ListPoliciesResponse struct {
@@ -556,7 +236,7 @@ type ListPoliciesResponse struct {
 
 func (x *ListPoliciesResponse) Reset() {
 	*x = ListPoliciesResponse{}
-	mi := &file_fence_v1_admin_proto_msgTypes[13]
+	mi := &file_fence_v1_admin_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -568,7 +248,7 @@ func (x *ListPoliciesResponse) String() string {
 func (*ListPoliciesResponse) ProtoMessage() {}
 
 func (x *ListPoliciesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_fence_v1_admin_proto_msgTypes[13]
+	mi := &file_fence_v1_admin_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -581,7 +261,7 @@ func (x *ListPoliciesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListPoliciesResponse.ProtoReflect.Descriptor instead.
 func (*ListPoliciesResponse) Descriptor() ([]byte, []int) {
-	return file_fence_v1_admin_proto_rawDescGZIP(), []int{13}
+	return file_fence_v1_admin_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *ListPoliciesResponse) GetPolicies() []*Policy {
@@ -600,7 +280,7 @@ type GetPolicyRequest struct {
 
 func (x *GetPolicyRequest) Reset() {
 	*x = GetPolicyRequest{}
-	mi := &file_fence_v1_admin_proto_msgTypes[14]
+	mi := &file_fence_v1_admin_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -612,7 +292,7 @@ func (x *GetPolicyRequest) String() string {
 func (*GetPolicyRequest) ProtoMessage() {}
 
 func (x *GetPolicyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_fence_v1_admin_proto_msgTypes[14]
+	mi := &file_fence_v1_admin_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -625,7 +305,7 @@ func (x *GetPolicyRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetPolicyRequest.ProtoReflect.Descriptor instead.
 func (*GetPolicyRequest) Descriptor() ([]byte, []int) {
-	return file_fence_v1_admin_proto_rawDescGZIP(), []int{14}
+	return file_fence_v1_admin_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *GetPolicyRequest) GetId() string {
@@ -644,7 +324,7 @@ type GetPolicyResponse struct {
 
 func (x *GetPolicyResponse) Reset() {
 	*x = GetPolicyResponse{}
-	mi := &file_fence_v1_admin_proto_msgTypes[15]
+	mi := &file_fence_v1_admin_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -656,7 +336,7 @@ func (x *GetPolicyResponse) String() string {
 func (*GetPolicyResponse) ProtoMessage() {}
 
 func (x *GetPolicyResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_fence_v1_admin_proto_msgTypes[15]
+	mi := &file_fence_v1_admin_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -669,7 +349,7 @@ func (x *GetPolicyResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetPolicyResponse.ProtoReflect.Descriptor instead.
 func (*GetPolicyResponse) Descriptor() ([]byte, []int) {
-	return file_fence_v1_admin_proto_rawDescGZIP(), []int{15}
+	return file_fence_v1_admin_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *GetPolicyResponse) GetPolicy() *Policy {
@@ -679,23 +359,643 @@ func (x *GetPolicyResponse) GetPolicy() *Policy {
 	return nil
 }
 
+type CreateTenantRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Tenant        *Entity                `protobuf:"bytes,1,opt,name=tenant,proto3" json:"tenant,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateTenantRequest) Reset() {
+	*x = CreateTenantRequest{}
+	mi := &file_fence_v1_admin_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateTenantRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateTenantRequest) ProtoMessage() {}
+
+func (x *CreateTenantRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_fence_v1_admin_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateTenantRequest.ProtoReflect.Descriptor instead.
+func (*CreateTenantRequest) Descriptor() ([]byte, []int) {
+	return file_fence_v1_admin_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *CreateTenantRequest) GetTenant() *Entity {
+	if x != nil {
+		return x.Tenant
+	}
+	return nil
+}
+
+type CreateTenantResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateTenantResponse) Reset() {
+	*x = CreateTenantResponse{}
+	mi := &file_fence_v1_admin_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateTenantResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateTenantResponse) ProtoMessage() {}
+
+func (x *CreateTenantResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_fence_v1_admin_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateTenantResponse.ProtoReflect.Descriptor instead.
+func (*CreateTenantResponse) Descriptor() ([]byte, []int) {
+	return file_fence_v1_admin_proto_rawDescGZIP(), []int{9}
+}
+
+type GetTenantRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            *UID                   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetTenantRequest) Reset() {
+	*x = GetTenantRequest{}
+	mi := &file_fence_v1_admin_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTenantRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTenantRequest) ProtoMessage() {}
+
+func (x *GetTenantRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_fence_v1_admin_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetTenantRequest.ProtoReflect.Descriptor instead.
+func (*GetTenantRequest) Descriptor() ([]byte, []int) {
+	return file_fence_v1_admin_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *GetTenantRequest) GetId() *UID {
+	if x != nil {
+		return x.Id
+	}
+	return nil
+}
+
+type GetTenantResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Tenant        *Entity                `protobuf:"bytes,1,opt,name=tenant,proto3" json:"tenant,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetTenantResponse) Reset() {
+	*x = GetTenantResponse{}
+	mi := &file_fence_v1_admin_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTenantResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTenantResponse) ProtoMessage() {}
+
+func (x *GetTenantResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_fence_v1_admin_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetTenantResponse.ProtoReflect.Descriptor instead.
+func (*GetTenantResponse) Descriptor() ([]byte, []int) {
+	return file_fence_v1_admin_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *GetTenantResponse) GetTenant() *Entity {
+	if x != nil {
+		return x.Tenant
+	}
+	return nil
+}
+
+type CreateUserRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Tenant        *Entity                `protobuf:"bytes,1,opt,name=tenant,proto3" json:"tenant,omitempty"`
+	User          *Entity                `protobuf:"bytes,2,opt,name=user,proto3" json:"user,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateUserRequest) Reset() {
+	*x = CreateUserRequest{}
+	mi := &file_fence_v1_admin_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateUserRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateUserRequest) ProtoMessage() {}
+
+func (x *CreateUserRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_fence_v1_admin_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateUserRequest.ProtoReflect.Descriptor instead.
+func (*CreateUserRequest) Descriptor() ([]byte, []int) {
+	return file_fence_v1_admin_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *CreateUserRequest) GetTenant() *Entity {
+	if x != nil {
+		return x.Tenant
+	}
+	return nil
+}
+
+func (x *CreateUserRequest) GetUser() *Entity {
+	if x != nil {
+		return x.User
+	}
+	return nil
+}
+
+type CreateUserResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateUserResponse) Reset() {
+	*x = CreateUserResponse{}
+	mi := &file_fence_v1_admin_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateUserResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateUserResponse) ProtoMessage() {}
+
+func (x *CreateUserResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_fence_v1_admin_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateUserResponse.ProtoReflect.Descriptor instead.
+func (*CreateUserResponse) Descriptor() ([]byte, []int) {
+	return file_fence_v1_admin_proto_rawDescGZIP(), []int{13}
+}
+
+type DeleteUserRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Uid           *UID                   `protobuf:"bytes,1,opt,name=uid,proto3" json:"uid,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteUserRequest) Reset() {
+	*x = DeleteUserRequest{}
+	mi := &file_fence_v1_admin_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteUserRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteUserRequest) ProtoMessage() {}
+
+func (x *DeleteUserRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_fence_v1_admin_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteUserRequest.ProtoReflect.Descriptor instead.
+func (*DeleteUserRequest) Descriptor() ([]byte, []int) {
+	return file_fence_v1_admin_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *DeleteUserRequest) GetUid() *UID {
+	if x != nil {
+		return x.Uid
+	}
+	return nil
+}
+
+type DeleteUserResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteUserResponse) Reset() {
+	*x = DeleteUserResponse{}
+	mi := &file_fence_v1_admin_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteUserResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteUserResponse) ProtoMessage() {}
+
+func (x *DeleteUserResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_fence_v1_admin_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteUserResponse.ProtoReflect.Descriptor instead.
+func (*DeleteUserResponse) Descriptor() ([]byte, []int) {
+	return file_fence_v1_admin_proto_rawDescGZIP(), []int{15}
+}
+
+type ListUsersRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListUsersRequest) Reset() {
+	*x = ListUsersRequest{}
+	mi := &file_fence_v1_admin_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListUsersRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListUsersRequest) ProtoMessage() {}
+
+func (x *ListUsersRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_fence_v1_admin_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListUsersRequest.ProtoReflect.Descriptor instead.
+func (*ListUsersRequest) Descriptor() ([]byte, []int) {
+	return file_fence_v1_admin_proto_rawDescGZIP(), []int{16}
+}
+
+type ListUsersResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Users         []*Entity              `protobuf:"bytes,1,rep,name=users,proto3" json:"users,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListUsersResponse) Reset() {
+	*x = ListUsersResponse{}
+	mi := &file_fence_v1_admin_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListUsersResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListUsersResponse) ProtoMessage() {}
+
+func (x *ListUsersResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_fence_v1_admin_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListUsersResponse.ProtoReflect.Descriptor instead.
+func (*ListUsersResponse) Descriptor() ([]byte, []int) {
+	return file_fence_v1_admin_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *ListUsersResponse) GetUsers() []*Entity {
+	if x != nil {
+		return x.Users
+	}
+	return nil
+}
+
+type CreateRoleRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateRoleRequest) Reset() {
+	*x = CreateRoleRequest{}
+	mi := &file_fence_v1_admin_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateRoleRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateRoleRequest) ProtoMessage() {}
+
+func (x *CreateRoleRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_fence_v1_admin_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateRoleRequest.ProtoReflect.Descriptor instead.
+func (*CreateRoleRequest) Descriptor() ([]byte, []int) {
+	return file_fence_v1_admin_proto_rawDescGZIP(), []int{18}
+}
+
+type CreateRoleResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateRoleResponse) Reset() {
+	*x = CreateRoleResponse{}
+	mi := &file_fence_v1_admin_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateRoleResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateRoleResponse) ProtoMessage() {}
+
+func (x *CreateRoleResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_fence_v1_admin_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateRoleResponse.ProtoReflect.Descriptor instead.
+func (*CreateRoleResponse) Descriptor() ([]byte, []int) {
+	return file_fence_v1_admin_proto_rawDescGZIP(), []int{19}
+}
+
+type DeleteRoleRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteRoleRequest) Reset() {
+	*x = DeleteRoleRequest{}
+	mi := &file_fence_v1_admin_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteRoleRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteRoleRequest) ProtoMessage() {}
+
+func (x *DeleteRoleRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_fence_v1_admin_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteRoleRequest.ProtoReflect.Descriptor instead.
+func (*DeleteRoleRequest) Descriptor() ([]byte, []int) {
+	return file_fence_v1_admin_proto_rawDescGZIP(), []int{20}
+}
+
+type DeleteRoleResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteRoleResponse) Reset() {
+	*x = DeleteRoleResponse{}
+	mi := &file_fence_v1_admin_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteRoleResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteRoleResponse) ProtoMessage() {}
+
+func (x *DeleteRoleResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_fence_v1_admin_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteRoleResponse.ProtoReflect.Descriptor instead.
+func (*DeleteRoleResponse) Descriptor() ([]byte, []int) {
+	return file_fence_v1_admin_proto_rawDescGZIP(), []int{21}
+}
+
+type ListRolesRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListRolesRequest) Reset() {
+	*x = ListRolesRequest{}
+	mi := &file_fence_v1_admin_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListRolesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListRolesRequest) ProtoMessage() {}
+
+func (x *ListRolesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_fence_v1_admin_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListRolesRequest.ProtoReflect.Descriptor instead.
+func (*ListRolesRequest) Descriptor() ([]byte, []int) {
+	return file_fence_v1_admin_proto_rawDescGZIP(), []int{22}
+}
+
+type ListRolesResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListRolesResponse) Reset() {
+	*x = ListRolesResponse{}
+	mi := &file_fence_v1_admin_proto_msgTypes[23]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListRolesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListRolesResponse) ProtoMessage() {}
+
+func (x *ListRolesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_fence_v1_admin_proto_msgTypes[23]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListRolesResponse.ProtoReflect.Descriptor instead.
+func (*ListRolesResponse) Descriptor() ([]byte, []int) {
+	return file_fence_v1_admin_proto_rawDescGZIP(), []int{23}
+}
+
 var File_fence_v1_admin_proto protoreflect.FileDescriptor
 
 const file_fence_v1_admin_proto_rawDesc = "" +
 	"\n" +
 	"\x14fence/v1/admin.proto\x12\bfence.v1\x1a\x1bbuf/validate/validate.proto\x1a\x14fence/v1/fence.proto\"M\n" +
-	"\x15CreateEntitiesRequest\x124\n" +
-	"\bentities\x18\x01 \x03(\v2\x10.fence.v1.EntityB\x06\xbaH\x03\xc8\x01\x01R\bentities\"F\n" +
-	"\x16CreateEntitiesResponse\x12,\n" +
-	"\bentities\x18\x01 \x03(\v2\x10.fence.v1.EntityR\bentities\"6\n" +
-	"\x13DeleteEntityRequest\x12\x1f\n" +
-	"\x03uid\x18\x01 \x01(\v2\r.fence.v1.UIDR\x03uid\"\x16\n" +
-	"\x14DeleteEntityResponse\"\x15\n" +
-	"\x13ListEntitiesRequest\"D\n" +
-	"\x14ListEntitiesResponse\x12,\n" +
-	"\bentities\x18\x01 \x03(\v2\x10.fence.v1.EntityR\bentities\"\x12\n" +
-	"\x10GetEntityRequest\"\x13\n" +
-	"\x11GetEntityResponse\"M\n" +
 	"\x15CreatePoliciesRequest\x124\n" +
 	"\bpolicies\x18\x01 \x03(\v2\x10.fence.v1.PolicyB\x06\xbaH\x03\xc8\x01\x01R\bpolicies\"*\n" +
 	"\x16CreatePoliciesResponse\x12\x10\n" +
@@ -709,16 +1009,47 @@ const file_fence_v1_admin_proto_rawDesc = "" +
 	"\x10GetPolicyRequest\x12\x16\n" +
 	"\x02id\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x02id\"=\n" +
 	"\x11GetPolicyResponse\x12(\n" +
-	"\x06policy\x18\x01 \x01(\v2\x10.fence.v1.PolicyR\x06policy2\x95\x05\n" +
+	"\x06policy\x18\x01 \x01(\v2\x10.fence.v1.PolicyR\x06policy\"G\n" +
+	"\x13CreateTenantRequest\x120\n" +
+	"\x06tenant\x18\x01 \x01(\v2\x10.fence.v1.EntityB\x06\xbaH\x03\xc8\x01\x01R\x06tenant\"\x16\n" +
+	"\x14CreateTenantResponse\"9\n" +
+	"\x10GetTenantRequest\x12%\n" +
+	"\x02id\x18\x01 \x01(\v2\r.fence.v1.UIDB\x06\xbaH\x03\xc8\x01\x01R\x02id\"=\n" +
+	"\x11GetTenantResponse\x12(\n" +
+	"\x06tenant\x18\x01 \x01(\v2\x10.fence.v1.EntityR\x06tenant\"s\n" +
+	"\x11CreateUserRequest\x120\n" +
+	"\x06tenant\x18\x01 \x01(\v2\x10.fence.v1.EntityB\x06\xbaH\x03\xc8\x01\x01R\x06tenant\x12,\n" +
+	"\x04user\x18\x02 \x01(\v2\x10.fence.v1.EntityB\x06\xbaH\x03\xc8\x01\x01R\x04user\"\x14\n" +
+	"\x12CreateUserResponse\"4\n" +
+	"\x11DeleteUserRequest\x12\x1f\n" +
+	"\x03uid\x18\x01 \x01(\v2\r.fence.v1.UIDR\x03uid\"\x14\n" +
+	"\x12DeleteUserResponse\"\x12\n" +
+	"\x10ListUsersRequest\";\n" +
+	"\x11ListUsersResponse\x12&\n" +
+	"\x05users\x18\x01 \x03(\v2\x10.fence.v1.EntityR\x05users\"\x13\n" +
+	"\x11CreateRoleRequest\"\x14\n" +
+	"\x12CreateRoleResponse\"\x13\n" +
+	"\x11DeleteRoleRequest\"\x14\n" +
+	"\x12DeleteRoleResponse\"\x12\n" +
+	"\x10ListRolesRequest\"\x13\n" +
+	"\x11ListRolesResponse2\xa9\a\n" +
 	"\x11FenceAdminService\x12U\n" +
-	"\x0eCreateEntities\x12\x1f.fence.v1.CreateEntitiesRequest\x1a .fence.v1.CreateEntitiesResponse\"\x00\x12O\n" +
-	"\fDeleteEntity\x12\x1d.fence.v1.DeleteEntityRequest\x1a\x1e.fence.v1.DeleteEntityResponse\"\x00\x12O\n" +
-	"\fListEntities\x12\x1d.fence.v1.ListEntitiesRequest\x1a\x1e.fence.v1.ListEntitiesResponse\"\x00\x12F\n" +
-	"\tGetEntity\x12\x1a.fence.v1.GetEntityRequest\x1a\x1b.fence.v1.GetEntityResponse\"\x00\x12U\n" +
 	"\x0eCreatePolicies\x12\x1f.fence.v1.CreatePoliciesRequest\x1a .fence.v1.CreatePoliciesResponse\"\x00\x12O\n" +
 	"\fDeletePolicy\x12\x1d.fence.v1.DeletePolicyRequest\x1a\x1e.fence.v1.DeletePolicyResponse\"\x00\x12O\n" +
 	"\fListPolicies\x12\x1d.fence.v1.ListPoliciesRequest\x1a\x1e.fence.v1.ListPoliciesResponse\"\x00\x12F\n" +
-	"\tGetPolicy\x12\x1a.fence.v1.GetPolicyRequest\x1a\x1b.fence.v1.GetPolicyResponse\"\x00B\x8d\x01\n" +
+	"\tGetPolicy\x12\x1a.fence.v1.GetPolicyRequest\x1a\x1b.fence.v1.GetPolicyResponse\"\x00\x12I\n" +
+	"\n" +
+	"CreateUser\x12\x1b.fence.v1.CreateUserRequest\x1a\x1c.fence.v1.CreateUserResponse\"\x00\x12I\n" +
+	"\n" +
+	"DeleteUser\x12\x1b.fence.v1.DeleteUserRequest\x1a\x1c.fence.v1.DeleteUserResponse\"\x00\x12F\n" +
+	"\tListUsers\x12\x1a.fence.v1.ListUsersRequest\x1a\x1b.fence.v1.ListUsersResponse\"\x00\x12I\n" +
+	"\n" +
+	"CreateRole\x12\x1b.fence.v1.CreateRoleRequest\x1a\x1c.fence.v1.CreateRoleResponse\"\x00\x12I\n" +
+	"\n" +
+	"DeleteRole\x12\x1b.fence.v1.DeleteRoleRequest\x1a\x1c.fence.v1.DeleteRoleResponse\"\x00\x12F\n" +
+	"\tListRoles\x12\x1a.fence.v1.ListRolesRequest\x1a\x1b.fence.v1.ListRolesResponse\"\x00\x12O\n" +
+	"\fCreateTenant\x12\x1d.fence.v1.CreateTenantRequest\x1a\x1e.fence.v1.CreateTenantResponse\"\x00\x12F\n" +
+	"\tGetTenant\x12\x1a.fence.v1.GetTenantRequest\x1a\x1b.fence.v1.GetTenantResponse\"\x00B\x8d\x01\n" +
 	"\fcom.fence.v1B\n" +
 	"AdminProtoP\x01Z0github.com/binarymatt/fence/gen/fence/v1;fencev1\xa2\x02\x03FXX\xaa\x02\bFence.V1\xca\x02\bFence\\V1\xe2\x02\x14Fence\\V1\\GPBMetadata\xea\x02\tFence::V1b\x06proto3"
 
@@ -734,57 +1065,76 @@ func file_fence_v1_admin_proto_rawDescGZIP() []byte {
 	return file_fence_v1_admin_proto_rawDescData
 }
 
-var file_fence_v1_admin_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
+var file_fence_v1_admin_proto_msgTypes = make([]protoimpl.MessageInfo, 24)
 var file_fence_v1_admin_proto_goTypes = []any{
-	(*CreateEntitiesRequest)(nil),  // 0: fence.v1.CreateEntitiesRequest
-	(*CreateEntitiesResponse)(nil), // 1: fence.v1.CreateEntitiesResponse
-	(*DeleteEntityRequest)(nil),    // 2: fence.v1.DeleteEntityRequest
-	(*DeleteEntityResponse)(nil),   // 3: fence.v1.DeleteEntityResponse
-	(*ListEntitiesRequest)(nil),    // 4: fence.v1.ListEntitiesRequest
-	(*ListEntitiesResponse)(nil),   // 5: fence.v1.ListEntitiesResponse
-	(*GetEntityRequest)(nil),       // 6: fence.v1.GetEntityRequest
-	(*GetEntityResponse)(nil),      // 7: fence.v1.GetEntityResponse
-	(*CreatePoliciesRequest)(nil),  // 8: fence.v1.CreatePoliciesRequest
-	(*CreatePoliciesResponse)(nil), // 9: fence.v1.CreatePoliciesResponse
-	(*DeletePolicyRequest)(nil),    // 10: fence.v1.DeletePolicyRequest
-	(*DeletePolicyResponse)(nil),   // 11: fence.v1.DeletePolicyResponse
-	(*ListPoliciesRequest)(nil),    // 12: fence.v1.ListPoliciesRequest
-	(*ListPoliciesResponse)(nil),   // 13: fence.v1.ListPoliciesResponse
-	(*GetPolicyRequest)(nil),       // 14: fence.v1.GetPolicyRequest
-	(*GetPolicyResponse)(nil),      // 15: fence.v1.GetPolicyResponse
-	(*Entity)(nil),                 // 16: fence.v1.Entity
-	(*UID)(nil),                    // 17: fence.v1.UID
-	(*Policy)(nil),                 // 18: fence.v1.Policy
+	(*CreatePoliciesRequest)(nil),  // 0: fence.v1.CreatePoliciesRequest
+	(*CreatePoliciesResponse)(nil), // 1: fence.v1.CreatePoliciesResponse
+	(*DeletePolicyRequest)(nil),    // 2: fence.v1.DeletePolicyRequest
+	(*DeletePolicyResponse)(nil),   // 3: fence.v1.DeletePolicyResponse
+	(*ListPoliciesRequest)(nil),    // 4: fence.v1.ListPoliciesRequest
+	(*ListPoliciesResponse)(nil),   // 5: fence.v1.ListPoliciesResponse
+	(*GetPolicyRequest)(nil),       // 6: fence.v1.GetPolicyRequest
+	(*GetPolicyResponse)(nil),      // 7: fence.v1.GetPolicyResponse
+	(*CreateTenantRequest)(nil),    // 8: fence.v1.CreateTenantRequest
+	(*CreateTenantResponse)(nil),   // 9: fence.v1.CreateTenantResponse
+	(*GetTenantRequest)(nil),       // 10: fence.v1.GetTenantRequest
+	(*GetTenantResponse)(nil),      // 11: fence.v1.GetTenantResponse
+	(*CreateUserRequest)(nil),      // 12: fence.v1.CreateUserRequest
+	(*CreateUserResponse)(nil),     // 13: fence.v1.CreateUserResponse
+	(*DeleteUserRequest)(nil),      // 14: fence.v1.DeleteUserRequest
+	(*DeleteUserResponse)(nil),     // 15: fence.v1.DeleteUserResponse
+	(*ListUsersRequest)(nil),       // 16: fence.v1.ListUsersRequest
+	(*ListUsersResponse)(nil),      // 17: fence.v1.ListUsersResponse
+	(*CreateRoleRequest)(nil),      // 18: fence.v1.CreateRoleRequest
+	(*CreateRoleResponse)(nil),     // 19: fence.v1.CreateRoleResponse
+	(*DeleteRoleRequest)(nil),      // 20: fence.v1.DeleteRoleRequest
+	(*DeleteRoleResponse)(nil),     // 21: fence.v1.DeleteRoleResponse
+	(*ListRolesRequest)(nil),       // 22: fence.v1.ListRolesRequest
+	(*ListRolesResponse)(nil),      // 23: fence.v1.ListRolesResponse
+	(*Policy)(nil),                 // 24: fence.v1.Policy
+	(*Entity)(nil),                 // 25: fence.v1.Entity
+	(*UID)(nil),                    // 26: fence.v1.UID
 }
 var file_fence_v1_admin_proto_depIdxs = []int32{
-	16, // 0: fence.v1.CreateEntitiesRequest.entities:type_name -> fence.v1.Entity
-	16, // 1: fence.v1.CreateEntitiesResponse.entities:type_name -> fence.v1.Entity
-	17, // 2: fence.v1.DeleteEntityRequest.uid:type_name -> fence.v1.UID
-	16, // 3: fence.v1.ListEntitiesResponse.entities:type_name -> fence.v1.Entity
-	18, // 4: fence.v1.CreatePoliciesRequest.policies:type_name -> fence.v1.Policy
-	18, // 5: fence.v1.ListPoliciesResponse.policies:type_name -> fence.v1.Policy
-	18, // 6: fence.v1.GetPolicyResponse.policy:type_name -> fence.v1.Policy
-	0,  // 7: fence.v1.FenceAdminService.CreateEntities:input_type -> fence.v1.CreateEntitiesRequest
-	2,  // 8: fence.v1.FenceAdminService.DeleteEntity:input_type -> fence.v1.DeleteEntityRequest
-	4,  // 9: fence.v1.FenceAdminService.ListEntities:input_type -> fence.v1.ListEntitiesRequest
-	6,  // 10: fence.v1.FenceAdminService.GetEntity:input_type -> fence.v1.GetEntityRequest
-	8,  // 11: fence.v1.FenceAdminService.CreatePolicies:input_type -> fence.v1.CreatePoliciesRequest
-	10, // 12: fence.v1.FenceAdminService.DeletePolicy:input_type -> fence.v1.DeletePolicyRequest
-	12, // 13: fence.v1.FenceAdminService.ListPolicies:input_type -> fence.v1.ListPoliciesRequest
-	14, // 14: fence.v1.FenceAdminService.GetPolicy:input_type -> fence.v1.GetPolicyRequest
-	1,  // 15: fence.v1.FenceAdminService.CreateEntities:output_type -> fence.v1.CreateEntitiesResponse
-	3,  // 16: fence.v1.FenceAdminService.DeleteEntity:output_type -> fence.v1.DeleteEntityResponse
-	5,  // 17: fence.v1.FenceAdminService.ListEntities:output_type -> fence.v1.ListEntitiesResponse
-	7,  // 18: fence.v1.FenceAdminService.GetEntity:output_type -> fence.v1.GetEntityResponse
-	9,  // 19: fence.v1.FenceAdminService.CreatePolicies:output_type -> fence.v1.CreatePoliciesResponse
-	11, // 20: fence.v1.FenceAdminService.DeletePolicy:output_type -> fence.v1.DeletePolicyResponse
-	13, // 21: fence.v1.FenceAdminService.ListPolicies:output_type -> fence.v1.ListPoliciesResponse
-	15, // 22: fence.v1.FenceAdminService.GetPolicy:output_type -> fence.v1.GetPolicyResponse
-	15, // [15:23] is the sub-list for method output_type
-	7,  // [7:15] is the sub-list for method input_type
-	7,  // [7:7] is the sub-list for extension type_name
-	7,  // [7:7] is the sub-list for extension extendee
-	0,  // [0:7] is the sub-list for field type_name
+	24, // 0: fence.v1.CreatePoliciesRequest.policies:type_name -> fence.v1.Policy
+	24, // 1: fence.v1.ListPoliciesResponse.policies:type_name -> fence.v1.Policy
+	24, // 2: fence.v1.GetPolicyResponse.policy:type_name -> fence.v1.Policy
+	25, // 3: fence.v1.CreateTenantRequest.tenant:type_name -> fence.v1.Entity
+	26, // 4: fence.v1.GetTenantRequest.id:type_name -> fence.v1.UID
+	25, // 5: fence.v1.GetTenantResponse.tenant:type_name -> fence.v1.Entity
+	25, // 6: fence.v1.CreateUserRequest.tenant:type_name -> fence.v1.Entity
+	25, // 7: fence.v1.CreateUserRequest.user:type_name -> fence.v1.Entity
+	26, // 8: fence.v1.DeleteUserRequest.uid:type_name -> fence.v1.UID
+	25, // 9: fence.v1.ListUsersResponse.users:type_name -> fence.v1.Entity
+	0,  // 10: fence.v1.FenceAdminService.CreatePolicies:input_type -> fence.v1.CreatePoliciesRequest
+	2,  // 11: fence.v1.FenceAdminService.DeletePolicy:input_type -> fence.v1.DeletePolicyRequest
+	4,  // 12: fence.v1.FenceAdminService.ListPolicies:input_type -> fence.v1.ListPoliciesRequest
+	6,  // 13: fence.v1.FenceAdminService.GetPolicy:input_type -> fence.v1.GetPolicyRequest
+	12, // 14: fence.v1.FenceAdminService.CreateUser:input_type -> fence.v1.CreateUserRequest
+	14, // 15: fence.v1.FenceAdminService.DeleteUser:input_type -> fence.v1.DeleteUserRequest
+	16, // 16: fence.v1.FenceAdminService.ListUsers:input_type -> fence.v1.ListUsersRequest
+	18, // 17: fence.v1.FenceAdminService.CreateRole:input_type -> fence.v1.CreateRoleRequest
+	20, // 18: fence.v1.FenceAdminService.DeleteRole:input_type -> fence.v1.DeleteRoleRequest
+	22, // 19: fence.v1.FenceAdminService.ListRoles:input_type -> fence.v1.ListRolesRequest
+	8,  // 20: fence.v1.FenceAdminService.CreateTenant:input_type -> fence.v1.CreateTenantRequest
+	10, // 21: fence.v1.FenceAdminService.GetTenant:input_type -> fence.v1.GetTenantRequest
+	1,  // 22: fence.v1.FenceAdminService.CreatePolicies:output_type -> fence.v1.CreatePoliciesResponse
+	3,  // 23: fence.v1.FenceAdminService.DeletePolicy:output_type -> fence.v1.DeletePolicyResponse
+	5,  // 24: fence.v1.FenceAdminService.ListPolicies:output_type -> fence.v1.ListPoliciesResponse
+	7,  // 25: fence.v1.FenceAdminService.GetPolicy:output_type -> fence.v1.GetPolicyResponse
+	13, // 26: fence.v1.FenceAdminService.CreateUser:output_type -> fence.v1.CreateUserResponse
+	15, // 27: fence.v1.FenceAdminService.DeleteUser:output_type -> fence.v1.DeleteUserResponse
+	17, // 28: fence.v1.FenceAdminService.ListUsers:output_type -> fence.v1.ListUsersResponse
+	19, // 29: fence.v1.FenceAdminService.CreateRole:output_type -> fence.v1.CreateRoleResponse
+	21, // 30: fence.v1.FenceAdminService.DeleteRole:output_type -> fence.v1.DeleteRoleResponse
+	23, // 31: fence.v1.FenceAdminService.ListRoles:output_type -> fence.v1.ListRolesResponse
+	9,  // 32: fence.v1.FenceAdminService.CreateTenant:output_type -> fence.v1.CreateTenantResponse
+	11, // 33: fence.v1.FenceAdminService.GetTenant:output_type -> fence.v1.GetTenantResponse
+	22, // [22:34] is the sub-list for method output_type
+	10, // [10:22] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_fence_v1_admin_proto_init() }
@@ -799,7 +1149,7 @@ func file_fence_v1_admin_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_fence_v1_admin_proto_rawDesc), len(file_fence_v1_admin_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   16,
+			NumMessages:   24,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

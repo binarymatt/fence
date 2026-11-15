@@ -33,18 +33,6 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
-	// FenceAdminServiceCreateEntitiesProcedure is the fully-qualified name of the FenceAdminService's
-	// CreateEntities RPC.
-	FenceAdminServiceCreateEntitiesProcedure = "/fence.v1.FenceAdminService/CreateEntities"
-	// FenceAdminServiceDeleteEntityProcedure is the fully-qualified name of the FenceAdminService's
-	// DeleteEntity RPC.
-	FenceAdminServiceDeleteEntityProcedure = "/fence.v1.FenceAdminService/DeleteEntity"
-	// FenceAdminServiceListEntitiesProcedure is the fully-qualified name of the FenceAdminService's
-	// ListEntities RPC.
-	FenceAdminServiceListEntitiesProcedure = "/fence.v1.FenceAdminService/ListEntities"
-	// FenceAdminServiceGetEntityProcedure is the fully-qualified name of the FenceAdminService's
-	// GetEntity RPC.
-	FenceAdminServiceGetEntityProcedure = "/fence.v1.FenceAdminService/GetEntity"
 	// FenceAdminServiceCreatePoliciesProcedure is the fully-qualified name of the FenceAdminService's
 	// CreatePolicies RPC.
 	FenceAdminServiceCreatePoliciesProcedure = "/fence.v1.FenceAdminService/CreatePolicies"
@@ -57,18 +45,46 @@ const (
 	// FenceAdminServiceGetPolicyProcedure is the fully-qualified name of the FenceAdminService's
 	// GetPolicy RPC.
 	FenceAdminServiceGetPolicyProcedure = "/fence.v1.FenceAdminService/GetPolicy"
+	// FenceAdminServiceCreateUserProcedure is the fully-qualified name of the FenceAdminService's
+	// CreateUser RPC.
+	FenceAdminServiceCreateUserProcedure = "/fence.v1.FenceAdminService/CreateUser"
+	// FenceAdminServiceDeleteUserProcedure is the fully-qualified name of the FenceAdminService's
+	// DeleteUser RPC.
+	FenceAdminServiceDeleteUserProcedure = "/fence.v1.FenceAdminService/DeleteUser"
+	// FenceAdminServiceListUsersProcedure is the fully-qualified name of the FenceAdminService's
+	// ListUsers RPC.
+	FenceAdminServiceListUsersProcedure = "/fence.v1.FenceAdminService/ListUsers"
+	// FenceAdminServiceCreateRoleProcedure is the fully-qualified name of the FenceAdminService's
+	// CreateRole RPC.
+	FenceAdminServiceCreateRoleProcedure = "/fence.v1.FenceAdminService/CreateRole"
+	// FenceAdminServiceDeleteRoleProcedure is the fully-qualified name of the FenceAdminService's
+	// DeleteRole RPC.
+	FenceAdminServiceDeleteRoleProcedure = "/fence.v1.FenceAdminService/DeleteRole"
+	// FenceAdminServiceListRolesProcedure is the fully-qualified name of the FenceAdminService's
+	// ListRoles RPC.
+	FenceAdminServiceListRolesProcedure = "/fence.v1.FenceAdminService/ListRoles"
+	// FenceAdminServiceCreateTenantProcedure is the fully-qualified name of the FenceAdminService's
+	// CreateTenant RPC.
+	FenceAdminServiceCreateTenantProcedure = "/fence.v1.FenceAdminService/CreateTenant"
+	// FenceAdminServiceGetTenantProcedure is the fully-qualified name of the FenceAdminService's
+	// GetTenant RPC.
+	FenceAdminServiceGetTenantProcedure = "/fence.v1.FenceAdminService/GetTenant"
 )
 
 // FenceAdminServiceClient is a client for the fence.v1.FenceAdminService service.
 type FenceAdminServiceClient interface {
-	CreateEntities(context.Context, *v1.CreateEntitiesRequest) (*v1.CreateEntitiesResponse, error)
-	DeleteEntity(context.Context, *v1.DeleteEntityRequest) (*v1.DeleteEntityResponse, error)
-	ListEntities(context.Context, *v1.ListEntitiesRequest) (*v1.ListEntitiesResponse, error)
-	GetEntity(context.Context, *v1.GetEntityRequest) (*v1.GetEntityResponse, error)
 	CreatePolicies(context.Context, *v1.CreatePoliciesRequest) (*v1.CreatePoliciesResponse, error)
 	DeletePolicy(context.Context, *v1.DeletePolicyRequest) (*v1.DeletePolicyResponse, error)
 	ListPolicies(context.Context, *v1.ListPoliciesRequest) (*v1.ListPoliciesResponse, error)
 	GetPolicy(context.Context, *v1.GetPolicyRequest) (*v1.GetPolicyResponse, error)
+	CreateUser(context.Context, *v1.CreateUserRequest) (*v1.CreateUserResponse, error)
+	DeleteUser(context.Context, *v1.DeleteUserRequest) (*v1.DeleteUserResponse, error)
+	ListUsers(context.Context, *v1.ListUsersRequest) (*v1.ListUsersResponse, error)
+	CreateRole(context.Context, *v1.CreateRoleRequest) (*v1.CreateRoleResponse, error)
+	DeleteRole(context.Context, *v1.DeleteRoleRequest) (*v1.DeleteRoleResponse, error)
+	ListRoles(context.Context, *v1.ListRolesRequest) (*v1.ListRolesResponse, error)
+	CreateTenant(context.Context, *v1.CreateTenantRequest) (*v1.CreateTenantResponse, error)
+	GetTenant(context.Context, *v1.GetTenantRequest) (*v1.GetTenantResponse, error)
 }
 
 // NewFenceAdminServiceClient constructs a client for the fence.v1.FenceAdminService service. By
@@ -82,30 +98,6 @@ func NewFenceAdminServiceClient(httpClient connect.HTTPClient, baseURL string, o
 	baseURL = strings.TrimRight(baseURL, "/")
 	fenceAdminServiceMethods := v1.File_fence_v1_admin_proto.Services().ByName("FenceAdminService").Methods()
 	return &fenceAdminServiceClient{
-		createEntities: connect.NewClient[v1.CreateEntitiesRequest, v1.CreateEntitiesResponse](
-			httpClient,
-			baseURL+FenceAdminServiceCreateEntitiesProcedure,
-			connect.WithSchema(fenceAdminServiceMethods.ByName("CreateEntities")),
-			connect.WithClientOptions(opts...),
-		),
-		deleteEntity: connect.NewClient[v1.DeleteEntityRequest, v1.DeleteEntityResponse](
-			httpClient,
-			baseURL+FenceAdminServiceDeleteEntityProcedure,
-			connect.WithSchema(fenceAdminServiceMethods.ByName("DeleteEntity")),
-			connect.WithClientOptions(opts...),
-		),
-		listEntities: connect.NewClient[v1.ListEntitiesRequest, v1.ListEntitiesResponse](
-			httpClient,
-			baseURL+FenceAdminServiceListEntitiesProcedure,
-			connect.WithSchema(fenceAdminServiceMethods.ByName("ListEntities")),
-			connect.WithClientOptions(opts...),
-		),
-		getEntity: connect.NewClient[v1.GetEntityRequest, v1.GetEntityResponse](
-			httpClient,
-			baseURL+FenceAdminServiceGetEntityProcedure,
-			connect.WithSchema(fenceAdminServiceMethods.ByName("GetEntity")),
-			connect.WithClientOptions(opts...),
-		),
 		createPolicies: connect.NewClient[v1.CreatePoliciesRequest, v1.CreatePoliciesResponse](
 			httpClient,
 			baseURL+FenceAdminServiceCreatePoliciesProcedure,
@@ -130,55 +122,71 @@ func NewFenceAdminServiceClient(httpClient connect.HTTPClient, baseURL string, o
 			connect.WithSchema(fenceAdminServiceMethods.ByName("GetPolicy")),
 			connect.WithClientOptions(opts...),
 		),
+		createUser: connect.NewClient[v1.CreateUserRequest, v1.CreateUserResponse](
+			httpClient,
+			baseURL+FenceAdminServiceCreateUserProcedure,
+			connect.WithSchema(fenceAdminServiceMethods.ByName("CreateUser")),
+			connect.WithClientOptions(opts...),
+		),
+		deleteUser: connect.NewClient[v1.DeleteUserRequest, v1.DeleteUserResponse](
+			httpClient,
+			baseURL+FenceAdminServiceDeleteUserProcedure,
+			connect.WithSchema(fenceAdminServiceMethods.ByName("DeleteUser")),
+			connect.WithClientOptions(opts...),
+		),
+		listUsers: connect.NewClient[v1.ListUsersRequest, v1.ListUsersResponse](
+			httpClient,
+			baseURL+FenceAdminServiceListUsersProcedure,
+			connect.WithSchema(fenceAdminServiceMethods.ByName("ListUsers")),
+			connect.WithClientOptions(opts...),
+		),
+		createRole: connect.NewClient[v1.CreateRoleRequest, v1.CreateRoleResponse](
+			httpClient,
+			baseURL+FenceAdminServiceCreateRoleProcedure,
+			connect.WithSchema(fenceAdminServiceMethods.ByName("CreateRole")),
+			connect.WithClientOptions(opts...),
+		),
+		deleteRole: connect.NewClient[v1.DeleteRoleRequest, v1.DeleteRoleResponse](
+			httpClient,
+			baseURL+FenceAdminServiceDeleteRoleProcedure,
+			connect.WithSchema(fenceAdminServiceMethods.ByName("DeleteRole")),
+			connect.WithClientOptions(opts...),
+		),
+		listRoles: connect.NewClient[v1.ListRolesRequest, v1.ListRolesResponse](
+			httpClient,
+			baseURL+FenceAdminServiceListRolesProcedure,
+			connect.WithSchema(fenceAdminServiceMethods.ByName("ListRoles")),
+			connect.WithClientOptions(opts...),
+		),
+		createTenant: connect.NewClient[v1.CreateTenantRequest, v1.CreateTenantResponse](
+			httpClient,
+			baseURL+FenceAdminServiceCreateTenantProcedure,
+			connect.WithSchema(fenceAdminServiceMethods.ByName("CreateTenant")),
+			connect.WithClientOptions(opts...),
+		),
+		getTenant: connect.NewClient[v1.GetTenantRequest, v1.GetTenantResponse](
+			httpClient,
+			baseURL+FenceAdminServiceGetTenantProcedure,
+			connect.WithSchema(fenceAdminServiceMethods.ByName("GetTenant")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // fenceAdminServiceClient implements FenceAdminServiceClient.
 type fenceAdminServiceClient struct {
-	createEntities *connect.Client[v1.CreateEntitiesRequest, v1.CreateEntitiesResponse]
-	deleteEntity   *connect.Client[v1.DeleteEntityRequest, v1.DeleteEntityResponse]
-	listEntities   *connect.Client[v1.ListEntitiesRequest, v1.ListEntitiesResponse]
-	getEntity      *connect.Client[v1.GetEntityRequest, v1.GetEntityResponse]
 	createPolicies *connect.Client[v1.CreatePoliciesRequest, v1.CreatePoliciesResponse]
 	deletePolicy   *connect.Client[v1.DeletePolicyRequest, v1.DeletePolicyResponse]
 	listPolicies   *connect.Client[v1.ListPoliciesRequest, v1.ListPoliciesResponse]
 	getPolicy      *connect.Client[v1.GetPolicyRequest, v1.GetPolicyResponse]
-}
-
-// CreateEntities calls fence.v1.FenceAdminService.CreateEntities.
-func (c *fenceAdminServiceClient) CreateEntities(ctx context.Context, req *v1.CreateEntitiesRequest) (*v1.CreateEntitiesResponse, error) {
-	response, err := c.createEntities.CallUnary(ctx, connect.NewRequest(req))
-	if response != nil {
-		return response.Msg, err
-	}
-	return nil, err
-}
-
-// DeleteEntity calls fence.v1.FenceAdminService.DeleteEntity.
-func (c *fenceAdminServiceClient) DeleteEntity(ctx context.Context, req *v1.DeleteEntityRequest) (*v1.DeleteEntityResponse, error) {
-	response, err := c.deleteEntity.CallUnary(ctx, connect.NewRequest(req))
-	if response != nil {
-		return response.Msg, err
-	}
-	return nil, err
-}
-
-// ListEntities calls fence.v1.FenceAdminService.ListEntities.
-func (c *fenceAdminServiceClient) ListEntities(ctx context.Context, req *v1.ListEntitiesRequest) (*v1.ListEntitiesResponse, error) {
-	response, err := c.listEntities.CallUnary(ctx, connect.NewRequest(req))
-	if response != nil {
-		return response.Msg, err
-	}
-	return nil, err
-}
-
-// GetEntity calls fence.v1.FenceAdminService.GetEntity.
-func (c *fenceAdminServiceClient) GetEntity(ctx context.Context, req *v1.GetEntityRequest) (*v1.GetEntityResponse, error) {
-	response, err := c.getEntity.CallUnary(ctx, connect.NewRequest(req))
-	if response != nil {
-		return response.Msg, err
-	}
-	return nil, err
+	createUser     *connect.Client[v1.CreateUserRequest, v1.CreateUserResponse]
+	deleteUser     *connect.Client[v1.DeleteUserRequest, v1.DeleteUserResponse]
+	listUsers      *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
+	createRole     *connect.Client[v1.CreateRoleRequest, v1.CreateRoleResponse]
+	deleteRole     *connect.Client[v1.DeleteRoleRequest, v1.DeleteRoleResponse]
+	listRoles      *connect.Client[v1.ListRolesRequest, v1.ListRolesResponse]
+	createTenant   *connect.Client[v1.CreateTenantRequest, v1.CreateTenantResponse]
+	getTenant      *connect.Client[v1.GetTenantRequest, v1.GetTenantResponse]
 }
 
 // CreatePolicies calls fence.v1.FenceAdminService.CreatePolicies.
@@ -217,16 +225,92 @@ func (c *fenceAdminServiceClient) GetPolicy(ctx context.Context, req *v1.GetPoli
 	return nil, err
 }
 
+// CreateUser calls fence.v1.FenceAdminService.CreateUser.
+func (c *fenceAdminServiceClient) CreateUser(ctx context.Context, req *v1.CreateUserRequest) (*v1.CreateUserResponse, error) {
+	response, err := c.createUser.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// DeleteUser calls fence.v1.FenceAdminService.DeleteUser.
+func (c *fenceAdminServiceClient) DeleteUser(ctx context.Context, req *v1.DeleteUserRequest) (*v1.DeleteUserResponse, error) {
+	response, err := c.deleteUser.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// ListUsers calls fence.v1.FenceAdminService.ListUsers.
+func (c *fenceAdminServiceClient) ListUsers(ctx context.Context, req *v1.ListUsersRequest) (*v1.ListUsersResponse, error) {
+	response, err := c.listUsers.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// CreateRole calls fence.v1.FenceAdminService.CreateRole.
+func (c *fenceAdminServiceClient) CreateRole(ctx context.Context, req *v1.CreateRoleRequest) (*v1.CreateRoleResponse, error) {
+	response, err := c.createRole.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// DeleteRole calls fence.v1.FenceAdminService.DeleteRole.
+func (c *fenceAdminServiceClient) DeleteRole(ctx context.Context, req *v1.DeleteRoleRequest) (*v1.DeleteRoleResponse, error) {
+	response, err := c.deleteRole.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// ListRoles calls fence.v1.FenceAdminService.ListRoles.
+func (c *fenceAdminServiceClient) ListRoles(ctx context.Context, req *v1.ListRolesRequest) (*v1.ListRolesResponse, error) {
+	response, err := c.listRoles.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// CreateTenant calls fence.v1.FenceAdminService.CreateTenant.
+func (c *fenceAdminServiceClient) CreateTenant(ctx context.Context, req *v1.CreateTenantRequest) (*v1.CreateTenantResponse, error) {
+	response, err := c.createTenant.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// GetTenant calls fence.v1.FenceAdminService.GetTenant.
+func (c *fenceAdminServiceClient) GetTenant(ctx context.Context, req *v1.GetTenantRequest) (*v1.GetTenantResponse, error) {
+	response, err := c.getTenant.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
 // FenceAdminServiceHandler is an implementation of the fence.v1.FenceAdminService service.
 type FenceAdminServiceHandler interface {
-	CreateEntities(context.Context, *v1.CreateEntitiesRequest) (*v1.CreateEntitiesResponse, error)
-	DeleteEntity(context.Context, *v1.DeleteEntityRequest) (*v1.DeleteEntityResponse, error)
-	ListEntities(context.Context, *v1.ListEntitiesRequest) (*v1.ListEntitiesResponse, error)
-	GetEntity(context.Context, *v1.GetEntityRequest) (*v1.GetEntityResponse, error)
 	CreatePolicies(context.Context, *v1.CreatePoliciesRequest) (*v1.CreatePoliciesResponse, error)
 	DeletePolicy(context.Context, *v1.DeletePolicyRequest) (*v1.DeletePolicyResponse, error)
 	ListPolicies(context.Context, *v1.ListPoliciesRequest) (*v1.ListPoliciesResponse, error)
 	GetPolicy(context.Context, *v1.GetPolicyRequest) (*v1.GetPolicyResponse, error)
+	CreateUser(context.Context, *v1.CreateUserRequest) (*v1.CreateUserResponse, error)
+	DeleteUser(context.Context, *v1.DeleteUserRequest) (*v1.DeleteUserResponse, error)
+	ListUsers(context.Context, *v1.ListUsersRequest) (*v1.ListUsersResponse, error)
+	CreateRole(context.Context, *v1.CreateRoleRequest) (*v1.CreateRoleResponse, error)
+	DeleteRole(context.Context, *v1.DeleteRoleRequest) (*v1.DeleteRoleResponse, error)
+	ListRoles(context.Context, *v1.ListRolesRequest) (*v1.ListRolesResponse, error)
+	CreateTenant(context.Context, *v1.CreateTenantRequest) (*v1.CreateTenantResponse, error)
+	GetTenant(context.Context, *v1.GetTenantRequest) (*v1.GetTenantResponse, error)
 }
 
 // NewFenceAdminServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -236,30 +320,6 @@ type FenceAdminServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewFenceAdminServiceHandler(svc FenceAdminServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	fenceAdminServiceMethods := v1.File_fence_v1_admin_proto.Services().ByName("FenceAdminService").Methods()
-	fenceAdminServiceCreateEntitiesHandler := connect.NewUnaryHandlerSimple(
-		FenceAdminServiceCreateEntitiesProcedure,
-		svc.CreateEntities,
-		connect.WithSchema(fenceAdminServiceMethods.ByName("CreateEntities")),
-		connect.WithHandlerOptions(opts...),
-	)
-	fenceAdminServiceDeleteEntityHandler := connect.NewUnaryHandlerSimple(
-		FenceAdminServiceDeleteEntityProcedure,
-		svc.DeleteEntity,
-		connect.WithSchema(fenceAdminServiceMethods.ByName("DeleteEntity")),
-		connect.WithHandlerOptions(opts...),
-	)
-	fenceAdminServiceListEntitiesHandler := connect.NewUnaryHandlerSimple(
-		FenceAdminServiceListEntitiesProcedure,
-		svc.ListEntities,
-		connect.WithSchema(fenceAdminServiceMethods.ByName("ListEntities")),
-		connect.WithHandlerOptions(opts...),
-	)
-	fenceAdminServiceGetEntityHandler := connect.NewUnaryHandlerSimple(
-		FenceAdminServiceGetEntityProcedure,
-		svc.GetEntity,
-		connect.WithSchema(fenceAdminServiceMethods.ByName("GetEntity")),
-		connect.WithHandlerOptions(opts...),
-	)
 	fenceAdminServiceCreatePoliciesHandler := connect.NewUnaryHandlerSimple(
 		FenceAdminServiceCreatePoliciesProcedure,
 		svc.CreatePolicies,
@@ -284,16 +344,56 @@ func NewFenceAdminServiceHandler(svc FenceAdminServiceHandler, opts ...connect.H
 		connect.WithSchema(fenceAdminServiceMethods.ByName("GetPolicy")),
 		connect.WithHandlerOptions(opts...),
 	)
+	fenceAdminServiceCreateUserHandler := connect.NewUnaryHandlerSimple(
+		FenceAdminServiceCreateUserProcedure,
+		svc.CreateUser,
+		connect.WithSchema(fenceAdminServiceMethods.ByName("CreateUser")),
+		connect.WithHandlerOptions(opts...),
+	)
+	fenceAdminServiceDeleteUserHandler := connect.NewUnaryHandlerSimple(
+		FenceAdminServiceDeleteUserProcedure,
+		svc.DeleteUser,
+		connect.WithSchema(fenceAdminServiceMethods.ByName("DeleteUser")),
+		connect.WithHandlerOptions(opts...),
+	)
+	fenceAdminServiceListUsersHandler := connect.NewUnaryHandlerSimple(
+		FenceAdminServiceListUsersProcedure,
+		svc.ListUsers,
+		connect.WithSchema(fenceAdminServiceMethods.ByName("ListUsers")),
+		connect.WithHandlerOptions(opts...),
+	)
+	fenceAdminServiceCreateRoleHandler := connect.NewUnaryHandlerSimple(
+		FenceAdminServiceCreateRoleProcedure,
+		svc.CreateRole,
+		connect.WithSchema(fenceAdminServiceMethods.ByName("CreateRole")),
+		connect.WithHandlerOptions(opts...),
+	)
+	fenceAdminServiceDeleteRoleHandler := connect.NewUnaryHandlerSimple(
+		FenceAdminServiceDeleteRoleProcedure,
+		svc.DeleteRole,
+		connect.WithSchema(fenceAdminServiceMethods.ByName("DeleteRole")),
+		connect.WithHandlerOptions(opts...),
+	)
+	fenceAdminServiceListRolesHandler := connect.NewUnaryHandlerSimple(
+		FenceAdminServiceListRolesProcedure,
+		svc.ListRoles,
+		connect.WithSchema(fenceAdminServiceMethods.ByName("ListRoles")),
+		connect.WithHandlerOptions(opts...),
+	)
+	fenceAdminServiceCreateTenantHandler := connect.NewUnaryHandlerSimple(
+		FenceAdminServiceCreateTenantProcedure,
+		svc.CreateTenant,
+		connect.WithSchema(fenceAdminServiceMethods.ByName("CreateTenant")),
+		connect.WithHandlerOptions(opts...),
+	)
+	fenceAdminServiceGetTenantHandler := connect.NewUnaryHandlerSimple(
+		FenceAdminServiceGetTenantProcedure,
+		svc.GetTenant,
+		connect.WithSchema(fenceAdminServiceMethods.ByName("GetTenant")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/fence.v1.FenceAdminService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
-		case FenceAdminServiceCreateEntitiesProcedure:
-			fenceAdminServiceCreateEntitiesHandler.ServeHTTP(w, r)
-		case FenceAdminServiceDeleteEntityProcedure:
-			fenceAdminServiceDeleteEntityHandler.ServeHTTP(w, r)
-		case FenceAdminServiceListEntitiesProcedure:
-			fenceAdminServiceListEntitiesHandler.ServeHTTP(w, r)
-		case FenceAdminServiceGetEntityProcedure:
-			fenceAdminServiceGetEntityHandler.ServeHTTP(w, r)
 		case FenceAdminServiceCreatePoliciesProcedure:
 			fenceAdminServiceCreatePoliciesHandler.ServeHTTP(w, r)
 		case FenceAdminServiceDeletePolicyProcedure:
@@ -302,6 +402,22 @@ func NewFenceAdminServiceHandler(svc FenceAdminServiceHandler, opts ...connect.H
 			fenceAdminServiceListPoliciesHandler.ServeHTTP(w, r)
 		case FenceAdminServiceGetPolicyProcedure:
 			fenceAdminServiceGetPolicyHandler.ServeHTTP(w, r)
+		case FenceAdminServiceCreateUserProcedure:
+			fenceAdminServiceCreateUserHandler.ServeHTTP(w, r)
+		case FenceAdminServiceDeleteUserProcedure:
+			fenceAdminServiceDeleteUserHandler.ServeHTTP(w, r)
+		case FenceAdminServiceListUsersProcedure:
+			fenceAdminServiceListUsersHandler.ServeHTTP(w, r)
+		case FenceAdminServiceCreateRoleProcedure:
+			fenceAdminServiceCreateRoleHandler.ServeHTTP(w, r)
+		case FenceAdminServiceDeleteRoleProcedure:
+			fenceAdminServiceDeleteRoleHandler.ServeHTTP(w, r)
+		case FenceAdminServiceListRolesProcedure:
+			fenceAdminServiceListRolesHandler.ServeHTTP(w, r)
+		case FenceAdminServiceCreateTenantProcedure:
+			fenceAdminServiceCreateTenantHandler.ServeHTTP(w, r)
+		case FenceAdminServiceGetTenantProcedure:
+			fenceAdminServiceGetTenantHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -310,22 +426,6 @@ func NewFenceAdminServiceHandler(svc FenceAdminServiceHandler, opts ...connect.H
 
 // UnimplementedFenceAdminServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedFenceAdminServiceHandler struct{}
-
-func (UnimplementedFenceAdminServiceHandler) CreateEntities(context.Context, *v1.CreateEntitiesRequest) (*v1.CreateEntitiesResponse, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("fence.v1.FenceAdminService.CreateEntities is not implemented"))
-}
-
-func (UnimplementedFenceAdminServiceHandler) DeleteEntity(context.Context, *v1.DeleteEntityRequest) (*v1.DeleteEntityResponse, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("fence.v1.FenceAdminService.DeleteEntity is not implemented"))
-}
-
-func (UnimplementedFenceAdminServiceHandler) ListEntities(context.Context, *v1.ListEntitiesRequest) (*v1.ListEntitiesResponse, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("fence.v1.FenceAdminService.ListEntities is not implemented"))
-}
-
-func (UnimplementedFenceAdminServiceHandler) GetEntity(context.Context, *v1.GetEntityRequest) (*v1.GetEntityResponse, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("fence.v1.FenceAdminService.GetEntity is not implemented"))
-}
 
 func (UnimplementedFenceAdminServiceHandler) CreatePolicies(context.Context, *v1.CreatePoliciesRequest) (*v1.CreatePoliciesResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("fence.v1.FenceAdminService.CreatePolicies is not implemented"))
@@ -341,4 +441,36 @@ func (UnimplementedFenceAdminServiceHandler) ListPolicies(context.Context, *v1.L
 
 func (UnimplementedFenceAdminServiceHandler) GetPolicy(context.Context, *v1.GetPolicyRequest) (*v1.GetPolicyResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("fence.v1.FenceAdminService.GetPolicy is not implemented"))
+}
+
+func (UnimplementedFenceAdminServiceHandler) CreateUser(context.Context, *v1.CreateUserRequest) (*v1.CreateUserResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("fence.v1.FenceAdminService.CreateUser is not implemented"))
+}
+
+func (UnimplementedFenceAdminServiceHandler) DeleteUser(context.Context, *v1.DeleteUserRequest) (*v1.DeleteUserResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("fence.v1.FenceAdminService.DeleteUser is not implemented"))
+}
+
+func (UnimplementedFenceAdminServiceHandler) ListUsers(context.Context, *v1.ListUsersRequest) (*v1.ListUsersResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("fence.v1.FenceAdminService.ListUsers is not implemented"))
+}
+
+func (UnimplementedFenceAdminServiceHandler) CreateRole(context.Context, *v1.CreateRoleRequest) (*v1.CreateRoleResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("fence.v1.FenceAdminService.CreateRole is not implemented"))
+}
+
+func (UnimplementedFenceAdminServiceHandler) DeleteRole(context.Context, *v1.DeleteRoleRequest) (*v1.DeleteRoleResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("fence.v1.FenceAdminService.DeleteRole is not implemented"))
+}
+
+func (UnimplementedFenceAdminServiceHandler) ListRoles(context.Context, *v1.ListRolesRequest) (*v1.ListRolesResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("fence.v1.FenceAdminService.ListRoles is not implemented"))
+}
+
+func (UnimplementedFenceAdminServiceHandler) CreateTenant(context.Context, *v1.CreateTenantRequest) (*v1.CreateTenantResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("fence.v1.FenceAdminService.CreateTenant is not implemented"))
+}
+
+func (UnimplementedFenceAdminServiceHandler) GetTenant(context.Context, *v1.GetTenantRequest) (*v1.GetTenantResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("fence.v1.FenceAdminService.GetTenant is not implemented"))
 }
