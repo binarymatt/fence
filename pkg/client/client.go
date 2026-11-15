@@ -5,7 +5,6 @@ import (
 	"sync"
 
 	"github.com/cedar-policy/cedar-go"
-	"google.golang.org/protobuf/types/known/structpb"
 
 	fencev1 "github.com/binarymatt/fence/gen/fence/v1"
 	"github.com/binarymatt/fence/internal/translation"
@@ -17,10 +16,6 @@ type Client struct {
 	provider providers.FenceProvider
 }
 
-func (c *Client) IsAllowed(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID, record map[string]*structpb.Value) (*fencev1.IsAllowedResponse, error) {
-	return c.provider.IsAllowed(ctx, principal, action, resource, record, nil)
-}
-
 // Authorize mirrors cedar.Authorize but evaluates the request through the
 // client's provider. It fails closed: if the provider returns an error, the
 // decision is Deny and the error is reported in the diagnostic.
@@ -30,6 +25,7 @@ func (c *Client) IsAllowed(ctx context.Context, principal *fencev1.UID, action *
 func (c *Client) Authorize(req cedar.Request, entities []cedar.Entity) (cedar.Decision, cedar.Diagnostic) {
 	fenceEntities := make([]*fencev1.Entity, len(entities))
 	for i, ent := range entities {
+		fenceEntities[i] = translation.CedarEntityToFence(ent)
 	}
 	resp, err := c.provider.IsAllowed(
 		context.Background(),
@@ -37,6 +33,7 @@ func (c *Client) Authorize(req cedar.Request, entities []cedar.Entity) (cedar.De
 		cedarToFenceUID(req.Action),
 		cedarToFenceUID(req.Resource),
 		translation.RecordToMap(req.Context),
+		fenceEntities,
 	)
 	if err != nil {
 		return cedar.Deny, cedar.Diagnostic{

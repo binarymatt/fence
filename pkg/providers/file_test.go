@@ -95,11 +95,11 @@ func TestFileIsAllowed(t *testing.T) {
 		Type: "Action",
 		Id:   "view",
 	}
-	resp, err := p.IsAllowed(context.Background(), bob, action, resource, nil)
+	resp, err := p.IsAllowed(context.Background(), bob, action, resource, nil, nil)
 	must.NoError(t, err)
 	must.True(t, resp.Decision)
 
-	resp, err = p.IsAllowed(context.Background(), jane, action, resource, nil)
+	resp, err = p.IsAllowed(context.Background(), jane, action, resource, nil, nil)
 	must.NoError(t, err)
 	must.False(t, resp.Decision)
 	must.Eq(t, `User::"jane" not allowed to Action::"view" on Photo::"VacationPhoto94.jpg"`, resp.Message)

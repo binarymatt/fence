@@ -168,3 +168,28 @@ func FenceToEntity(e *fencev1.Entity) cedar.Entity {
 		Parents:    parents,
 	}
 }
+func CedarEntityToFence(c cedar.Entity) *fencev1.Entity {
+	parents := c.Parents.Slice()
+	fenceParents := make([]*fencev1.UID, len(parents))
+	for i, uid := range parents {
+		fenceParents[i] = CedarToFenceUID(uid)
+	}
+	attrs := RecordToMap(c.Attributes)
+	tags := RecordToMap(c.Tags)
+	return &fencev1.Entity{
+		Uid:        CedarToFenceUID(c.UID),
+		Parents:    fenceParents,
+		Attributes: attrs,
+		Tags:       tags,
+	}
+}
+
+func newUID(uidType, id string) *fencev1.UID {
+	return &fencev1.UID{
+		Type: uidType,
+		Id:   id,
+	}
+}
+func CedarToFenceUID(uid cedar.EntityUID) *fencev1.UID {
+	return newUID(string(uid.Type), string(uid.ID))
+}

@@ -16,6 +16,7 @@ var (
 	ErrEntityNotFound      = errors.New("entity not found")
 	ErrPolicyNotFound      = errors.New("policy not found")
 	ErrPolicyAlreadyExists = errors.New("policy already exists")
+	ErrEntityAlreadyExists = errors.New("entity already exists")
 )
 
 var _ DataStore = (*sqlDataStore)(nil)
@@ -95,7 +96,16 @@ func (s *sqlDataStore) getPolicy(ctx context.Context, id string) (*cedar.Policy,
 	}
 	return &cPolicy, nil
 }
-
+func (s *sqlDataStore) getEntity(ctx context.Context, uid *fencev1.UID) (*fencev1.Entity, error) {
+	if uid == nil {
+		return nil, fmt.Errorf("nil entity")
+	}
+	var entity Entity
+	if err := s.db.NewSelect().Model(&entity).Where("id = ? AND type =? ", uid.GetId(), uid.GetType()).Scan(ctx); err != nil {
+		return nil, err
+	}
+	return entity.ToProto(), nil
+}
 func (s *sqlDataStore) getEntities(ctx context.Context) ([]*fencev1.Entity, error) {
 	var entities []Entity
 	if err := s.db.NewSelect().Model(&entities).Scan(ctx); err != nil {
@@ -133,6 +143,7 @@ func (s *sqlDataStore) getEntityMap(ctx context.Context) (cedar.EntityMap, error
 	return em, nil
 }
 
+// TODO: retain attributes and tags as json fields
 func (s *sqlDataStore) addEntity(ctx context.Context, e *fencev1.Entity) error {
 	uids := make([]UID, len(e.Parents))
 	for _, uid := range e.Parents {

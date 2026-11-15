@@ -7,6 +7,7 @@ import (
 
 	"github.com/cedar-policy/cedar-go"
 	"github.com/shoenig/test/must"
+	"google.golang.org/protobuf/types/known/structpb"
 
 	fencev1 "github.com/binarymatt/fence/gen/fence/v1"
 	"github.com/binarymatt/fence/pkg/providers"
@@ -16,34 +17,6 @@ func TestNew(t *testing.T) {
 	mock := providers.NewMockFenceProvider(t)
 	c := New(mock)
 	must.NotNil(t, c.provider)
-}
-func TestIsAllowed(t *testing.T) {
-	principal := &fencev1.UID{}
-	resource := &fencev1.UID{}
-	action := &fencev1.UID{}
-	cases := []struct {
-		name string
-		err  error
-	}{
-		{
-			name: "happy path",
-		},
-		{
-			name: "oops",
-			err:  errors.New("oops"),
-		},
-	}
-
-	for _, tc := range cases {
-		t.Run(tc.name, func(t *testing.T) {
-			mockState := providers.NewMockFenceProvider(t)
-			mockState.EXPECT().IsAllowed(context.Background(), principal, action, resource, nil).Return(&fencev1.IsAllowedResponse{Decision: true}, tc.err)
-			c := New(mockState)
-			resp, err := c.IsAllowed(context.Background(), principal, action, resource, nil)
-			must.ErrorIs(t, err, tc.err)
-			must.True(t, resp.Decision)
-		})
-	}
 }
 
 func TestAuthorize(t *testing.T) {
@@ -97,9 +70,9 @@ func TestAuthorize(t *testing.T) {
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
 			mockState := providers.NewMockFenceProvider(t)
-			mockState.EXPECT().IsAllowed(context.Background(), principal, action, resource, nil).Return(tc.resp, tc.err)
+			mockState.EXPECT().IsAllowed(context.Background(), principal, action, resource, map[string]*structpb.Value{}, []*fencev1.Entity{}).Return(tc.resp, tc.err)
 			c := New(mockState)
-			decision, diag := c.Authorize(req)
+			decision, diag := c.Authorize(req, nil)
 			must.Eq(t, tc.expected, decision)
 			must.Eq(t, tc.expectedDiag, diag)
 		})

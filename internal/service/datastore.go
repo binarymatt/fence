@@ -18,4 +18,5 @@ type DataStore interface {
 	getEntityMap(ctx context.Context) (cedar.EntityMap, error)
 	addEntity(ctx context.Context, entity *fencev1.Entity) error
 	deleteEntity(ctx context.Context, uid *fencev1.UID) error
+	getEntity(ctx context.Context, uid *fencev1.UID) (*fencev1.Entity, error)
 }

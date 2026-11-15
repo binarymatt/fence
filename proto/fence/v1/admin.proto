@@ -50,6 +50,17 @@ message GetPolicyResponse {
 
 message CreateTenantRequest {
   Entity tenant = 1 [(buf.validate.field).required = true];
+  // tenant UID must have Tenant as type and no parents
+  option (buf.validate.message).cel = {
+    id: "tenant.type"
+    message: "must be tenant entity"
+    expression: "this.tenant.uid.type == 'Tenant'"
+  };
+  option (buf.validate.message).cel = {
+    id: "tenant.no.parents"
+    message: "must have no parents"
+    expression: "this.tenant.parents == []"
+  };
 }
 message CreateTenantResponse {}
 

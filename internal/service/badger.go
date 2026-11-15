@@ -114,6 +114,26 @@ func (bds *badgerDataStore) getPolicy(ctx context.Context, id string) (*cedar.Po
 	})
 	return &policy, err
 }
+func (bds *badgerDataStore) getEntity(ctx context.Context, uid *fencev1.UID) (*fencev1.Entity, error) {
+	var entity fencev1.Entity
+	err := bds.db.View(func(txn *badger.Txn) error {
+
+		id := entityId(uid.GetType(), uid.GetId())
+		item, err := txn.Get([]byte(id))
+		if err != nil {
+			return nil
+		}
+		data, err := item.ValueCopy(nil)
+		if err != nil {
+			return err
+		}
+		if err := proto.Unmarshal(data, &entity); err != nil {
+			return err
+		}
+		return nil
+	})
+	return &entity, err
+}
 func (bds *badgerDataStore) getEntities(ctx context.Context) ([]*fencev1.Entity, error) {
 	entities := []*fencev1.Entity{}
 	err := bds.db.View(func(txn *badger.Txn) error {

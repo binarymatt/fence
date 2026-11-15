@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/hashicorp/go-retryablehttp"
-	"github.com/scalalang2/golang-fifo/sieve"
 	"google.golang.org/protobuf/types/known/structpb"
 
 	fencev1 "github.com/binarymatt/fence/gen/fence/v1"
@@ -47,7 +46,7 @@ type RemoteServerProvider struct {
 	client fencev1connect.FenceServiceClient
 }
 
-func (a *RemoteServerProvider) IsAllowed(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID, record map[string]*structpb.Value) (*fencev1.IsAllowedResponse, error) {
+func (a *RemoteServerProvider) IsAllowed(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID, record map[string]*structpb.Value, entities []*fencev1.Entity) (*fencev1.IsAllowedResponse, error) {
 	req := &fencev1.IsAllowedRequest{
 		Principal: principal,
 		Action:    action,

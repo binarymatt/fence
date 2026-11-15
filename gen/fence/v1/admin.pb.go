@@ -1009,9 +1009,11 @@ const file_fence_v1_admin_proto_rawDesc = "" +
 	"\x10GetPolicyRequest\x12\x16\n" +
 	"\x02id\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x02id\"=\n" +
 	"\x11GetPolicyResponse\x12(\n" +
-	"\x06policy\x18\x01 \x01(\v2\x10.fence.v1.PolicyR\x06policy\"G\n" +
+	"\x06policy\x18\x01 \x01(\v2\x10.fence.v1.PolicyR\x06policy\"\xdc\x01\n" +
 	"\x13CreateTenantRequest\x120\n" +
-	"\x06tenant\x18\x01 \x01(\v2\x10.fence.v1.EntityB\x06\xbaH\x03\xc8\x01\x01R\x06tenant\"\x16\n" +
+	"\x06tenant\x18\x01 \x01(\v2\x10.fence.v1.EntityB\x06\xbaH\x03\xc8\x01\x01R\x06tenant:\x92\x01\xbaH\x8e\x01\x1aF\n" +
+	"\vtenant.type\x12\x15must be tenant entity\x1a this.tenant.uid.type == 'Tenant'\x1aD\n" +
+	"\x11tenant.no.parents\x12\x14must have no parents\x1a\x19this.tenant.parents == []\"\x16\n" +
 	"\x14CreateTenantResponse\"9\n" +
 	"\x10GetTenantRequest\x12%\n" +
 	"\x02id\x18\x01 \x01(\v2\r.fence.v1.UIDB\x06\xbaH\x03\xc8\x01\x01R\x02id\"=\n" +

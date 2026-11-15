@@ -49,8 +49,8 @@ func (_m *MockFenceProvider) EXPECT() *MockFenceProvider_Expecter {
 }
 
 // IsAllowed provides a mock function for the type MockFenceProvider
-func (_mock *MockFenceProvider) IsAllowed(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID, record map[string]*structpb.Value) (*fencev1.IsAllowedResponse, error) {
-	ret := _mock.Called(ctx, principal, action, resource, record)
+func (_mock *MockFenceProvider) IsAllowed(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID, record map[string]*structpb.Value, entities []*fencev1.Entity) (*fencev1.IsAllowedResponse, error) {
+	ret := _mock.Called(ctx, principal, action, resource, record, entities)
 
 	if len(ret) == 0 {
 		panic("no return value specified for IsAllowed")
@@ -58,18 +58,18 @@ func (_mock *MockFenceProvider) IsAllowed(ctx context.Context, principal *fencev
 
 	var r0 *fencev1.IsAllowedResponse
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, *fencev1.UID, *fencev1.UID, *fencev1.UID, map[string]*structpb.Value) (*fencev1.IsAllowedResponse, error)); ok {
-		return returnFunc(ctx, principal, action, resource, record)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *fencev1.UID, *fencev1.UID, *fencev1.UID, map[string]*structpb.Value, []*fencev1.Entity) (*fencev1.IsAllowedResponse, error)); ok {
+		return returnFunc(ctx, principal, action, resource, record, entities)
 	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context, *fencev1.UID, *fencev1.UID, *fencev1.UID, map[string]*structpb.Value) *fencev1.IsAllowedResponse); ok {
-		r0 = returnFunc(ctx, principal, action, resource, record)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *fencev1.UID, *fencev1.UID, *fencev1.UID, map[string]*structpb.Value, []*fencev1.Entity) *fencev1.IsAllowedResponse); ok {
+		r0 = returnFunc(ctx, principal, action, resource, record, entities)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*fencev1.IsAllowedResponse)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func(context.Context, *fencev1.UID, *fencev1.UID, *fencev1.UID, map[string]*structpb.Value) error); ok {
-		r1 = returnFunc(ctx, principal, action, resource, record)
+	if returnFunc, ok := ret.Get(1).(func(context.Context, *fencev1.UID, *fencev1.UID, *fencev1.UID, map[string]*structpb.Value, []*fencev1.Entity) error); ok {
+		r1 = returnFunc(ctx, principal, action, resource, record, entities)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -87,11 +87,12 @@ type MockFenceProvider_IsAllowed_Call struct {
 //   - action *fencev1.UID
 //   - resource *fencev1.UID
 //   - record map[string]*structpb.Value
-func (_e *MockFenceProvider_Expecter) IsAllowed(ctx any, principal any, action any, resource any, record any) *MockFenceProvider_IsAllowed_Call {
-	return &MockFenceProvider_IsAllowed_Call{Call: _e.mock.On("IsAllowed", ctx, principal, action, resource, record)}
+//   - entities []*fencev1.Entity
+func (_e *MockFenceProvider_Expecter) IsAllowed(ctx any, principal any, action any, resource any, record any, entities any) *MockFenceProvider_IsAllowed_Call {
+	return &MockFenceProvider_IsAllowed_Call{Call: _e.mock.On("IsAllowed", ctx, principal, action, resource, record, entities)}
 }
 
-func (_c *MockFenceProvider_IsAllowed_Call) Run(run func(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID, record map[string]*structpb.Value)) *MockFenceProvider_IsAllowed_Call {
+func (_c *MockFenceProvider_IsAllowed_Call) Run(run func(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID, record map[string]*structpb.Value, entities []*fencev1.Entity)) *MockFenceProvider_IsAllowed_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -113,12 +114,17 @@ func (_c *MockFenceProvider_IsAllowed_Call) Run(run func(ctx context.Context, pr
 		if args[4] != nil {
 			arg4 = args[4].(map[string]*structpb.Value)
 		}
+		var arg5 []*fencev1.Entity
+		if args[5] != nil {
+			arg5 = args[5].([]*fencev1.Entity)
+		}
 		run(
 			arg0,
 			arg1,
 			arg2,
 			arg3,
 			arg4,
+			arg5,
 		)
 	})
 	return _c
@@ -129,7 +135,7 @@ func (_c *MockFenceProvider_IsAllowed_Call) Return(isAllowedResponse *fencev1.Is
 	return _c
 }
 
-func (_c *MockFenceProvider_IsAllowed_Call) RunAndReturn(run func(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID, record map[string]*structpb.Value) (*fencev1.IsAllowedResponse, error)) *MockFenceProvider_IsAllowed_Call {
+func (_c *MockFenceProvider_IsAllowed_Call) RunAndReturn(run func(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID, record map[string]*structpb.Value, entities []*fencev1.Entity) (*fencev1.IsAllowedResponse, error)) *MockFenceProvider_IsAllowed_Call {
 	_c.Call.Return(run)
 	return _c
 }

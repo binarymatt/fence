@@ -23,7 +23,7 @@ type FileProvider struct {
 	fs         afero.Fs
 }
 
-func (s *FileProvider) IsAllowed(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID, c map[string]*structpb.Value) (*fencev1.IsAllowedResponse, error) {
+func (s *FileProvider) IsAllowed(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID, c map[string]*structpb.Value, entities []*fencev1.Entity) (*fencev1.IsAllowedResponse, error) {
 	cPrincipal := uidToCedar(principal)
 	cResource := uidToCedar(resource)
 	cAction := uidToCedar(action)

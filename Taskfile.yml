@@ -5,6 +5,7 @@ tasks:
       - go test ./... -cover
   proto:
     cmds:
+      - rm -rf gen
       - buf lint
       - buf generate
   go:mocks:
