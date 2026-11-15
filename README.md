@@ -30,3 +30,9 @@ Cedar based auth system
 
 - switch entity management to just be for roles and users
 - IsAllowed takes in an additional set of entities that can be merged with the users and roles stored in the provider
+
+## Resources
+
+- https://docs.cedarpolicy.com/bestpractices/bp-separate-principals.html
+- https://docs.cedarpolicy.com/bestpractices/bp-implementing-roles-templates.html
+- https://cedarpolicy.com/en/playground
