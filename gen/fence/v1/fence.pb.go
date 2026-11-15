@@ -29,6 +29,7 @@ type IsAllowedRequest struct {
 	Action        *UID                       `protobuf:"bytes,2,opt,name=action,proto3" json:"action,omitempty"`
 	Resource      *UID                       `protobuf:"bytes,3,opt,name=resource,proto3" json:"resource,omitempty"`
 	Context       map[string]*structpb.Value `protobuf:"bytes,4,rep,name=context,proto3" json:"context,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	Entities      []*Entity                  `protobuf:"bytes,5,rep,name=entities,proto3" json:"entities,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -87,6 +88,13 @@ func (x *IsAllowedRequest) GetResource() *UID {
 func (x *IsAllowedRequest) GetContext() map[string]*structpb.Value {
 	if x != nil {
 		return x.Context
+	}
+	return nil
+}
+
+func (x *IsAllowedRequest) GetEntities() []*Entity {
+	if x != nil {
+		return x.Entities
 	}
 	return nil
 }
@@ -567,12 +575,13 @@ var File_fence_v1_fence_proto protoreflect.FileDescriptor
 
 const file_fence_v1_fence_proto_rawDesc = "" +
 	"\n" +
-	"\x14fence/v1/fence.proto\x12\bfence.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\"\xc0\x02\n" +
+	"\x14fence/v1/fence.proto\x12\bfence.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\"\xee\x02\n" +
 	"\x10IsAllowedRequest\x123\n" +
 	"\tprincipal\x18\x01 \x01(\v2\r.fence.v1.UIDB\x06\xbaH\x03\xc8\x01\x01R\tprincipal\x12-\n" +
 	"\x06action\x18\x02 \x01(\v2\r.fence.v1.UIDB\x06\xbaH\x03\xc8\x01\x01R\x06action\x121\n" +
 	"\bresource\x18\x03 \x01(\v2\r.fence.v1.UIDB\x06\xbaH\x03\xc8\x01\x01R\bresource\x12A\n" +
-	"\acontext\x18\x04 \x03(\v2'.fence.v1.IsAllowedRequest.ContextEntryR\acontext\x1aR\n" +
+	"\acontext\x18\x04 \x03(\v2'.fence.v1.IsAllowedRequest.ContextEntryR\acontext\x12,\n" +
+	"\bentities\x18\x05 \x03(\v2\x10.fence.v1.EntityR\bentities\x1aR\n" +
 	"\fContextEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12,\n" +
 	"\x05value\x18\x02 \x01(\v2\x16.google.protobuf.ValueR\x05value:\x028\x01\"\x82\x01\n" +
@@ -655,25 +664,26 @@ var file_fence_v1_fence_proto_depIdxs = []int32{
 	6,  // 1: fence.v1.IsAllowedRequest.action:type_name -> fence.v1.UID
 	6,  // 2: fence.v1.IsAllowedRequest.resource:type_name -> fence.v1.UID
 	9,  // 3: fence.v1.IsAllowedRequest.context:type_name -> fence.v1.IsAllowedRequest.ContextEntry
-	2,  // 4: fence.v1.IsAllowedResponse.diagnostics:type_name -> fence.v1.Diagnostics
-	3,  // 5: fence.v1.Diagnostics.reasons:type_name -> fence.v1.Reason
-	5,  // 6: fence.v1.Diagnostics.errors:type_name -> fence.v1.Error
-	4,  // 7: fence.v1.Reason.position:type_name -> fence.v1.Position
-	4,  // 8: fence.v1.Error.position:type_name -> fence.v1.Position
-	6,  // 9: fence.v1.Entity.uid:type_name -> fence.v1.UID
-	6,  // 10: fence.v1.Entity.parents:type_name -> fence.v1.UID
-	10, // 11: fence.v1.Entity.attributes:type_name -> fence.v1.Entity.AttributesEntry
-	11, // 12: fence.v1.Entity.tags:type_name -> fence.v1.Entity.TagsEntry
-	12, // 13: fence.v1.IsAllowedRequest.ContextEntry.value:type_name -> google.protobuf.Value
-	12, // 14: fence.v1.Entity.AttributesEntry.value:type_name -> google.protobuf.Value
-	12, // 15: fence.v1.Entity.TagsEntry.value:type_name -> google.protobuf.Value
-	0,  // 16: fence.v1.FenceService.IsAllowed:input_type -> fence.v1.IsAllowedRequest
-	1,  // 17: fence.v1.FenceService.IsAllowed:output_type -> fence.v1.IsAllowedResponse
-	17, // [17:18] is the sub-list for method output_type
-	16, // [16:17] is the sub-list for method input_type
-	16, // [16:16] is the sub-list for extension type_name
-	16, // [16:16] is the sub-list for extension extendee
-	0,  // [0:16] is the sub-list for field type_name
+	7,  // 4: fence.v1.IsAllowedRequest.entities:type_name -> fence.v1.Entity
+	2,  // 5: fence.v1.IsAllowedResponse.diagnostics:type_name -> fence.v1.Diagnostics
+	3,  // 6: fence.v1.Diagnostics.reasons:type_name -> fence.v1.Reason
+	5,  // 7: fence.v1.Diagnostics.errors:type_name -> fence.v1.Error
+	4,  // 8: fence.v1.Reason.position:type_name -> fence.v1.Position
+	4,  // 9: fence.v1.Error.position:type_name -> fence.v1.Position
+	6,  // 10: fence.v1.Entity.uid:type_name -> fence.v1.UID
+	6,  // 11: fence.v1.Entity.parents:type_name -> fence.v1.UID
+	10, // 12: fence.v1.Entity.attributes:type_name -> fence.v1.Entity.AttributesEntry
+	11, // 13: fence.v1.Entity.tags:type_name -> fence.v1.Entity.TagsEntry
+	12, // 14: fence.v1.IsAllowedRequest.ContextEntry.value:type_name -> google.protobuf.Value
+	12, // 15: fence.v1.Entity.AttributesEntry.value:type_name -> google.protobuf.Value
+	12, // 16: fence.v1.Entity.TagsEntry.value:type_name -> google.protobuf.Value
+	0,  // 17: fence.v1.FenceService.IsAllowed:input_type -> fence.v1.IsAllowedRequest
+	1,  // 18: fence.v1.FenceService.IsAllowed:output_type -> fence.v1.IsAllowedResponse
+	18, // [18:19] is the sub-list for method output_type
+	17, // [17:18] is the sub-list for method input_type
+	17, // [17:17] is the sub-list for extension type_name
+	17, // [17:17] is the sub-list for extension extendee
+	0,  // [0:17] is the sub-list for field type_name
 }
 
 func init() { file_fence_v1_fence_proto_init() }

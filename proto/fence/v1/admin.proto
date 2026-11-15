@@ -8,14 +8,21 @@ import "fence/v1/fence.proto";
 option go_package = "github.com/binarymatt/fence/gen/fence/v1;fencev1";
 
 service FenceAdminService {
-  rpc CreateEntities(CreateEntitiesRequest) returns (CreateEntitiesResponse) {}
-  rpc DeleteEntity(DeleteEntityRequest) returns (DeleteEntityResponse) {}
-  rpc ListEntities(ListEntitiesRequest) returns (ListEntitiesResponse) {}
-  rpc GetEntity(GetEntityRequest) returns (GetEntityResponse) {}
   rpc CreatePolicies(CreatePoliciesRequest) returns (CreatePoliciesResponse) {}
   rpc DeletePolicy(DeletePolicyRequest) returns (DeletePolicyResponse) {}
   rpc ListPolicies(ListPoliciesRequest) returns (ListPoliciesResponse) {}
   rpc GetPolicy(GetPolicyRequest) returns (GetPolicyResponse) {}
+
+  rpc CreateUser(CreatUserRequest) returns (CreateUserResponse) {}
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {}
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {}
+
+  rpc CreateRole(CreateRoleRequest) returns (CreateRoleResponse) {}
+  rpc DeleteRole(DeleteRoleRequest) returns (DeleteRoleResponse) {}
+  rpc ListRoles(ListRolesRequest) returns (ListRolesResponse) {}
+
+  rpc CreateTenant(CreateTenantRequest) returns (CreateTenantResponse) {}
+  rpc GetTenant(GetTenantRequest) returns (GetTenantResponse) {}
 }
 
 message CreateEntitiesRequest {
@@ -60,3 +67,8 @@ message GetPolicyRequest {
 message GetPolicyResponse {
   Policy policy = 1;
 }
+
+message CreateUserRequest {
+  Entity user = 1;
+}
+message CreateUserResponse {}

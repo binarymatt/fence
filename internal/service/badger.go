@@ -9,6 +9,7 @@ import (
 	"google.golang.org/protobuf/proto"
 
 	fencev1 "github.com/binarymatt/fence/gen/fence/v1"
+	"github.com/binarymatt/fence/internal/translation"
 )
 
 const (
@@ -154,8 +155,8 @@ func (bds *badgerDataStore) getEntityMap(ctx context.Context) (cedar.EntityMap, 
 		entity := cedar.Entity{
 			UID:        id,
 			Parents:    cedar.NewEntityUIDSet(parents...),
-			Tags:       fenceToRecord(e.GetTags()),
-			Attributes: fenceToRecord(e.GetAttributes()),
+			Tags:       translation.MapToRecord(e.GetTags()),
+			Attributes: translation.MapToRecord(e.GetAttributes()),
 		}
 		em[entity.UID] = entity
 	}

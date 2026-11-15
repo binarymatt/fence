@@ -7,6 +7,7 @@ import (
 
 	"github.com/cedar-policy/cedar-go"
 	"github.com/spf13/afero"
+	"google.golang.org/protobuf/types/known/structpb"
 
 	fencev1 "github.com/binarymatt/fence/gen/fence/v1"
 	"github.com/binarymatt/fence/internal/translation"
@@ -22,7 +23,7 @@ type FileProvider struct {
 	fs         afero.Fs
 }
 
-func (s *FileProvider) IsAllowed(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID) (*fencev1.IsAllowedResponse, error) {
+func (s *FileProvider) IsAllowed(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID, c map[string]*structpb.Value) (*fencev1.IsAllowedResponse, error) {
 	cPrincipal := uidToCedar(principal)
 	cResource := uidToCedar(resource)
 	cAction := uidToCedar(action)

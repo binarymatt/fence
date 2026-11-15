@@ -9,6 +9,7 @@ import (
 
 	"github.com/binarymatt/fence/gen/fence/v1"
 	mock "github.com/stretchr/testify/mock"
+	"google.golang.org/protobuf/types/known/structpb"
 )
 
 // NewMockFenceProvider creates a new instance of MockFenceProvider. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
@@ -17,10 +18,19 @@ func NewMockFenceProvider(t interface {
 	mock.TestingT
 	Cleanup(func())
 }) *MockFenceProvider {
+	if helper, ok := t.(interface{ Helper() }); ok {
+		helper.Helper()
+	}
+
 	mock := &MockFenceProvider{}
 	mock.Mock.Test(t)
 
-	t.Cleanup(func() { mock.AssertExpectations(t) })
+	t.Cleanup(func() {
+		if helper, ok := t.(interface{ Helper() }); ok {
+			helper.Helper()
+		}
+		mock.AssertExpectations(t)
+	})
 
 	return mock
 }
@@ -39,8 +49,8 @@ func (_m *MockFenceProvider) EXPECT() *MockFenceProvider_Expecter {
 }
 
 // IsAllowed provides a mock function for the type MockFenceProvider
-func (_mock *MockFenceProvider) IsAllowed(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID) (*fencev1.IsAllowedResponse, error) {
-	ret := _mock.Called(ctx, principal, action, resource)
+func (_mock *MockFenceProvider) IsAllowed(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID, record map[string]*structpb.Value) (*fencev1.IsAllowedResponse, error) {
+	ret := _mock.Called(ctx, principal, action, resource, record)
 
 	if len(ret) == 0 {
 		panic("no return value specified for IsAllowed")
@@ -48,18 +58,18 @@ func (_mock *MockFenceProvider) IsAllowed(ctx context.Context, principal *fencev
 
 	var r0 *fencev1.IsAllowedResponse
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, *fencev1.UID, *fencev1.UID, *fencev1.UID) (*fencev1.IsAllowedResponse, error)); ok {
-		return returnFunc(ctx, principal, action, resource)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *fencev1.UID, *fencev1.UID, *fencev1.UID, map[string]*structpb.Value) (*fencev1.IsAllowedResponse, error)); ok {
+		return returnFunc(ctx, principal, action, resource, record)
 	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context, *fencev1.UID, *fencev1.UID, *fencev1.UID) *fencev1.IsAllowedResponse); ok {
-		r0 = returnFunc(ctx, principal, action, resource)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *fencev1.UID, *fencev1.UID, *fencev1.UID, map[string]*structpb.Value) *fencev1.IsAllowedResponse); ok {
+		r0 = returnFunc(ctx, principal, action, resource, record)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*fencev1.IsAllowedResponse)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func(context.Context, *fencev1.UID, *fencev1.UID, *fencev1.UID) error); ok {
-		r1 = returnFunc(ctx, principal, action, resource)
+	if returnFunc, ok := ret.Get(1).(func(context.Context, *fencev1.UID, *fencev1.UID, *fencev1.UID, map[string]*structpb.Value) error); ok {
+		r1 = returnFunc(ctx, principal, action, resource, record)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -76,11 +86,12 @@ type MockFenceProvider_IsAllowed_Call struct {
 //   - principal *fencev1.UID
 //   - action *fencev1.UID
 //   - resource *fencev1.UID
-func (_e *MockFenceProvider_Expecter) IsAllowed(ctx interface{}, principal interface{}, action interface{}, resource interface{}) *MockFenceProvider_IsAllowed_Call {
-	return &MockFenceProvider_IsAllowed_Call{Call: _e.mock.On("IsAllowed", ctx, principal, action, resource)}
+//   - record map[string]*structpb.Value
+func (_e *MockFenceProvider_Expecter) IsAllowed(ctx any, principal any, action any, resource any, record any) *MockFenceProvider_IsAllowed_Call {
+	return &MockFenceProvider_IsAllowed_Call{Call: _e.mock.On("IsAllowed", ctx, principal, action, resource, record)}
 }
 
-func (_c *MockFenceProvider_IsAllowed_Call) Run(run func(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID)) *MockFenceProvider_IsAllowed_Call {
+func (_c *MockFenceProvider_IsAllowed_Call) Run(run func(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID, record map[string]*structpb.Value)) *MockFenceProvider_IsAllowed_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -98,11 +109,16 @@ func (_c *MockFenceProvider_IsAllowed_Call) Run(run func(ctx context.Context, pr
 		if args[3] != nil {
 			arg3 = args[3].(*fencev1.UID)
 		}
+		var arg4 map[string]*structpb.Value
+		if args[4] != nil {
+			arg4 = args[4].(map[string]*structpb.Value)
+		}
 		run(
 			arg0,
 			arg1,
 			arg2,
 			arg3,
+			arg4,
 		)
 	})
 	return _c
@@ -113,7 +129,7 @@ func (_c *MockFenceProvider_IsAllowed_Call) Return(isAllowedResponse *fencev1.Is
 	return _c
 }
 
-func (_c *MockFenceProvider_IsAllowed_Call) RunAndReturn(run func(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID) (*fencev1.IsAllowedResponse, error)) *MockFenceProvider_IsAllowed_Call {
+func (_c *MockFenceProvider_IsAllowed_Call) RunAndReturn(run func(ctx context.Context, principal *fencev1.UID, action *fencev1.UID, resource *fencev1.UID, record map[string]*structpb.Value) (*fencev1.IsAllowedResponse, error)) *MockFenceProvider_IsAllowed_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -142,7 +158,7 @@ type MockFenceProvider_Refresh_Call struct {
 
 // Refresh is a helper method to define mock.On call
 //   - context1 context.Context
-func (_e *MockFenceProvider_Expecter) Refresh(context1 interface{}) *MockFenceProvider_Refresh_Call {
+func (_e *MockFenceProvider_Expecter) Refresh(context1 any) *MockFenceProvider_Refresh_Call {
 	return &MockFenceProvider_Refresh_Call{Call: _e.mock.On("Refresh", context1)}
 }
 

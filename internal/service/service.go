@@ -41,7 +41,7 @@ func (s *Service) IsAllowed(ctx context.Context, req *fencev1.IsAllowedRequest) 
 	action := req.GetAction()
 	resource := req.GetResource()
 
-	cedarContext := fenceToRecord(req.GetContext())
+	cedarContext := translation.MapToRecord(req.GetContext())
 
 	cedarReq := cedar.Request{
 		Principal: fenceToCedarUID(principal),

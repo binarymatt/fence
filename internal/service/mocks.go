@@ -18,10 +18,19 @@ func NewMockDataStore(t interface {
 	mock.TestingT
 	Cleanup(func())
 }) *MockDataStore {
+	if helper, ok := t.(interface{ Helper() }); ok {
+		helper.Helper()
+	}
+
 	mock := &MockDataStore{}
 	mock.Mock.Test(t)
 
-	t.Cleanup(func() { mock.AssertExpectations(t) })
+	t.Cleanup(func() {
+		if helper, ok := t.(interface{ Helper() }); ok {
+			helper.Helper()
+		}
+		mock.AssertExpectations(t)
+	})
 
 	return mock
 }
@@ -64,7 +73,7 @@ type MockDataStore_addEntity_Call struct {
 // addEntity is a helper method to define mock.On call
 //   - ctx context.Context
 //   - entity *fencev1.Entity
-func (_e *MockDataStore_Expecter) addEntity(ctx interface{}, entity interface{}) *MockDataStore_addEntity_Call {
+func (_e *MockDataStore_Expecter) addEntity(ctx any, entity any) *MockDataStore_addEntity_Call {
 	return &MockDataStore_addEntity_Call{Call: _e.mock.On("addEntity", ctx, entity)}
 }
 
@@ -122,7 +131,7 @@ type MockDataStore_addPolicy_Call struct {
 //   - ctx context.Context
 //   - id string
 //   - content string
-func (_e *MockDataStore_Expecter) addPolicy(ctx interface{}, id interface{}, content interface{}) *MockDataStore_addPolicy_Call {
+func (_e *MockDataStore_Expecter) addPolicy(ctx any, id any, content any) *MockDataStore_addPolicy_Call {
 	return &MockDataStore_addPolicy_Call{Call: _e.mock.On("addPolicy", ctx, id, content)}
 }
 
@@ -184,7 +193,7 @@ type MockDataStore_deleteEntity_Call struct {
 // deleteEntity is a helper method to define mock.On call
 //   - ctx context.Context
 //   - uid *fencev1.UID
-func (_e *MockDataStore_Expecter) deleteEntity(ctx interface{}, uid interface{}) *MockDataStore_deleteEntity_Call {
+func (_e *MockDataStore_Expecter) deleteEntity(ctx any, uid any) *MockDataStore_deleteEntity_Call {
 	return &MockDataStore_deleteEntity_Call{Call: _e.mock.On("deleteEntity", ctx, uid)}
 }
 
@@ -241,7 +250,7 @@ type MockDataStore_deletePolicy_Call struct {
 // deletePolicy is a helper method to define mock.On call
 //   - ctx context.Context
 //   - id string
-func (_e *MockDataStore_Expecter) deletePolicy(ctx interface{}, id interface{}) *MockDataStore_deletePolicy_Call {
+func (_e *MockDataStore_Expecter) deletePolicy(ctx any, id any) *MockDataStore_deletePolicy_Call {
 	return &MockDataStore_deletePolicy_Call{Call: _e.mock.On("deletePolicy", ctx, id)}
 }
 
@@ -308,7 +317,7 @@ type MockDataStore_getEntities_Call struct {
 
 // getEntities is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockDataStore_Expecter) getEntities(ctx interface{}) *MockDataStore_getEntities_Call {
+func (_e *MockDataStore_Expecter) getEntities(ctx any) *MockDataStore_getEntities_Call {
 	return &MockDataStore_getEntities_Call{Call: _e.mock.On("getEntities", ctx)}
 }
 
@@ -370,7 +379,7 @@ type MockDataStore_getEntityMap_Call struct {
 
 // getEntityMap is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockDataStore_Expecter) getEntityMap(ctx interface{}) *MockDataStore_getEntityMap_Call {
+func (_e *MockDataStore_Expecter) getEntityMap(ctx any) *MockDataStore_getEntityMap_Call {
 	return &MockDataStore_getEntityMap_Call{Call: _e.mock.On("getEntityMap", ctx)}
 }
 
@@ -387,8 +396,8 @@ func (_c *MockDataStore_getEntityMap_Call) Run(run func(ctx context.Context)) *M
 	return _c
 }
 
-func (_c *MockDataStore_getEntityMap_Call) Return(v cedar.EntityMap, err error) *MockDataStore_getEntityMap_Call {
-	_c.Call.Return(v, err)
+func (_c *MockDataStore_getEntityMap_Call) Return(entityMap cedar.EntityMap, err error) *MockDataStore_getEntityMap_Call {
+	_c.Call.Return(entityMap, err)
 	return _c
 }
 
@@ -432,7 +441,7 @@ type MockDataStore_getPolicies_Call struct {
 
 // getPolicies is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockDataStore_Expecter) getPolicies(ctx interface{}) *MockDataStore_getPolicies_Call {
+func (_e *MockDataStore_Expecter) getPolicies(ctx any) *MockDataStore_getPolicies_Call {
 	return &MockDataStore_getPolicies_Call{Call: _e.mock.On("getPolicies", ctx)}
 }
 
@@ -495,7 +504,7 @@ type MockDataStore_getPolicy_Call struct {
 // getPolicy is a helper method to define mock.On call
 //   - ctx context.Context
 //   - id string
-func (_e *MockDataStore_Expecter) getPolicy(ctx interface{}, id interface{}) *MockDataStore_getPolicy_Call {
+func (_e *MockDataStore_Expecter) getPolicy(ctx any, id any) *MockDataStore_getPolicy_Call {
 	return &MockDataStore_getPolicy_Call{Call: _e.mock.On("getPolicy", ctx, id)}
 }
 
@@ -562,7 +571,7 @@ type MockDataStore_getPolicySet_Call struct {
 
 // getPolicySet is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockDataStore_Expecter) getPolicySet(ctx interface{}) *MockDataStore_getPolicySet_Call {
+func (_e *MockDataStore_Expecter) getPolicySet(ctx any) *MockDataStore_getPolicySet_Call {
 	return &MockDataStore_getPolicySet_Call{Call: _e.mock.On("getPolicySet", ctx)}
 }
 

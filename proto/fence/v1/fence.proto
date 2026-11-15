@@ -16,6 +16,7 @@ message IsAllowedRequest {
   UID action = 2 [(buf.validate.field).required = true];
   UID resource = 3 [(buf.validate.field).required = true];
   map<string, google.protobuf.Value> context = 4;
+  repeated Entity entities = 5;
 }
 
 message IsAllowedResponse {
