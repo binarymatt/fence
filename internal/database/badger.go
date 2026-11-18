@@ -1,4 +1,4 @@
-package service
+package database
 
 import (
 	"context"
@@ -33,7 +33,7 @@ type badgerDataStore struct {
 	db *badger.DB
 }
 
-func (bds *badgerDataStore) addPolicy(ctx context.Context, id string, content string) error {
+func (bds *badgerDataStore) AddPolicy(ctx context.Context, id string, content string) error {
 	p := fencev1.Policy{
 		Id:         id,
 		Definition: content,
@@ -48,15 +48,15 @@ func (bds *badgerDataStore) addPolicy(ctx context.Context, id string, content st
 	})
 }
 
-func (bds *badgerDataStore) deletePolicy(ctx context.Context, id string) error {
+func (bds *badgerDataStore) DeletePolicy(ctx context.Context, id string) error {
 	return bds.db.Update(func(tx *badger.Txn) error {
 		return tx.Delete(policyId(id))
 	})
 }
 
-func (bds *badgerDataStore) getPolicySet(ctx context.Context) (*cedar.PolicySet, error) {
+func (bds *badgerDataStore) GetPolicySet(ctx context.Context) (*cedar.PolicySet, error) {
 	ps := cedar.NewPolicySet()
-	policies, err := bds.getPolicies(ctx)
+	policies, err := bds.GetPolicies(ctx)
 	for _, p := range policies {
 		var policy cedar.Policy
 		if err := policy.UnmarshalCedar([]byte(p.Definition)); err != nil {
@@ -67,7 +67,7 @@ func (bds *badgerDataStore) getPolicySet(ctx context.Context) (*cedar.PolicySet,
 	return ps, err
 }
 
-func (bds *badgerDataStore) getPolicies(ctx context.Context) ([]*fencev1.Policy, error) {
+func (bds *badgerDataStore) GetPolicies(ctx context.Context) ([]*fencev1.Policy, error) {
 	policies := []*fencev1.Policy{}
 	err := bds.db.View(func(txn *badger.Txn) error {
 		opts := badger.DefaultIteratorOptions
@@ -92,7 +92,7 @@ func (bds *badgerDataStore) getPolicies(ctx context.Context) ([]*fencev1.Policy,
 	})
 	return policies, err
 }
-func (bds *badgerDataStore) getPolicy(ctx context.Context, id string) (*cedar.Policy, error) {
+func (bds *badgerDataStore) GetPolicy(ctx context.Context, id string) (*cedar.Policy, error) {
 	var policy cedar.Policy
 	err := bds.db.View(func(txn *badger.Txn) error {
 		item, err := txn.Get([]byte(id))
@@ -114,7 +114,7 @@ func (bds *badgerDataStore) getPolicy(ctx context.Context, id string) (*cedar.Po
 	})
 	return &policy, err
 }
-func (bds *badgerDataStore) getEntity(ctx context.Context, uid *fencev1.UID) (*fencev1.Entity, error) {
+func (bds *badgerDataStore) GetEntity(ctx context.Context, uid *fencev1.UID) (*fencev1.Entity, error) {
 	var entity fencev1.Entity
 	err := bds.db.View(func(txn *badger.Txn) error {
 
@@ -134,7 +134,7 @@ func (bds *badgerDataStore) getEntity(ctx context.Context, uid *fencev1.UID) (*f
 	})
 	return &entity, err
 }
-func (bds *badgerDataStore) getEntities(ctx context.Context) ([]*fencev1.Entity, error) {
+func (bds *badgerDataStore) GetEntities(ctx context.Context, parent *fencev1.UID) ([]*fencev1.Entity, error) {
 	entities := []*fencev1.Entity{}
 	err := bds.db.View(func(txn *badger.Txn) error {
 		opts := badger.DefaultIteratorOptions
@@ -159,18 +159,18 @@ func (bds *badgerDataStore) getEntities(ctx context.Context) ([]*fencev1.Entity,
 	})
 	return entities, err
 }
-func (bds *badgerDataStore) getEntityMap(ctx context.Context) (cedar.EntityMap, error) {
-	entities, err := bds.getEntities(ctx)
+func (bds *badgerDataStore) GetEntityMap(ctx context.Context) (cedar.EntityMap, error) {
+	entities, err := bds.GetEntities(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
 	em := cedar.EntityMap{}
 	for _, e := range entities {
-		id := fenceToCedarUID(e.GetUid())
+		id := translation.FenceToCedarUID(e.GetUid())
 		parents := make([]cedar.EntityUID, len(e.GetParents()))
 
 		for i, p := range e.GetParents() {
-			parents[i] = fenceToCedarUID(p)
+			parents[i] = translation.FenceToCedarUID(p)
 		}
 		entity := cedar.Entity{
 			UID:        id,
@@ -182,7 +182,7 @@ func (bds *badgerDataStore) getEntityMap(ctx context.Context) (cedar.EntityMap, 
 	}
 	return em, nil
 }
-func (bds *badgerDataStore) addEntity(ctx context.Context, entity *fencev1.Entity) error {
+func (bds *badgerDataStore) AddEntity(ctx context.Context, entity *fencev1.Entity) error {
 	data, err := proto.Marshal(entity)
 	if err != nil {
 		return err
@@ -192,7 +192,7 @@ func (bds *badgerDataStore) addEntity(ctx context.Context, entity *fencev1.Entit
 		return tx.Set(id, data)
 	})
 }
-func (bds *badgerDataStore) deleteEntity(ctx context.Context, uid *fencev1.UID) error {
+func (bds *badgerDataStore) DeleteEntity(ctx context.Context, uid *fencev1.UID) error {
 	id := entityId(uid.Type, uid.Id)
 	return bds.db.Update(func(tx *badger.Txn) error {
 		return tx.Delete(id)

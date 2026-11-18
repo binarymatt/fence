@@ -529,7 +529,7 @@ func (x *GetTenantResponse) GetTenant() *Entity {
 
 type CreateUserRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Tenant        *Entity                `protobuf:"bytes,1,opt,name=tenant,proto3" json:"tenant,omitempty"`
+	Tenant        *UID                   `protobuf:"bytes,1,opt,name=tenant,proto3" json:"tenant,omitempty"`
 	User          *Entity                `protobuf:"bytes,2,opt,name=user,proto3" json:"user,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -565,7 +565,7 @@ func (*CreateUserRequest) Descriptor() ([]byte, []int) {
 	return file_fence_v1_admin_proto_rawDescGZIP(), []int{12}
 }
 
-func (x *CreateUserRequest) GetTenant() *Entity {
+func (x *CreateUserRequest) GetTenant() *UID {
 	if x != nil {
 		return x.Tenant
 	}
@@ -697,6 +697,7 @@ func (*DeleteUserResponse) Descriptor() ([]byte, []int) {
 
 type ListUsersRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	Tenant        *UID                   `protobuf:"bytes,1,opt,name=tenant,proto3" json:"tenant,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -729,6 +730,13 @@ func (x *ListUsersRequest) ProtoReflect() protoreflect.Message {
 // Deprecated: Use ListUsersRequest.ProtoReflect.Descriptor instead.
 func (*ListUsersRequest) Descriptor() ([]byte, []int) {
 	return file_fence_v1_admin_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *ListUsersRequest) GetTenant() *UID {
+	if x != nil {
+		return x.Tenant
+	}
+	return nil
 }
 
 type ListUsersResponse struct {
@@ -777,6 +785,8 @@ func (x *ListUsersResponse) GetUsers() []*Entity {
 
 type CreateRoleRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	Tenant        *UID                   `protobuf:"bytes,1,opt,name=tenant,proto3" json:"tenant,omitempty"`
+	Role          *Entity                `protobuf:"bytes,2,opt,name=role,proto3" json:"role,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -809,6 +819,20 @@ func (x *CreateRoleRequest) ProtoReflect() protoreflect.Message {
 // Deprecated: Use CreateRoleRequest.ProtoReflect.Descriptor instead.
 func (*CreateRoleRequest) Descriptor() ([]byte, []int) {
 	return file_fence_v1_admin_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *CreateRoleRequest) GetTenant() *UID {
+	if x != nil {
+		return x.Tenant
+	}
+	return nil
+}
+
+func (x *CreateRoleRequest) GetRole() *Entity {
+	if x != nil {
+		return x.Role
+	}
+	return nil
 }
 
 type CreateRoleResponse struct {
@@ -849,6 +873,7 @@ func (*CreateRoleResponse) Descriptor() ([]byte, []int) {
 
 type DeleteRoleRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	Uid           *UID                   `protobuf:"bytes,1,opt,name=uid,proto3" json:"uid,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -881,6 +906,13 @@ func (x *DeleteRoleRequest) ProtoReflect() protoreflect.Message {
 // Deprecated: Use DeleteRoleRequest.ProtoReflect.Descriptor instead.
 func (*DeleteRoleRequest) Descriptor() ([]byte, []int) {
 	return file_fence_v1_admin_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *DeleteRoleRequest) GetUid() *UID {
+	if x != nil {
+		return x.Uid
+	}
+	return nil
 }
 
 type DeleteRoleResponse struct {
@@ -921,6 +953,7 @@ func (*DeleteRoleResponse) Descriptor() ([]byte, []int) {
 
 type ListRolesRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	Tenant        *UID                   `protobuf:"bytes,1,opt,name=tenant,proto3" json:"tenant,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -955,8 +988,16 @@ func (*ListRolesRequest) Descriptor() ([]byte, []int) {
 	return file_fence_v1_admin_proto_rawDescGZIP(), []int{22}
 }
 
+func (x *ListRolesRequest) GetTenant() *UID {
+	if x != nil {
+		return x.Tenant
+	}
+	return nil
+}
+
 type ListRolesResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	Roles         []*Entity              `protobuf:"bytes,1,rep,name=roles,proto3" json:"roles,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -991,6 +1032,13 @@ func (*ListRolesResponse) Descriptor() ([]byte, []int) {
 	return file_fence_v1_admin_proto_rawDescGZIP(), []int{23}
 }
 
+func (x *ListRolesResponse) GetRoles() []*Entity {
+	if x != nil {
+		return x.Roles
+	}
+	return nil
+}
+
 var File_fence_v1_admin_proto protoreflect.FileDescriptor
 
 const file_fence_v1_admin_proto_rawDesc = "" +
@@ -1018,23 +1066,31 @@ const file_fence_v1_admin_proto_rawDesc = "" +
 	"\x10GetTenantRequest\x12%\n" +
 	"\x02id\x18\x01 \x01(\v2\r.fence.v1.UIDB\x06\xbaH\x03\xc8\x01\x01R\x02id\"=\n" +
 	"\x11GetTenantResponse\x12(\n" +
-	"\x06tenant\x18\x01 \x01(\v2\x10.fence.v1.EntityR\x06tenant\"s\n" +
-	"\x11CreateUserRequest\x120\n" +
-	"\x06tenant\x18\x01 \x01(\v2\x10.fence.v1.EntityB\x06\xbaH\x03\xc8\x01\x01R\x06tenant\x12,\n" +
-	"\x04user\x18\x02 \x01(\v2\x10.fence.v1.EntityB\x06\xbaH\x03\xc8\x01\x01R\x04user\"\x14\n" +
-	"\x12CreateUserResponse\"4\n" +
-	"\x11DeleteUserRequest\x12\x1f\n" +
-	"\x03uid\x18\x01 \x01(\v2\r.fence.v1.UIDR\x03uid\"\x14\n" +
-	"\x12DeleteUserResponse\"\x12\n" +
-	"\x10ListUsersRequest\";\n" +
+	"\x06tenant\x18\x01 \x01(\v2\x10.fence.v1.EntityR\x06tenant\"\xb5\x01\n" +
+	"\x11CreateUserRequest\x12-\n" +
+	"\x06tenant\x18\x01 \x01(\v2\r.fence.v1.UIDB\x06\xbaH\x03\xc8\x01\x01R\x06tenant\x12,\n" +
+	"\x04user\x18\x02 \x01(\v2\x10.fence.v1.EntityB\x06\xbaH\x03\xc8\x01\x01R\x04user:C\xbaH@\x1a>\n" +
+	"\tuser.type\x12\x13must be user entity\x1a\x1cthis.user.uid.type == 'User'\"\x14\n" +
+	"\x12CreateUserResponse\"<\n" +
+	"\x11DeleteUserRequest\x12'\n" +
+	"\x03uid\x18\x01 \x01(\v2\r.fence.v1.UIDB\x06\xbaH\x03\xc8\x01\x01R\x03uid\"\x14\n" +
+	"\x12DeleteUserResponse\"A\n" +
+	"\x10ListUsersRequest\x12-\n" +
+	"\x06tenant\x18\x01 \x01(\v2\r.fence.v1.UIDB\x06\xbaH\x03\xc8\x01\x01R\x06tenant\";\n" +
 	"\x11ListUsersResponse\x12&\n" +
-	"\x05users\x18\x01 \x03(\v2\x10.fence.v1.EntityR\x05users\"\x13\n" +
-	"\x11CreateRoleRequest\"\x14\n" +
-	"\x12CreateRoleResponse\"\x13\n" +
-	"\x11DeleteRoleRequest\"\x14\n" +
-	"\x12DeleteRoleResponse\"\x12\n" +
-	"\x10ListRolesRequest\"\x13\n" +
-	"\x11ListRolesResponse2\xa9\a\n" +
+	"\x05users\x18\x01 \x03(\v2\x10.fence.v1.EntityR\x05users\"\xad\x01\n" +
+	"\x11CreateRoleRequest\x12-\n" +
+	"\x06tenant\x18\x01 \x01(\v2\r.fence.v1.UIDB\x06\xbaH\x03\xc8\x01\x01R\x06tenant\x12$\n" +
+	"\x04role\x18\x02 \x01(\v2\x10.fence.v1.EntityR\x04role:C\xbaH@\x1a>\n" +
+	"\trole.type\x12\x13must be role entity\x1a\x1cthis.role.uid.type == 'Role'\"\x14\n" +
+	"\x12CreateRoleResponse\"<\n" +
+	"\x11DeleteRoleRequest\x12'\n" +
+	"\x03uid\x18\x01 \x01(\v2\r.fence.v1.UIDB\x06\xbaH\x03\xc8\x01\x01R\x03uid\"\x14\n" +
+	"\x12DeleteRoleResponse\"A\n" +
+	"\x10ListRolesRequest\x12-\n" +
+	"\x06tenant\x18\x01 \x01(\v2\r.fence.v1.UIDB\x06\xbaH\x03\xc8\x01\x01R\x06tenant\";\n" +
+	"\x11ListRolesResponse\x12&\n" +
+	"\x05roles\x18\x01 \x03(\v2\x10.fence.v1.EntityR\x05roles2\xa9\a\n" +
 	"\x11FenceAdminService\x12U\n" +
 	"\x0eCreatePolicies\x12\x1f.fence.v1.CreatePoliciesRequest\x1a .fence.v1.CreatePoliciesResponse\"\x00\x12O\n" +
 	"\fDeletePolicy\x12\x1d.fence.v1.DeletePolicyRequest\x1a\x1e.fence.v1.DeletePolicyResponse\"\x00\x12O\n" +
@@ -1104,39 +1160,45 @@ var file_fence_v1_admin_proto_depIdxs = []int32{
 	25, // 3: fence.v1.CreateTenantRequest.tenant:type_name -> fence.v1.Entity
 	26, // 4: fence.v1.GetTenantRequest.id:type_name -> fence.v1.UID
 	25, // 5: fence.v1.GetTenantResponse.tenant:type_name -> fence.v1.Entity
-	25, // 6: fence.v1.CreateUserRequest.tenant:type_name -> fence.v1.Entity
+	26, // 6: fence.v1.CreateUserRequest.tenant:type_name -> fence.v1.UID
 	25, // 7: fence.v1.CreateUserRequest.user:type_name -> fence.v1.Entity
 	26, // 8: fence.v1.DeleteUserRequest.uid:type_name -> fence.v1.UID
-	25, // 9: fence.v1.ListUsersResponse.users:type_name -> fence.v1.Entity
-	0,  // 10: fence.v1.FenceAdminService.CreatePolicies:input_type -> fence.v1.CreatePoliciesRequest
-	2,  // 11: fence.v1.FenceAdminService.DeletePolicy:input_type -> fence.v1.DeletePolicyRequest
-	4,  // 12: fence.v1.FenceAdminService.ListPolicies:input_type -> fence.v1.ListPoliciesRequest
-	6,  // 13: fence.v1.FenceAdminService.GetPolicy:input_type -> fence.v1.GetPolicyRequest
-	12, // 14: fence.v1.FenceAdminService.CreateUser:input_type -> fence.v1.CreateUserRequest
-	14, // 15: fence.v1.FenceAdminService.DeleteUser:input_type -> fence.v1.DeleteUserRequest
-	16, // 16: fence.v1.FenceAdminService.ListUsers:input_type -> fence.v1.ListUsersRequest
-	18, // 17: fence.v1.FenceAdminService.CreateRole:input_type -> fence.v1.CreateRoleRequest
-	20, // 18: fence.v1.FenceAdminService.DeleteRole:input_type -> fence.v1.DeleteRoleRequest
-	22, // 19: fence.v1.FenceAdminService.ListRoles:input_type -> fence.v1.ListRolesRequest
-	8,  // 20: fence.v1.FenceAdminService.CreateTenant:input_type -> fence.v1.CreateTenantRequest
-	10, // 21: fence.v1.FenceAdminService.GetTenant:input_type -> fence.v1.GetTenantRequest
-	1,  // 22: fence.v1.FenceAdminService.CreatePolicies:output_type -> fence.v1.CreatePoliciesResponse
-	3,  // 23: fence.v1.FenceAdminService.DeletePolicy:output_type -> fence.v1.DeletePolicyResponse
-	5,  // 24: fence.v1.FenceAdminService.ListPolicies:output_type -> fence.v1.ListPoliciesResponse
-	7,  // 25: fence.v1.FenceAdminService.GetPolicy:output_type -> fence.v1.GetPolicyResponse
-	13, // 26: fence.v1.FenceAdminService.CreateUser:output_type -> fence.v1.CreateUserResponse
-	15, // 27: fence.v1.FenceAdminService.DeleteUser:output_type -> fence.v1.DeleteUserResponse
-	17, // 28: fence.v1.FenceAdminService.ListUsers:output_type -> fence.v1.ListUsersResponse
-	19, // 29: fence.v1.FenceAdminService.CreateRole:output_type -> fence.v1.CreateRoleResponse
-	21, // 30: fence.v1.FenceAdminService.DeleteRole:output_type -> fence.v1.DeleteRoleResponse
-	23, // 31: fence.v1.FenceAdminService.ListRoles:output_type -> fence.v1.ListRolesResponse
-	9,  // 32: fence.v1.FenceAdminService.CreateTenant:output_type -> fence.v1.CreateTenantResponse
-	11, // 33: fence.v1.FenceAdminService.GetTenant:output_type -> fence.v1.GetTenantResponse
-	22, // [22:34] is the sub-list for method output_type
-	10, // [10:22] is the sub-list for method input_type
-	10, // [10:10] is the sub-list for extension type_name
-	10, // [10:10] is the sub-list for extension extendee
-	0,  // [0:10] is the sub-list for field type_name
+	26, // 9: fence.v1.ListUsersRequest.tenant:type_name -> fence.v1.UID
+	25, // 10: fence.v1.ListUsersResponse.users:type_name -> fence.v1.Entity
+	26, // 11: fence.v1.CreateRoleRequest.tenant:type_name -> fence.v1.UID
+	25, // 12: fence.v1.CreateRoleRequest.role:type_name -> fence.v1.Entity
+	26, // 13: fence.v1.DeleteRoleRequest.uid:type_name -> fence.v1.UID
+	26, // 14: fence.v1.ListRolesRequest.tenant:type_name -> fence.v1.UID
+	25, // 15: fence.v1.ListRolesResponse.roles:type_name -> fence.v1.Entity
+	0,  // 16: fence.v1.FenceAdminService.CreatePolicies:input_type -> fence.v1.CreatePoliciesRequest
+	2,  // 17: fence.v1.FenceAdminService.DeletePolicy:input_type -> fence.v1.DeletePolicyRequest
+	4,  // 18: fence.v1.FenceAdminService.ListPolicies:input_type -> fence.v1.ListPoliciesRequest
+	6,  // 19: fence.v1.FenceAdminService.GetPolicy:input_type -> fence.v1.GetPolicyRequest
+	12, // 20: fence.v1.FenceAdminService.CreateUser:input_type -> fence.v1.CreateUserRequest
+	14, // 21: fence.v1.FenceAdminService.DeleteUser:input_type -> fence.v1.DeleteUserRequest
+	16, // 22: fence.v1.FenceAdminService.ListUsers:input_type -> fence.v1.ListUsersRequest
+	18, // 23: fence.v1.FenceAdminService.CreateRole:input_type -> fence.v1.CreateRoleRequest
+	20, // 24: fence.v1.FenceAdminService.DeleteRole:input_type -> fence.v1.DeleteRoleRequest
+	22, // 25: fence.v1.FenceAdminService.ListRoles:input_type -> fence.v1.ListRolesRequest
+	8,  // 26: fence.v1.FenceAdminService.CreateTenant:input_type -> fence.v1.CreateTenantRequest
+	10, // 27: fence.v1.FenceAdminService.GetTenant:input_type -> fence.v1.GetTenantRequest
+	1,  // 28: fence.v1.FenceAdminService.CreatePolicies:output_type -> fence.v1.CreatePoliciesResponse
+	3,  // 29: fence.v1.FenceAdminService.DeletePolicy:output_type -> fence.v1.DeletePolicyResponse
+	5,  // 30: fence.v1.FenceAdminService.ListPolicies:output_type -> fence.v1.ListPoliciesResponse
+	7,  // 31: fence.v1.FenceAdminService.GetPolicy:output_type -> fence.v1.GetPolicyResponse
+	13, // 32: fence.v1.FenceAdminService.CreateUser:output_type -> fence.v1.CreateUserResponse
+	15, // 33: fence.v1.FenceAdminService.DeleteUser:output_type -> fence.v1.DeleteUserResponse
+	17, // 34: fence.v1.FenceAdminService.ListUsers:output_type -> fence.v1.ListUsersResponse
+	19, // 35: fence.v1.FenceAdminService.CreateRole:output_type -> fence.v1.CreateRoleResponse
+	21, // 36: fence.v1.FenceAdminService.DeleteRole:output_type -> fence.v1.DeleteRoleResponse
+	23, // 37: fence.v1.FenceAdminService.ListRoles:output_type -> fence.v1.ListRolesResponse
+	9,  // 38: fence.v1.FenceAdminService.CreateTenant:output_type -> fence.v1.CreateTenantResponse
+	11, // 39: fence.v1.FenceAdminService.GetTenant:output_type -> fence.v1.GetTenantResponse
+	28, // [28:40] is the sub-list for method output_type
+	16, // [16:28] is the sub-list for method input_type
+	16, // [16:16] is the sub-list for extension type_name
+	16, // [16:16] is the sub-list for extension extendee
+	0,  // [0:16] is the sub-list for field type_name
 }
 
 func init() { file_fence_v1_admin_proto_init() }

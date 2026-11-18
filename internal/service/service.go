@@ -10,30 +10,31 @@ import (
 
 	fencev1 "github.com/binarymatt/fence/gen/fence/v1"
 	"github.com/binarymatt/fence/gen/fence/v1/fencev1connect"
+	"github.com/binarymatt/fence/internal/database"
 	"github.com/binarymatt/fence/internal/translation"
 )
 
 var _ fencev1connect.FenceServiceHandler = (*Service)(nil)
 var _ fencev1connect.FenceAdminServiceHandler = (*Service)(nil)
 
-func New(ds DataStore) *Service {
+func New(ds database.DataStore) *Service {
 	return &Service{ds: ds}
 }
 
 type Service struct {
-	ds DataStore
+	ds database.DataStore
 }
 
 func fenceToCedarUID(uid *fencev1.UID) cedar.EntityUID {
 	return cedar.NewEntityUID(cedar.EntityType(uid.GetType()), cedar.String(uid.GetId()))
 }
 func (s *Service) IsAllowed(ctx context.Context, req *fencev1.IsAllowedRequest) (*fencev1.IsAllowedResponse, error) {
-	ps, err := s.ds.getPolicySet(ctx)
+	ps, err := s.ds.GetPolicySet(ctx)
 	if err != nil {
 		slog.Error("failed to get policy set", "eror", err)
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
-	em, err := s.ds.getEntityMap(ctx)
+	em, err := s.ds.GetEntityMap(ctx)
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}

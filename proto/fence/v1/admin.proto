@@ -72,23 +72,43 @@ message GetTenantResponse {
 }
 
 message CreateUserRequest {
-  Entity tenant = 1 [(buf.validate.field).required = true];
-
+  UID tenant = 1 [(buf.validate.field).required = true];
   Entity user = 2 [(buf.validate.field).required = true];
+  option (buf.validate.message).cel = {
+    id: "user.type"
+    message: "must be user entity"
+    expression: "this.user.uid.type == 'User'"
+  };
 }
 message CreateUserResponse {}
 
 message DeleteUserRequest {
-  UID uid = 1;
+  UID uid = 1 [(buf.validate.field).required = true];
 }
 message DeleteUserResponse {}
-message ListUsersRequest {}
+message ListUsersRequest {
+  UID tenant = 1 [(buf.validate.field).required = true];
+}
 message ListUsersResponse {
   repeated Entity users = 1;
 }
-message CreateRoleRequest {}
+message CreateRoleRequest {
+  UID tenant = 1 [(buf.validate.field).required = true];
+  Entity role = 2;
+  option (buf.validate.message).cel = {
+    id: "role.type"
+    message: "must be role entity"
+    expression: "this.role.uid.type == 'Role'"
+  };
+}
 message CreateRoleResponse {}
-message DeleteRoleRequest {}
+message DeleteRoleRequest {
+  UID uid = 1 [(buf.validate.field).required = true];
+}
 message DeleteRoleResponse {}
-message ListRolesRequest {}
-message ListRolesResponse {}
+message ListRolesRequest {
+  UID tenant = 1 [(buf.validate.field).required = true];
+}
+message ListRolesResponse {
+  repeated Entity roles = 1;
+}

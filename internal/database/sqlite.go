@@ -1,4 +1,4 @@
-package service
+package database
 
 import (
 	"context"
@@ -10,6 +10,7 @@ import (
 	"github.com/uptrace/bun"
 
 	fencev1 "github.com/binarymatt/fence/gen/fence/v1"
+	"github.com/binarymatt/fence/internal/models"
 )
 
 var (
@@ -29,8 +30,8 @@ type sqlDataStore struct {
 	db *bun.DB
 }
 
-func (s *sqlDataStore) addPolicy(ctx context.Context, id string, content string) error {
-	p := &Policy{
+func (s *sqlDataStore) AddPolicy(ctx context.Context, id string, content string) error {
+	p := &models.Policy{
 		ID:      id,
 		Content: content,
 	}
@@ -44,8 +45,8 @@ func (s *sqlDataStore) addPolicy(ctx context.Context, id string, content string)
 	return nil
 }
 
-func (s *sqlDataStore) deletePolicy(ctx context.Context, id string) error {
-	res, err := s.db.NewDelete().Model(&Policy{ID: id}).WherePK().Exec(ctx)
+func (s *sqlDataStore) DeletePolicy(ctx context.Context, id string) error {
+	res, err := s.db.NewDelete().Model(&models.Policy{ID: id}).WherePK().Exec(ctx)
 	if err != nil {
 		return err
 	}
@@ -58,9 +59,9 @@ func (s *sqlDataStore) deletePolicy(ctx context.Context, id string) error {
 	}
 	return nil
 }
-func (s *sqlDataStore) getPolicySet(ctx context.Context) (*cedar.PolicySet, error) {
+func (s *sqlDataStore) GetPolicySet(ctx context.Context) (*cedar.PolicySet, error) {
 
-	policies, err := s.getPolicies(ctx)
+	policies, err := s.GetPolicies(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -74,8 +75,8 @@ func (s *sqlDataStore) getPolicySet(ctx context.Context) (*cedar.PolicySet, erro
 	}
 	return ps, nil
 }
-func (s *sqlDataStore) getPolicies(ctx context.Context) ([]*fencev1.Policy, error) {
-	var policies []Policy
+func (s *sqlDataStore) GetPolicies(ctx context.Context) ([]*fencev1.Policy, error) {
+	var policies []models.Policy
 	if err := s.db.NewSelect().Model(&policies).Scan(ctx); err != nil {
 		return nil, err
 	}
@@ -85,8 +86,8 @@ func (s *sqlDataStore) getPolicies(ctx context.Context) ([]*fencev1.Policy, erro
 	}
 	return pols, nil
 }
-func (s *sqlDataStore) getPolicy(ctx context.Context, id string) (*cedar.Policy, error) {
-	var policy Policy
+func (s *sqlDataStore) GetPolicy(ctx context.Context, id string) (*cedar.Policy, error) {
+	var policy models.Policy
 	if err := s.db.NewSelect().Model(&policy).Where("id = ?", id).Scan(ctx); err != nil {
 		return nil, err
 	}
@@ -96,19 +97,25 @@ func (s *sqlDataStore) getPolicy(ctx context.Context, id string) (*cedar.Policy,
 	}
 	return &cPolicy, nil
 }
-func (s *sqlDataStore) getEntity(ctx context.Context, uid *fencev1.UID) (*fencev1.Entity, error) {
+func (s *sqlDataStore) GetEntity(ctx context.Context, uid *fencev1.UID) (*fencev1.Entity, error) {
 	if uid == nil {
 		return nil, fmt.Errorf("nil entity")
 	}
-	var entity Entity
+	var entity models.Entity
 	if err := s.db.NewSelect().Model(&entity).Where("id = ? AND type =? ", uid.GetId(), uid.GetType()).Scan(ctx); err != nil {
 		return nil, err
 	}
 	return entity.ToProto(), nil
 }
-func (s *sqlDataStore) getEntities(ctx context.Context) ([]*fencev1.Entity, error) {
-	var entities []Entity
-	if err := s.db.NewSelect().Model(&entities).Scan(ctx); err != nil {
+func (s *sqlDataStore) GetEntities(ctx context.Context, parent *fencev1.UID) ([]*fencev1.Entity, error) {
+	var entities []models.Entity
+	query := s.db.NewSelect().Model(&entities)
+	if parent != nil {
+		// TODO: how to filter correctly
+		// uid := models.Fencetodbuid(parent)
+
+	}
+	if err := query.Scan(ctx); err != nil {
 		return nil, err
 	}
 	// ents := make([]cedar.Entity, len(entities))
@@ -118,9 +125,9 @@ func (s *sqlDataStore) getEntities(ctx context.Context) ([]*fencev1.Entity, erro
 	}
 	return ents, nil
 }
-func (s *sqlDataStore) getEntityMap(ctx context.Context) (cedar.EntityMap, error) {
+func (s *sqlDataStore) GetEntityMap(ctx context.Context) (cedar.EntityMap, error) {
 
-	entities, err := s.getEntities(ctx)
+	entities, err := s.GetEntities(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -144,13 +151,13 @@ func (s *sqlDataStore) getEntityMap(ctx context.Context) (cedar.EntityMap, error
 }
 
 // TODO: retain attributes and tags as json fields
-func (s *sqlDataStore) addEntity(ctx context.Context, e *fencev1.Entity) error {
-	uids := make([]UID, len(e.Parents))
+func (s *sqlDataStore) AddEntity(ctx context.Context, e *fencev1.Entity) error {
+	uids := make([]models.UID, len(e.Parents))
 	for _, uid := range e.Parents {
 
-		uids = append(uids, UID{ID: string(uid.Id), Type: string(uid.Type)})
+		uids = append(uids, models.UID{ID: string(uid.Id), Type: string(uid.Type)})
 	}
-	entity := &Entity{
+	entity := &models.Entity{
 		ID:      string(e.Uid.Id),
 		Type:    string(e.Uid.Type),
 		Parents: uids,
@@ -166,10 +173,10 @@ func (s *sqlDataStore) addEntity(ctx context.Context, e *fencev1.Entity) error {
 	}
 	return nil
 }
-func (s *sqlDataStore) deleteEntity(ctx context.Context, e *fencev1.UID) error {
+func (s *sqlDataStore) DeleteEntity(ctx context.Context, e *fencev1.UID) error {
 	id := string(e.Id)
 	typ := string(e.Type)
-	res, err := s.db.NewDelete().Model(&Entity{ID: id, Type: typ}).WherePK().Exec(ctx)
+	res, err := s.db.NewDelete().Model(&models.Entity{ID: id, Type: typ}).WherePK().Exec(ctx)
 	if err != nil {
 		return err
 	}

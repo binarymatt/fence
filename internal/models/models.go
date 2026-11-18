@@ -1,4 +1,4 @@
-package service
+package models
 
 import (
 	"encoding/json"
@@ -18,12 +18,19 @@ type Base struct {
 	UpdatedAt time.Time `bun:"updated_at,nullzero,notnull,default:current_timestamp"`
 	// DeletedAt bun.NullTime `bun:"deleted_at,soft_delete"`
 }
+type Tenant struct {
+	Base
+	bun.BaseModel `bun:"table:tenants,alias:t"`
+	ID            string `bun:"id,pk"`
+}
 
 type Policy struct {
-	bun.BaseModel `bun:"table:policies,alias:p"`
-	ID            string `bun:"id,pk"`
-	Content       string `bun:"content"`
 	Base
+	bun.BaseModel `bun:"table:policies,alias:p"`
+	ID            string  `bun:"id,pk"`
+	Content       string  `bun:"content"`
+	TenantID      *string `bun:"tenant_id"`
+	Tenant        *Tenant `bun:"rel:belongs-to,join:tenant_id=id"`
 }
 
 func (p *Policy) ToProto() *fencev1.Policy {
@@ -39,13 +46,15 @@ type UID struct {
 }
 
 type Entity struct {
+	Base
 	bun.BaseModel `bun:"table:entities,alias:e"`
-	ID            string       `bun:",pk"`
+	ID            string       `bun:"id,pk"`
 	Type          string       `bun:"type,pk"`
 	Parents       []UID        `bun:"parents,type:json"`
 	Attributes    cedar.Record `bun:"attributes,type:json"`
 	Tags          cedar.Record `bun:"tags,type:json"`
-	Base
+	TenantID      string       `bun:"tenant_id,notnull"`
+	Tenant        *Tenant      `bun:"rel:belongs-to,join:tenant_id=id"`
 }
 
 func (e *Entity) ToProto() *fencev1.Entity {
@@ -110,7 +119,8 @@ func recordToMap(r cedar.Record) map[string]*structpb.Value {
 	}
 	return s.GetFields()
 }
-func fenceToDBUID(ui *fencev1.UID) UID {
+
+func FenceToDBUID(ui *fencev1.UID) UID {
 	return UID{
 		ID:   ui.GetId(),
 		Type: ui.GetType(),

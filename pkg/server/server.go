@@ -15,6 +15,7 @@ import (
 	"golang.org/x/sync/errgroup"
 
 	"github.com/binarymatt/fence/gen/fence/v1/fencev1connect"
+	"github.com/binarymatt/fence/internal/database"
 	"github.com/binarymatt/fence/internal/service"
 )
 
@@ -49,7 +50,7 @@ func New(ctx context.Context, cfg *Config) (*server, error) {
 	initializeLogging(cfg)
 	initializeMetrics()
 	initializeTracing()
-	var store service.DataStore
+	var store database.DataStore
 	if cfg.DBType == "sql" {
 
 		sqlDB, err := sql.Open(sqliteshim.ShimName, cfg.DBPath)
@@ -60,14 +61,14 @@ func New(ctx context.Context, cfg *Config) (*server, error) {
 		if err := initDB(ctx, db); err != nil {
 			return nil, err
 		}
-		store = service.NewSqlDatastore(db)
+		store = database.NewSqlDatastore(db)
 	}
 	if cfg.DBType == "badger" {
 		db, err := badger.Open(badger.DefaultOptions(cfg.DBPath))
 		if err != nil {
 			return nil, err
 		}
-		store = service.NewBaderStore(db)
+		store = database.NewBaderStore(db)
 	}
 	svc := service.New(store)
 	return &server{cfg, svc}, nil
