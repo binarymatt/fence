@@ -16,6 +16,8 @@ import (
 	"github.com/uptrace/bun/extra/bundebug"
 
 	fencev1 "github.com/binarymatt/fence/gen/fence/v1"
+	"github.com/binarymatt/fence/internal/database"
+	"github.com/binarymatt/fence/internal/migrations"
 )
 
 const entitiesJSON = `[
@@ -69,8 +71,8 @@ func setupDB(t *testing.T, loadFixtures bool) *bun.DB {
 	db.AddQueryHook(bundebug.NewQueryHook(
 		bundebug.WithVerbose(false),
 	))
-	_, err = db.NewCreateTable().Model((*Entity)(nil)).IfNotExists().Exec(ctx)
-	_, err = db.NewCreateTable().Model((*Policy)(nil)).IfNotExists().Exec(ctx)
+	err = migrations.Migrate(ctx, db)
+	must.NoError(t, err)
 	if loadFixtures {
 		fixture := dbfixture.New(db)
 
@@ -81,9 +83,9 @@ func setupDB(t *testing.T, loadFixtures bool) *bun.DB {
 	}
 	return db
 }
-func setupTest(t *testing.T) (*Service, *MockDataStore) {
+func setupTest(t *testing.T) (*Service, *database.MockDataStore) {
 	t.Helper()
-	mockStore := NewMockDataStore(t)
+	mockStore := database.NewMockDataStore(t)
 	return &Service{ds: mockStore}, mockStore
 
 }
@@ -95,8 +97,8 @@ func TestIsAllowed_Deny(t *testing.T) {
 		Action:    &fencev1.UID{Type: "Action", Id: "view"},
 		Resource:  &fencev1.UID{Type: "Photo", Id: "VacationPhoto94.jpg"},
 	}
-	ds.EXPECT().getPolicySet(t.Context()).Return(policySet(), nil)
-	ds.EXPECT().getEntityMap(t.Context()).Return(entityMap(), nil)
+	ds.EXPECT().GetPolicySet(t.Context()).Return(policySet(), nil)
+	ds.EXPECT().GetEntityMap(t.Context()).Return(entityMap(), nil)
 	resp, err := s.IsAllowed(t.Context(), req)
 	must.NoError(t, err)
 	must.False(t, resp.Decision)
@@ -108,8 +110,8 @@ func TestIsAllowed_Allow(t *testing.T) {
 		Action:    &fencev1.UID{Type: "Action", Id: "view"},
 		Resource:  &fencev1.UID{Type: "Photo", Id: "VacationPhoto94.jpg"},
 	}
-	ds.EXPECT().getPolicySet(t.Context()).Return(policySet(), nil)
-	ds.EXPECT().getEntityMap(t.Context()).Return(entityMap(), nil)
+	ds.EXPECT().GetPolicySet(t.Context()).Return(policySet(), nil)
+	ds.EXPECT().GetEntityMap(t.Context()).Return(entityMap(), nil)
 	resp, err := s.IsAllowed(t.Context(), req)
 	must.NoError(t, err)
 	must.True(t, resp.Decision)

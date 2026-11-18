@@ -31,7 +31,7 @@ func TestMapToRecordRoundTrip(t *testing.T) {
 	}
 	for name, record := range cases {
 		t.Run(name, func(t *testing.T) {
-			got := translation.MapToRecord(recordToMap(record))
+			got := translation.MapToRecord(translation.RecordToMap(record))
 			must.True(t, record.Equal(got), must.Sprintf("expected %s, got %s", record, got))
 		})
 	}

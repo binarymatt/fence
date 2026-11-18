@@ -7,6 +7,7 @@ import (
 	"github.com/shoenig/test/must"
 
 	fencev1 "github.com/binarymatt/fence/gen/fence/v1"
+	"github.com/binarymatt/fence/internal/database"
 )
 
 func TestCreatePolicy(t *testing.T) {
@@ -14,7 +15,7 @@ func TestCreatePolicy(t *testing.T) {
 		name         string
 		policy       *fencev1.Policy
 		loadFixtures bool
-		setupMock    func(context.Context, *MockDataStore)
+		setupMock    func(context.Context, *database.MockDataStore)
 		err          error
 	}{
 		{
@@ -23,8 +24,8 @@ func TestCreatePolicy(t *testing.T) {
 				Id:         "testPolicy",
 				Definition: `permit(principal == User::"alice",action == Action::"view",resource in Album::"jane_vacation");`,
 			},
-			setupMock: func(ctx context.Context, ds *MockDataStore) {
-				ds.EXPECT().addPolicy(ctx, "testPolicy", `permit(principal == User::"alice",action == Action::"view",resource in Album::"jane_vacation");`).Return(nil).Once()
+			setupMock: func(ctx context.Context, ds *database.MockDataStore) {
+				ds.EXPECT().AddPolicy(ctx, "testPolicy", `permit(principal == User::"alice",action == Action::"view",resource in Album::"jane_vacation");`).Return(nil).Once()
 			},
 		},
 		{
@@ -34,10 +35,10 @@ func TestCreatePolicy(t *testing.T) {
 				Id:         "policy0",
 				Definition: `permit(principal == User::"alice",action == Action::"view",resource in Album::"jane_vacation");`,
 			},
-			setupMock: func(ctx context.Context, ds *MockDataStore) {
-				ds.EXPECT().addPolicy(ctx, "policy0", `permit(principal == User::"alice",action == Action::"view",resource in Album::"jane_vacation");`).Return(ErrPolicyAlreadyExists)
+			setupMock: func(ctx context.Context, ds *database.MockDataStore) {
+				ds.EXPECT().AddPolicy(ctx, "policy0", `permit(principal == User::"alice",action == Action::"view",resource in Album::"jane_vacation");`).Return(database.ErrPolicyAlreadyExists)
 			},
-			err: ErrPolicyAlreadyExists,
+			err: database.ErrPolicyAlreadyExists,
 		},
 	}
 	for _, tc := range cases {
@@ -57,24 +58,24 @@ func TestDeletePolicy(t *testing.T) {
 	cases := []struct {
 		name      string
 		id        string
-		setupMock func(context.Context, *MockDataStore)
+		setupMock func(context.Context, *database.MockDataStore)
 		err       error
 	}{
 		{
 			name: "happy path",
 			id:   "policy0",
-			setupMock: func(ctx context.Context, ds *MockDataStore) {
-				ds.EXPECT().deletePolicy(ctx, "policy0").Return(nil)
+			setupMock: func(ctx context.Context, ds *database.MockDataStore) {
+				ds.EXPECT().DeletePolicy(ctx, "policy0").Return(nil)
 			},
 		},
 		{
 			name: "does not exist",
 			id:   "testPolicy",
-			setupMock: func(ctx context.Context, ds *MockDataStore) {
-				ds.EXPECT().deletePolicy(ctx, "testPolicy").Return(ErrPolicyNotFound)
+			setupMock: func(ctx context.Context, ds *database.MockDataStore) {
+				ds.EXPECT().DeletePolicy(ctx, "testPolicy").Return(database.ErrPolicyNotFound)
 
 			},
-			err: ErrPolicyNotFound,
+			err: database.ErrPolicyNotFound,
 		},
 	}
 	for _, tc := range cases {

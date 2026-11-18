@@ -16,6 +16,7 @@ import (
 
 	"github.com/binarymatt/fence/gen/fence/v1/fencev1connect"
 	"github.com/binarymatt/fence/internal/database"
+	"github.com/binarymatt/fence/internal/migrations"
 	"github.com/binarymatt/fence/internal/service"
 )
 
@@ -35,16 +36,7 @@ func initializeLogging(cfg *Config) {
 func initializeMetrics() {}
 func initializeTracing() {}
 func initDB(ctx context.Context, db *bun.DB) error {
-
-	_, err := db.NewCreateTable().Model((*service.Entity)(nil)).IfNotExists().Exec(ctx)
-	if err != nil {
-		return err
-	}
-	_, err = db.NewCreateTable().Model((*service.Policy)(nil)).IfNotExists().Exec(ctx)
-	if err != nil {
-		return err
-	}
-	return nil
+	return migrations.Migrate(ctx, db)
 }
 func New(ctx context.Context, cfg *Config) (*server, error) {
 	initializeLogging(cfg)

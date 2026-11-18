@@ -14,7 +14,7 @@ func (s *Service) CreateTenant(ctx context.Context, req *fencev1.CreateTenantReq
 	if err := protovalidate.Validate(req); err != nil {
 		return nil, connect.NewError(connect.CodeInvalidArgument, err)
 	}
-	if err := s.ds.addEntity(ctx, req.Tenant); err != nil {
+	if err := s.ds.AddEntity(ctx, req.Tenant); err != nil {
 		return nil, connect.NewError(connect.CodeInvalidArgument, err)
 	}
 	return &fencev1.CreateTenantResponse{}, nil
