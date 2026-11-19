@@ -23,10 +23,13 @@ service FenceAdminService {
 
   rpc CreateTenant(CreateTenantRequest) returns (CreateTenantResponse) {}
   rpc GetTenant(GetTenantRequest) returns (GetTenantResponse) {}
+
+  rpc CreateResource(CreateResourceRequest) returns (CreateResourceResponse) {}
 }
 
 message CreatePoliciesRequest {
-  repeated Policy policies = 1 [(buf.validate.field).required = true];
+  UID tenant = 1;
+  repeated Policy policies = 2 [(buf.validate.field).required = true];
 }
 message CreatePoliciesResponse {
   repeated string ids = 1;
@@ -37,12 +40,15 @@ message DeletePolicyRequest {
 message DeletePolicyResponse {}
 
 // TODO: pagination
-message ListPoliciesRequest {}
+message ListPoliciesRequest {
+  UID tenant = 1;
+}
 message ListPoliciesResponse {
   repeated Policy policies = 1;
 }
 message GetPolicyRequest {
-  string id = 1 [(buf.validate.field).required = true];
+  UID tenant = 1;
+  string id = 2 [(buf.validate.field).required = true];
 }
 message GetPolicyResponse {
   Policy policy = 1;
@@ -68,7 +74,7 @@ message GetTenantRequest {
   UID id = 1 [(buf.validate.field).required = true];
 }
 message GetTenantResponse {
-  Entity tenant = 1;
+  UID tenant = 1;
 }
 
 message CreateUserRequest {
@@ -112,3 +118,11 @@ message ListRolesRequest {
 message ListRolesResponse {
   repeated Entity roles = 1;
 }
+
+message CreateResourceRequest {
+  repeated Entity resources = 1 [
+    (buf.validate.field).repeated.min_items = 1,
+    (buf.validate.field).repeated.max_items = 100
+  ];
+}
+message CreateResourceResponse {}

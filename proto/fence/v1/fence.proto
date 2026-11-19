@@ -12,11 +12,12 @@ service FenceService {
 }
 
 message IsAllowedRequest {
-  UID principal = 1 [(buf.validate.field).required = true];
-  UID action = 2 [(buf.validate.field).required = true];
-  UID resource = 3 [(buf.validate.field).required = true];
-  map<string, google.protobuf.Value> context = 4;
-  repeated Entity entities = 5;
+  string tenant = 1 [(buf.validate.field).required = true];
+  UID principal = 2 [(buf.validate.field).required = true];
+  UID action = 3 [(buf.validate.field).required = true];
+  UID resource = 4 [(buf.validate.field).required = true];
+  map<string, google.protobuf.Value> context = 5;
+  repeated Entity entities = 6;
 }
 
 message IsAllowedResponse {

@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"strings"
 
-	"connectrpc.com/connect"
+	"connectrpc.com/connect/v2"
 	"github.com/cedar-policy/cedar-go"
 
 	fencev1 "github.com/binarymatt/fence/gen/fence/v1"
@@ -29,14 +29,18 @@ func fenceToCedarUID(uid *fencev1.UID) cedar.EntityUID {
 	return cedar.NewEntityUID(cedar.EntityType(uid.GetType()), cedar.String(uid.GetId()))
 }
 func (s *Service) IsAllowed(ctx context.Context, req *fencev1.IsAllowedRequest) (*fencev1.IsAllowedResponse, error) {
-	ps, err := s.ds.GetPolicySet(ctx)
+	tenant := &fencev1.UID{
+		Type: "Tenant",
+		Id:   req.GetTenant(),
+	}
+	ps, err := s.ds.GetPolicySet(ctx, tenant)
 	if err != nil {
 		slog.Error("failed to get policy set", "eror", err)
-		return nil, connect.NewError(connect.CodeInternal, err)
+		return nil, connect.NewError(connect.CodeInternal, "failed to get policy set")
 	}
 	em, err := s.ds.GetEntityMap(ctx)
 	if err != nil {
-		return nil, connect.NewError(connect.CodeInternal, err)
+		return nil, connect.NewError(connect.CodeInternal, "failed to get entity map")
 	}
 	principal := req.GetPrincipal()
 	action := req.GetAction()

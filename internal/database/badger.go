@@ -54,9 +54,9 @@ func (bds *badgerDataStore) DeletePolicy(ctx context.Context, id string) error {
 	})
 }
 
-func (bds *badgerDataStore) GetPolicySet(ctx context.Context) (*cedar.PolicySet, error) {
+func (bds *badgerDataStore) GetPolicySet(ctx context.Context, tenant *fencev1.UID) (*cedar.PolicySet, error) {
 	ps := cedar.NewPolicySet()
-	policies, err := bds.GetPolicies(ctx)
+	policies, err := bds.GetPolicies(ctx, tenant)
 	for _, p := range policies {
 		var policy cedar.Policy
 		if err := policy.UnmarshalCedar([]byte(p.Definition)); err != nil {
@@ -67,7 +67,7 @@ func (bds *badgerDataStore) GetPolicySet(ctx context.Context) (*cedar.PolicySet,
 	return ps, err
 }
 
-func (bds *badgerDataStore) GetPolicies(ctx context.Context) ([]*fencev1.Policy, error) {
+func (bds *badgerDataStore) GetPolicies(ctx context.Context, tenant *fencev1.UID) ([]*fencev1.Policy, error) {
 	policies := []*fencev1.Policy{}
 	err := bds.db.View(func(txn *badger.Txn) error {
 		opts := badger.DefaultIteratorOptions
@@ -182,19 +182,34 @@ func (bds *badgerDataStore) GetEntityMap(ctx context.Context) (cedar.EntityMap, 
 	}
 	return em, nil
 }
-func (bds *badgerDataStore) AddEntity(ctx context.Context, entity *fencev1.Entity) error {
-	data, err := proto.Marshal(entity)
-	if err != nil {
-		return err
+func (bds *badgerDataStore) AddEntities(ctx context.Context, entities ...*fencev1.Entity) error {
+	for _, entity := range entities {
+		data, err := proto.Marshal(entity)
+		if err != nil {
+			return err
+		}
+		id := entityId(entity.Uid.Type, entity.Uid.Id)
+		err = bds.db.Update(func(tx *badger.Txn) error {
+
+			return tx.Set(id, data)
+		})
+		if err != nil {
+			return err
+		}
 	}
-	id := entityId(entity.Uid.Type, entity.Uid.Id)
-	return bds.db.Update(func(tx *badger.Txn) error {
-		return tx.Set(id, data)
-	})
+	return nil
 }
 func (bds *badgerDataStore) DeleteEntity(ctx context.Context, uid *fencev1.UID) error {
 	id := entityId(uid.Type, uid.Id)
 	return bds.db.Update(func(tx *badger.Txn) error {
 		return tx.Delete(id)
 	})
+}
+
+func (bds *badgerDataStore) AddTenant(ctx context.Context, uid *fencev1.UID) error {
+	return nil
+}
+
+func (bds *badgerDataStore) ListTenants(ctx context.Context) ([]*fencev1.UID, error) {
+	return nil, nil
 }

@@ -1,13 +1,21 @@
+
+- model: Tenant
+  rows:
+    - id: 1
 - model: Policy
   rows:
     - id: policy0
       content: permit(principal == User::"alice",action == Action::"view",resource in Album::"jane_vacation");
       created_at: "{{ now }}"
       updated_at: "{{ now }}"
+    - id: tenantPolicy
+      tenant_id: 1
+      content: permit(principal,action == Action::"view",resource);
 
 - model: Entity
   rows:
     - id: VacationPhoto94.jpg
+      tenant_id: 1
       type: Photo
       parents:
         - id: jane_vacation
@@ -15,10 +23,12 @@
       created_at: "{{ now }}"
       updated_at: "{{ now }}"
     - id: alice
+      tenant_id: 1
       type: User
       created_at: "{{ now }}"
       updated_at: "{{ now }}"
     - id: bob
+      tenant_id: 1
       type: User
       parents:
         - id: people

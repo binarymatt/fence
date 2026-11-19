@@ -5,36 +5,37 @@
 package fencev1connect
 
 import (
-	connect "connectrpc.com/connect"
+	connect "connectrpc.com/connect/v2"
 	context "context"
-	errors "errors"
 	v1 "github.com/binarymatt/fence/gen/fence/v1"
-	http "net/http"
-	strings "strings"
+	sync "sync"
 )
-
-// This is a compile-time assertion to ensure that this generated file and the connect package are
-// compatible. If you get a compiler error that this constant is not defined, this code was
-// generated with a version of connect newer than the one compiled into your binary. You can fix the
-// problem by either regenerating this code with an older version of connect or updating the connect
-// version compiled into your binary.
-const _ = connect.IsAtLeastVersion1_13_0
 
 const (
 	// FenceServiceName is the fully-qualified name of the FenceService service.
 	FenceServiceName = "fence.v1.FenceService"
 )
 
-// These constants are the fully-qualified names of the RPCs defined in this package. They're
-// exposed at runtime as Spec.Procedure and as the final two segments of the HTTP route.
+// These constants are the procedure names of the RPCs defined in this package. They're exposed at
+// runtime as Spec.Procedure and as the final two segments of the HTTP route.
 //
 // Note that these are different from the fully-qualified method names used by
 // google.golang.org/protobuf/reflect/protoreflect. To convert from these constants to
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
-	// FenceServiceIsAllowedProcedure is the fully-qualified name of the FenceService's IsAllowed RPC.
+	// FenceServiceIsAllowedProcedure is the procedure name of the FenceService's IsAllowed RPC.
 	FenceServiceIsAllowedProcedure = "/fence.v1.FenceService/IsAllowed"
+)
+
+var (
+	fenceServiceIsAllowedSpec = sync.OnceValue(func() connect.Spec {
+		return connect.Spec{
+			StreamType: connect.StreamTypeUnary,
+			Schema:     v1.File_fence_v1_fence_proto.Services().ByName("FenceService").Methods().ByName("IsAllowed"),
+			Procedure:  FenceServiceIsAllowedProcedure,
+		}
+	})
 )
 
 // FenceServiceClient is a client for the fence.v1.FenceService service.
@@ -42,38 +43,10 @@ type FenceServiceClient interface {
 	IsAllowed(context.Context, *v1.IsAllowedRequest) (*v1.IsAllowedResponse, error)
 }
 
-// NewFenceServiceClient constructs a client for the fence.v1.FenceService service. By default, it
-// uses the Connect protocol with the binary Protobuf Codec, asks for gzipped responses, and sends
-// uncompressed requests. To use the gRPC or gRPC-Web protocols, supply the connect.WithGRPC() or
-// connect.WithGRPCWeb() options.
-//
-// The URL supplied here should be the base URL for the Connect or gRPC server (for example,
-// http://api.acme.com or https://acme.com/grpc).
-func NewFenceServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) FenceServiceClient {
-	baseURL = strings.TrimRight(baseURL, "/")
-	fenceServiceMethods := v1.File_fence_v1_fence_proto.Services().ByName("FenceService").Methods()
-	return &fenceServiceClient{
-		isAllowed: connect.NewClient[v1.IsAllowedRequest, v1.IsAllowedResponse](
-			httpClient,
-			baseURL+FenceServiceIsAllowedProcedure,
-			connect.WithSchema(fenceServiceMethods.ByName("IsAllowed")),
-			connect.WithClientOptions(opts...),
-		),
-	}
-}
-
-// fenceServiceClient implements FenceServiceClient.
-type fenceServiceClient struct {
-	isAllowed *connect.Client[v1.IsAllowedRequest, v1.IsAllowedResponse]
-}
-
-// IsAllowed calls fence.v1.FenceService.IsAllowed.
-func (c *fenceServiceClient) IsAllowed(ctx context.Context, req *v1.IsAllowedRequest) (*v1.IsAllowedResponse, error) {
-	response, err := c.isAllowed.CallUnary(ctx, connect.NewRequest(req))
-	if response != nil {
-		return response.Msg, err
-	}
-	return nil, err
+// NewFenceServiceClient constructs a client for the fence.v1.FenceService service. Multiple service
+// clients may share a single connect.Client.
+func NewFenceServiceClient(client *connect.Client) FenceServiceClient {
+	return &fenceServiceClient{client: client}
 }
 
 // FenceServiceHandler is an implementation of the fence.v1.FenceService service.
@@ -81,32 +54,43 @@ type FenceServiceHandler interface {
 	IsAllowed(context.Context, *v1.IsAllowedRequest) (*v1.IsAllowedResponse, error)
 }
 
-// NewFenceServiceHandler builds an HTTP handler from the service implementation. It returns the
-// path on which to mount the handler and the handler itself.
-//
-// By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
-// and JSON codecs. They also support gzip compression.
-func NewFenceServiceHandler(svc FenceServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
-	fenceServiceMethods := v1.File_fence_v1_fence_proto.Services().ByName("FenceService").Methods()
-	fenceServiceIsAllowedHandler := connect.NewUnaryHandlerSimple(
-		FenceServiceIsAllowedProcedure,
-		svc.IsAllowed,
-		connect.WithSchema(fenceServiceMethods.ByName("IsAllowed")),
-		connect.WithHandlerOptions(opts...),
+// RegisterFenceServiceHandler registers svc as the fence.v1.FenceService implementation on server.
+func RegisterFenceServiceHandler(server *connect.Server, svc FenceServiceHandler) {
+	adapter := fenceServiceHandler{svc: svc}
+	server.Register(
+		connect.Method{Spec: fenceServiceIsAllowedSpec(), Handler: adapter.isAllowed},
 	)
-	return "/fence.v1.FenceService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		switch r.URL.Path {
-		case FenceServiceIsAllowedProcedure:
-			fenceServiceIsAllowedHandler.ServeHTTP(w, r)
-		default:
-			http.NotFound(w, r)
-		}
-	})
 }
 
 // UnimplementedFenceServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedFenceServiceHandler struct{}
 
 func (UnimplementedFenceServiceHandler) IsAllowed(context.Context, *v1.IsAllowedRequest) (*v1.IsAllowedResponse, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("fence.v1.FenceService.IsAllowed is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, "fence.v1.FenceService.IsAllowed is not implemented")
+}
+
+type fenceServiceClient struct {
+	client *connect.Client
+}
+
+func (c *fenceServiceClient) IsAllowed(ctx context.Context, req *v1.IsAllowedRequest) (*v1.IsAllowedResponse, error) {
+	var res v1.IsAllowedResponse
+	if err := c.client.CallUnary(ctx, fenceServiceIsAllowedSpec(), req, &res); err != nil {
+		return nil, err
+	}
+	return &res, nil
+}
+
+type fenceServiceHandler struct{ svc FenceServiceHandler }
+
+func (h fenceServiceHandler) isAllowed(ctx context.Context, _ connect.Spec, stream connect.ServerStream) error {
+	var req v1.IsAllowedRequest
+	if err := stream.Receive(&req); err != nil {
+		return err
+	}
+	res, err := h.svc.IsAllowed(ctx, &req)
+	if err != nil {
+		return err
+	}
+	return stream.Send(res)
 }

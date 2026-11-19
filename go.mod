@@ -3,9 +3,10 @@ module github.com/binarymatt/fence
 go 1.27.3
 
 require (
-	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.36.12-20260825204119-511051f7f437.1
+	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.36.12-20260825204119-511051f7f437.2
 	buf.build/go/protovalidate v1.4.0
-	connectrpc.com/connect v1.19.1
+	connectrpc.com/connect/v2 v2.0.2
+	connectrpc.com/validate v0.9.0
 	github.com/cedar-policy/cedar-go v1.3.0
 	github.com/dgraph-io/badger/v4 v4.9.6
 	github.com/hashicorp/go-retryablehttp v0.7.8
@@ -28,6 +29,7 @@ require (
 require (
 	cel.dev/cel-go v0.32.0 // indirect
 	cel.dev/expr v0.25.3 // indirect
+	connectrpc.com/connect v1.21.0 // indirect
 	github.com/antlr4-go/antlr/v4 v4.13.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/dgraph-io/ristretto/v2 v2.2.0 // indirect
@@ -71,4 +73,9 @@ require (
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.11.0 // indirect
 	modernc.org/sqlite v1.40.1 // indirect
+)
+
+tool (
+	connectrpc.com/connect/v2/cmd/protoc-gen-connect-go
+	google.golang.org/protobuf/cmd/protoc-gen-go
 )

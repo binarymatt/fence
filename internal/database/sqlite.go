@@ -11,6 +11,7 @@ import (
 
 	fencev1 "github.com/binarymatt/fence/gen/fence/v1"
 	"github.com/binarymatt/fence/internal/models"
+	"github.com/binarymatt/fence/internal/translation"
 )
 
 var (
@@ -59,9 +60,9 @@ func (s *sqlDataStore) DeletePolicy(ctx context.Context, id string) error {
 	}
 	return nil
 }
-func (s *sqlDataStore) GetPolicySet(ctx context.Context) (*cedar.PolicySet, error) {
+func (s *sqlDataStore) GetPolicySet(ctx context.Context, tenant *fencev1.UID) (*cedar.PolicySet, error) {
 
-	policies, err := s.GetPolicies(ctx)
+	policies, err := s.GetPolicies(ctx, tenant)
 	if err != nil {
 		return nil, err
 	}
@@ -75,9 +76,13 @@ func (s *sqlDataStore) GetPolicySet(ctx context.Context) (*cedar.PolicySet, erro
 	}
 	return ps, nil
 }
-func (s *sqlDataStore) GetPolicies(ctx context.Context) ([]*fencev1.Policy, error) {
+func (s *sqlDataStore) GetPolicies(ctx context.Context, tenant *fencev1.UID) ([]*fencev1.Policy, error) {
 	var policies []models.Policy
-	if err := s.db.NewSelect().Model(&policies).Scan(ctx); err != nil {
+	qs := s.db.NewSelect().Model(&policies).Where("tenant_id is NULL")
+	if tenant != nil {
+		qs = qs.WhereOr("tenant_id = ?", tenant.Id)
+	}
+	if err := qs.Scan(ctx); err != nil {
 		return nil, err
 	}
 	pols := make([]*fencev1.Policy, len(policies))
@@ -150,25 +155,26 @@ func (s *sqlDataStore) GetEntityMap(ctx context.Context) (cedar.EntityMap, error
 	return em, nil
 }
 
-// TODO: retain attributes and tags as json fields
-func (s *sqlDataStore) AddEntity(ctx context.Context, e *fencev1.Entity) error {
-	uids := make([]models.UID, len(e.Parents))
-	for _, uid := range e.Parents {
-
-		uids = append(uids, models.UID{ID: string(uid.Id), Type: string(uid.Type)})
-	}
-	entity := &models.Entity{
-		ID:      string(e.Uid.Id),
-		Type:    string(e.Uid.Type),
-		Parents: uids,
-		//Attributes: e.Attributes,
-		//Tags:       e.Tags,
-	}
-	_, err := s.db.NewInsert().Model(entity).Exec(ctx)
-	if err != nil {
-		if strings.Contains(err.Error(), "constraint failed: UNIQUE constraint failed: entities.id, entities.type") {
-			return fmt.Errorf(`%w: %s::"%s"`, ErrEntityAlreadyExists, entity.Type, entity.ID)
+func (s *sqlDataStore) AddEntities(ctx context.Context, entities ...*fencev1.Entity) error {
+	entitySlice := make([]models.Entity, len(entities))
+	for i, e := range entities {
+		uids := make([]models.UID, len(e.Parents))
+		for _, uid := range e.Parents {
+			uids = append(uids, models.UID{ID: string(uid.Id), Type: string(uid.Type)})
 		}
+		attrs := translation.MapToRecord(e.Attributes)
+		tags := translation.MapToRecord(e.Tags)
+		entitySlice[i] = models.Entity{
+			ID:         string(e.Uid.Id),
+			Type:       string(e.Uid.Type),
+			Parents:    uids,
+			Attributes: attrs,
+			Tags:       tags,
+		}
+	}
+
+	if _, err := s.db.NewInsert().Model(&entitySlice).Exec(ctx); err != nil {
+
 		return err
 	}
 	return nil
@@ -188,4 +194,28 @@ func (s *sqlDataStore) DeleteEntity(ctx context.Context, e *fencev1.UID) error {
 		return fmt.Errorf(`%s::"%s": %w`, typ, id, ErrEntityNotFound)
 	}
 	return nil
+}
+
+func (s *sqlDataStore) AddTenant(ctx context.Context, uid *fencev1.UID) error {
+	tenant := &models.Tenant{
+		ID: uid.Id,
+	}
+	_, err := s.db.NewInsert().Model(tenant).Exec(ctx)
+	return err
+}
+
+func (s *sqlDataStore) ListTenants(ctx context.Context) ([]*fencev1.UID, error) {
+	var tenants []models.Tenant
+	err := s.db.NewSelect().Model(&tenants).Scan(ctx)
+	if err != nil {
+		return nil, err
+	}
+	tenantIds := make([]*fencev1.UID, len(tenants))
+	for i, tenant := range tenants {
+		tenantIds[i] = &fencev1.UID{
+			Type: "Tenant",
+			Id:   tenant.ID,
+		}
+	}
+	return tenantIds, nil
 }

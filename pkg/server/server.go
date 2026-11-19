@@ -8,6 +8,9 @@ import (
 	"strings"
 	"time"
 
+	"connectrpc.com/connect/v2"
+	"connectrpc.com/connect/v2/connecthttp"
+	"connectrpc.com/validate"
 	"github.com/dgraph-io/badger/v4"
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/sqlitedialect"
@@ -92,8 +95,10 @@ func corsMiddleware(next http.Handler) http.Handler {
 func (a *server) Run(ctx context.Context) error {
 	eg, ctx := errgroup.WithContext(ctx)
 	mux := http.NewServeMux()
-	mux.Handle(fencev1connect.NewFenceServiceHandler(a.service))
-	mux.Handle(fencev1connect.NewFenceAdminServiceHandler(a.service))
+	server := connect.NewServer(validate.NewServerInterceptor())
+	fencev1connect.RegisterFenceServiceHandler(server, a.service)
+	fencev1connect.RegisterFenceAdminServiceHandler(server, a.service)
+	connecthttp.Mount(mux, server)
 	mux.HandleFunc("/health", func(w http.ResponseWriter, _ *http.Request) {
 		slog.Debug("health check")
 		w.Write([]byte("ok"))

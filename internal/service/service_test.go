@@ -93,11 +93,12 @@ func setupTest(t *testing.T) (*Service, *database.MockDataStore) {
 func TestIsAllowed_Deny(t *testing.T) {
 	s, ds := setupTest(t)
 	req := &fencev1.IsAllowedRequest{
+		Tenant:    "1",
 		Principal: &fencev1.UID{Id: "bob", Type: "User"},
 		Action:    &fencev1.UID{Type: "Action", Id: "view"},
 		Resource:  &fencev1.UID{Type: "Photo", Id: "VacationPhoto94.jpg"},
 	}
-	ds.EXPECT().GetPolicySet(t.Context()).Return(policySet(), nil)
+	ds.EXPECT().GetPolicySet(t.Context(), &fencev1.UID{Type: "Tenant", Id: "1"}).Return(policySet(), nil)
 	ds.EXPECT().GetEntityMap(t.Context()).Return(entityMap(), nil)
 	resp, err := s.IsAllowed(t.Context(), req)
 	must.NoError(t, err)
@@ -106,11 +107,12 @@ func TestIsAllowed_Deny(t *testing.T) {
 func TestIsAllowed_Allow(t *testing.T) {
 	s, ds := setupTest(t)
 	req := &fencev1.IsAllowedRequest{
+		Tenant:    "1",
 		Principal: &fencev1.UID{Id: "alice", Type: "User"},
 		Action:    &fencev1.UID{Type: "Action", Id: "view"},
 		Resource:  &fencev1.UID{Type: "Photo", Id: "VacationPhoto94.jpg"},
 	}
-	ds.EXPECT().GetPolicySet(t.Context()).Return(policySet(), nil)
+	ds.EXPECT().GetPolicySet(t.Context(), &fencev1.UID{Type: "Tenant", Id: "1"}).Return(policySet(), nil)
 	ds.EXPECT().GetEntityMap(t.Context()).Return(entityMap(), nil)
 	resp, err := s.IsAllowed(t.Context(), req)
 	must.NoError(t, err)

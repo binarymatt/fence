@@ -5,7 +5,7 @@ import (
 	"errors"
 	"log/slog"
 
-	"connectrpc.com/connect"
+	"connectrpc.com/connect/v2"
 
 	fencev1 "github.com/binarymatt/fence/gen/fence/v1"
 	"github.com/binarymatt/fence/internal/database"
@@ -18,9 +18,9 @@ func (s *Service) CreatePolicies(ctx context.Context, req *fencev1.CreatePolicie
 	for i, policy := range req.GetPolicies() {
 		if err := s.ds.AddPolicy(ctx, policy.GetId(), policy.GetDefinition()); err != nil {
 			if errors.Is(err, database.ErrPolicyAlreadyExists) {
-				return nil, connect.NewError(connect.CodeInvalidArgument, err)
+				return nil, connect.NewError(connect.CodeInvalidArgument, err.Error()).WithCause(err)
 			}
-			return nil, connect.NewError(connect.CodeUnknown, err)
+			return nil, connect.NewError(connect.CodeUnknown, err.Error())
 		}
 		ids[i] = policy.GetId()
 	}
@@ -31,16 +31,23 @@ func (s *Service) CreatePolicies(ctx context.Context, req *fencev1.CreatePolicie
 func (s *Service) DeletePolicy(ctx context.Context, req *fencev1.DeletePolicyRequest) (*fencev1.DeletePolicyResponse, error) {
 	if err := s.ds.DeletePolicy(ctx, req.Id); err != nil {
 		if errors.Is(err, database.ErrPolicyNotFound) {
-			return nil, connect.NewError(connect.CodeInvalidArgument, err)
+			return nil, connect.NewError(connect.CodeInvalidArgument, err.Error()).WithCause(err)
 		}
-		return nil, connect.NewError(connect.CodeUnknown, err)
+		return nil, connect.NewError(connect.CodeUnknown, err.Error())
 	}
 	return &fencev1.DeletePolicyResponse{}, nil
 }
 
-func (s *Service) ListPolicies(ctx context.Context, _ *fencev1.ListPoliciesRequest) (*fencev1.ListPoliciesResponse, error) {
+func (s *Service) ListPolicies(ctx context.Context, req *fencev1.ListPoliciesRequest) (*fencev1.ListPoliciesResponse, error) {
 	slog.Debug("listing policies")
-	policies, err := s.ds.GetPolicies(ctx)
+	var tenant *fencev1.UID
+	if req.GetTenant() != nil {
+		tenant = &fencev1.UID{
+			Type: "Tenant",
+			Id:   req.GetTenant().GetId(),
+		}
+	}
+	policies, err := s.ds.GetPolicies(ctx, tenant)
 	if err != nil {
 		return nil, err
 	}

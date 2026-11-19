@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"time"
 
+	"connectrpc.com/connect/v2"
+	"connectrpc.com/connect/v2/connecthttp"
 	"github.com/hashicorp/go-retryablehttp"
 	"google.golang.org/protobuf/types/known/structpb"
 
@@ -38,7 +40,8 @@ func NewRemoteServerProvider(cfg RemoteServerConfig) *RemoteServerProvider {
 	httpClient := &http.Client{
 		Transport: &authorizedRoundTripper{baseTripper: &retryablehttp.RoundTripper{Client: retryable}, token: cfg.BearerToken},
 	}
-	cl := fencev1connect.NewFenceServiceClient(httpClient, cfg.Address)
+	client := connect.NewClient(connecthttp.NewTransport(httpClient, cfg.Address))
+	cl := fencev1connect.NewFenceServiceClient(client)
 	return &RemoteServerProvider{client: cl}
 }
 
