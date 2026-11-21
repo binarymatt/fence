@@ -1,7 +1,7 @@
-
 - model: Tenant
   rows:
     - id: 1
+      name: FixtureTenant
 - model: Policy
   rows:
     - id: policy0

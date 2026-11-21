@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS "tenants" (
   "id" VARCHAR NOT NULL,
+  "name" VARCHAR NOT NULL,
   "created_at" TIMESTAMP NOT NULL DEFAULT current_timestamp, 
   "updated_at" TIMESTAMP NOT NULL DEFAULT current_timestamp,
   PRIMARY KEY ("id")

@@ -22,6 +22,7 @@ type Tenant struct {
 	Base
 	bun.BaseModel `bun:"table:tenants,alias:t"`
 	ID            string `bun:"id,pk"`
+	Name          string `bun:"name"`
 }
 
 type Policy struct {

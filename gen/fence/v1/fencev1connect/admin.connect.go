@@ -54,6 +54,9 @@ const (
 	// FenceAdminServiceListRolesProcedure is the procedure name of the FenceAdminService's ListRoles
 	// RPC.
 	FenceAdminServiceListRolesProcedure = "/fence.v1.FenceAdminService/ListRoles"
+	// FenceAdminServiceListTenantsProcedure is the procedure name of the FenceAdminService's
+	// ListTenants RPC.
+	FenceAdminServiceListTenantsProcedure = "/fence.v1.FenceAdminService/ListTenants"
 	// FenceAdminServiceCreateTenantProcedure is the procedure name of the FenceAdminService's
 	// CreateTenant RPC.
 	FenceAdminServiceCreateTenantProcedure = "/fence.v1.FenceAdminService/CreateTenant"
@@ -136,6 +139,13 @@ var (
 			Procedure:  FenceAdminServiceListRolesProcedure,
 		}
 	})
+	fenceAdminServiceListTenantsSpec = sync.OnceValue(func() connect.Spec {
+		return connect.Spec{
+			StreamType: connect.StreamTypeUnary,
+			Schema:     v1.File_fence_v1_admin_proto.Services().ByName("FenceAdminService").Methods().ByName("ListTenants"),
+			Procedure:  FenceAdminServiceListTenantsProcedure,
+		}
+	})
 	fenceAdminServiceCreateTenantSpec = sync.OnceValue(func() connect.Spec {
 		return connect.Spec{
 			StreamType: connect.StreamTypeUnary,
@@ -171,6 +181,7 @@ type FenceAdminServiceClient interface {
 	CreateRole(context.Context, *v1.CreateRoleRequest) (*v1.CreateRoleResponse, error)
 	DeleteRole(context.Context, *v1.DeleteRoleRequest) (*v1.DeleteRoleResponse, error)
 	ListRoles(context.Context, *v1.ListRolesRequest) (*v1.ListRolesResponse, error)
+	ListTenants(context.Context, *v1.ListTenantRequest) (*v1.ListTenantResponse, error)
 	CreateTenant(context.Context, *v1.CreateTenantRequest) (*v1.CreateTenantResponse, error)
 	GetTenant(context.Context, *v1.GetTenantRequest) (*v1.GetTenantResponse, error)
 	CreateResource(context.Context, *v1.CreateResourceRequest) (*v1.CreateResourceResponse, error)
@@ -194,6 +205,7 @@ type FenceAdminServiceHandler interface {
 	CreateRole(context.Context, *v1.CreateRoleRequest) (*v1.CreateRoleResponse, error)
 	DeleteRole(context.Context, *v1.DeleteRoleRequest) (*v1.DeleteRoleResponse, error)
 	ListRoles(context.Context, *v1.ListRolesRequest) (*v1.ListRolesResponse, error)
+	ListTenants(context.Context, *v1.ListTenantRequest) (*v1.ListTenantResponse, error)
 	CreateTenant(context.Context, *v1.CreateTenantRequest) (*v1.CreateTenantResponse, error)
 	GetTenant(context.Context, *v1.GetTenantRequest) (*v1.GetTenantResponse, error)
 	CreateResource(context.Context, *v1.CreateResourceRequest) (*v1.CreateResourceResponse, error)
@@ -214,6 +226,7 @@ func RegisterFenceAdminServiceHandler(server *connect.Server, svc FenceAdminServ
 		connect.Method{Spec: fenceAdminServiceCreateRoleSpec(), Handler: adapter.createRole},
 		connect.Method{Spec: fenceAdminServiceDeleteRoleSpec(), Handler: adapter.deleteRole},
 		connect.Method{Spec: fenceAdminServiceListRolesSpec(), Handler: adapter.listRoles},
+		connect.Method{Spec: fenceAdminServiceListTenantsSpec(), Handler: adapter.listTenants},
 		connect.Method{Spec: fenceAdminServiceCreateTenantSpec(), Handler: adapter.createTenant},
 		connect.Method{Spec: fenceAdminServiceGetTenantSpec(), Handler: adapter.getTenant},
 		connect.Method{Spec: fenceAdminServiceCreateResourceSpec(), Handler: adapter.createResource},
@@ -261,6 +274,10 @@ func (UnimplementedFenceAdminServiceHandler) DeleteRole(context.Context, *v1.Del
 
 func (UnimplementedFenceAdminServiceHandler) ListRoles(context.Context, *v1.ListRolesRequest) (*v1.ListRolesResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, "fence.v1.FenceAdminService.ListRoles is not implemented")
+}
+
+func (UnimplementedFenceAdminServiceHandler) ListTenants(context.Context, *v1.ListTenantRequest) (*v1.ListTenantResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, "fence.v1.FenceAdminService.ListTenants is not implemented")
 }
 
 func (UnimplementedFenceAdminServiceHandler) CreateTenant(context.Context, *v1.CreateTenantRequest) (*v1.CreateTenantResponse, error) {
@@ -354,6 +371,14 @@ func (c *fenceAdminServiceClient) DeleteRole(ctx context.Context, req *v1.Delete
 func (c *fenceAdminServiceClient) ListRoles(ctx context.Context, req *v1.ListRolesRequest) (*v1.ListRolesResponse, error) {
 	var res v1.ListRolesResponse
 	if err := c.client.CallUnary(ctx, fenceAdminServiceListRolesSpec(), req, &res); err != nil {
+		return nil, err
+	}
+	return &res, nil
+}
+
+func (c *fenceAdminServiceClient) ListTenants(ctx context.Context, req *v1.ListTenantRequest) (*v1.ListTenantResponse, error) {
+	var res v1.ListTenantResponse
+	if err := c.client.CallUnary(ctx, fenceAdminServiceListTenantsSpec(), req, &res); err != nil {
 		return nil, err
 	}
 	return &res, nil
@@ -499,6 +524,18 @@ func (h fenceAdminServiceHandler) listRoles(ctx context.Context, _ connect.Spec,
 		return err
 	}
 	res, err := h.svc.ListRoles(ctx, &req)
+	if err != nil {
+		return err
+	}
+	return stream.Send(res)
+}
+
+func (h fenceAdminServiceHandler) listTenants(ctx context.Context, _ connect.Spec, stream connect.ServerStream) error {
+	var req v1.ListTenantRequest
+	if err := stream.Receive(&req); err != nil {
+		return err
+	}
+	res, err := h.svc.ListTenants(ctx, &req)
 	if err != nil {
 		return err
 	}

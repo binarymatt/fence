@@ -99,7 +99,7 @@ func TestIsAllowed_Deny(t *testing.T) {
 		Resource:  &fencev1.UID{Type: "Photo", Id: "VacationPhoto94.jpg"},
 	}
 	ds.EXPECT().GetPolicySet(t.Context(), &fencev1.UID{Type: "Tenant", Id: "1"}).Return(policySet(), nil)
-	ds.EXPECT().GetEntityMap(t.Context()).Return(entityMap(), nil)
+	ds.EXPECT().GetEntityMap(t.Context(), &fencev1.UID{Type: "Tenant", Id: "1"}).Return(entityMap(), nil)
 	resp, err := s.IsAllowed(t.Context(), req)
 	must.NoError(t, err)
 	must.False(t, resp.Decision)
@@ -113,7 +113,7 @@ func TestIsAllowed_Allow(t *testing.T) {
 		Resource:  &fencev1.UID{Type: "Photo", Id: "VacationPhoto94.jpg"},
 	}
 	ds.EXPECT().GetPolicySet(t.Context(), &fencev1.UID{Type: "Tenant", Id: "1"}).Return(policySet(), nil)
-	ds.EXPECT().GetEntityMap(t.Context()).Return(entityMap(), nil)
+	ds.EXPECT().GetEntityMap(t.Context(), &fencev1.UID{Type: "Tenant", Id: "1"}).Return(entityMap(), nil)
 	resp, err := s.IsAllowed(t.Context(), req)
 	must.NoError(t, err)
 	must.True(t, resp.Decision)

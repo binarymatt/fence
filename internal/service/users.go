@@ -15,7 +15,7 @@ func (s *Service) CreateUser(ctx context.Context, req *fencev1.CreateUserRequest
 	if req.GetTenant() != nil && !slices.Contains(entity.Parents, req.GetTenant()) {
 		entity.Parents = append(entity.Parents, req.Tenant)
 	}
-	if err := s.ds.AddEntities(ctx, entity); err != nil {
+	if err := s.ds.AddEntities(ctx, req.Tenant, entity); err != nil {
 		return nil, connect.NewError(connect.CodeInternal, err.Error())
 	}
 	return &fencev1.CreateUserResponse{}, nil
@@ -24,7 +24,7 @@ func (s *Service) DeleteUser(ctx context.Context, req *fencev1.DeleteUserRequest
 	if err := protovalidate.Validate(req); err != nil {
 		return nil, connect.NewError(connect.CodeInvalidArgument, err.Error())
 	}
-	if err := s.ds.DeleteEntity(ctx, req.Uid); err != nil {
+	if err := s.ds.DeleteEntity(ctx, req.Tenant, req.Uid); err != nil {
 
 		return nil, connect.NewError(connect.CodeInternal, err.Error())
 	}

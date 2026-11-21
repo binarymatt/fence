@@ -28,6 +28,25 @@ type Service struct {
 func fenceToCedarUID(uid *fencev1.UID) cedar.EntityUID {
 	return cedar.NewEntityUID(cedar.EntityType(uid.GetType()), cedar.String(uid.GetId()))
 }
+func (s *Service) addEntities(em cedar.EntityMap, entities []*fencev1.Entity) {
+	for _, e := range entities {
+		id := cedar.NewEntityUID(cedar.EntityType(e.Uid.Type), cedar.String(e.Uid.Id))
+
+		parentRecords := make([]cedar.EntityUID, len(e.Parents))
+		for i, uid := range e.Parents {
+			parentRecords[i] = cedar.NewEntityUID(cedar.EntityType(uid.Type), cedar.String(uid.Id))
+		}
+
+		parents := cedar.NewEntityUIDSet(parentRecords...)
+		ent := cedar.Entity{
+			UID:        id,
+			Parents:    parents,
+			Attributes: translation.MapToRecord(e.Attributes),
+			Tags:       translation.MapToRecord(e.Tags),
+		}
+		em[id] = ent
+	}
+}
 func (s *Service) IsAllowed(ctx context.Context, req *fencev1.IsAllowedRequest) (*fencev1.IsAllowedResponse, error) {
 	tenant := &fencev1.UID{
 		Type: "Tenant",
@@ -38,10 +57,13 @@ func (s *Service) IsAllowed(ctx context.Context, req *fencev1.IsAllowedRequest) 
 		slog.Error("failed to get policy set", "eror", err)
 		return nil, connect.NewError(connect.CodeInternal, "failed to get policy set")
 	}
-	em, err := s.ds.GetEntityMap(ctx)
+	em, err := s.ds.GetEntityMap(ctx, tenant)
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, "failed to get entity map")
 	}
+	// Add additional passed in entities
+	s.addEntities(em, req.GetEntities())
+
 	principal := req.GetPrincipal()
 	action := req.GetAction()
 	resource := req.GetResource()

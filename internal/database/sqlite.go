@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"strings"
 
 	"github.com/cedar-policy/cedar-go"
@@ -102,7 +103,7 @@ func (s *sqlDataStore) GetPolicy(ctx context.Context, id string) (*cedar.Policy,
 	}
 	return &cPolicy, nil
 }
-func (s *sqlDataStore) GetEntity(ctx context.Context, uid *fencev1.UID) (*fencev1.Entity, error) {
+func (s *sqlDataStore) GetEntity(ctx context.Context, tenant, uid *fencev1.UID) (*fencev1.Entity, error) {
 	if uid == nil {
 		return nil, fmt.Errorf("nil entity")
 	}
@@ -112,50 +113,49 @@ func (s *sqlDataStore) GetEntity(ctx context.Context, uid *fencev1.UID) (*fencev
 	}
 	return entity.ToProto(), nil
 }
-func (s *sqlDataStore) GetEntities(ctx context.Context, parent *fencev1.UID) ([]*fencev1.Entity, error) {
+func (s *sqlDataStore) GetEntities(ctx context.Context, tenant *fencev1.UID) ([]*fencev1.Entity, error) {
 	var entities []models.Entity
 	query := s.db.NewSelect().Model(&entities)
-	if parent != nil {
-		// TODO: how to filter correctly
-		// uid := models.Fencetodbuid(parent)
-
+	if tenant != nil {
+		query = query.Where("tenant_id = ?", tenant.Id)
 	}
 	if err := query.Scan(ctx); err != nil {
 		return nil, err
 	}
-	// ents := make([]cedar.Entity, len(entities))
 	ents := make([]*fencev1.Entity, len(entities))
 	for i, e := range entities {
 		ents[i] = e.ToProto()
 	}
 	return ents, nil
 }
-func (s *sqlDataStore) GetEntityMap(ctx context.Context) (cedar.EntityMap, error) {
+func (s *sqlDataStore) GetEntityMap(ctx context.Context, tenant *fencev1.UID) (cedar.EntityMap, error) {
 
-	entities, err := s.GetEntities(ctx, nil)
+	entities, err := s.GetEntities(ctx, tenant)
 	if err != nil {
 		return nil, err
 	}
 	em := cedar.EntityMap{}
 	for _, e := range entities {
 		id := cedar.NewEntityUID(cedar.EntityType(e.Uid.Type), cedar.String(e.Uid.Id))
-		parentRecords := []cedar.EntityUID{}
-		for _, uid := range e.Parents {
-			parentRecords = append(parentRecords, cedar.NewEntityUID(cedar.EntityType(uid.Type), cedar.String(uid.Id)))
+
+		parentRecords := make([]cedar.EntityUID, len(e.Parents))
+		for i, uid := range e.Parents {
+			parentRecords[i] = cedar.NewEntityUID(cedar.EntityType(uid.Type), cedar.String(uid.Id))
 		}
+
 		parents := cedar.NewEntityUIDSet(parentRecords...)
 		ent := cedar.Entity{
-			UID:     id,
-			Parents: parents,
-			//Attributes: e.Attributes,
-			//Tags:       e.Tags,
+			UID:        id,
+			Parents:    parents,
+			Attributes: translation.MapToRecord(e.Attributes),
+			Tags:       translation.MapToRecord(e.Tags),
 		}
 		em[id] = ent
 	}
 	return em, nil
 }
 
-func (s *sqlDataStore) AddEntities(ctx context.Context, entities ...*fencev1.Entity) error {
+func (s *sqlDataStore) AddEntities(ctx context.Context, tenant *fencev1.UID, entities ...*fencev1.Entity) error {
 	entitySlice := make([]models.Entity, len(entities))
 	for i, e := range entities {
 		uids := make([]models.UID, len(e.Parents))
@@ -179,7 +179,7 @@ func (s *sqlDataStore) AddEntities(ctx context.Context, entities ...*fencev1.Ent
 	}
 	return nil
 }
-func (s *sqlDataStore) DeleteEntity(ctx context.Context, e *fencev1.UID) error {
+func (s *sqlDataStore) DeleteEntity(ctx context.Context, tenant, e *fencev1.UID) error {
 	id := string(e.Id)
 	typ := string(e.Type)
 	res, err := s.db.NewDelete().Model(&models.Entity{ID: id, Type: typ}).WherePK().Exec(ctx)
@@ -196,26 +196,46 @@ func (s *sqlDataStore) DeleteEntity(ctx context.Context, e *fencev1.UID) error {
 	return nil
 }
 
-func (s *sqlDataStore) AddTenant(ctx context.Context, uid *fencev1.UID) error {
-	tenant := &models.Tenant{
-		ID: uid.Id,
+func (s *sqlDataStore) AddTenant(ctx context.Context, tenant *fencev1.Tenant) error {
+	tenantModel := &models.Tenant{
+		ID:   tenant.Id.Id,
+		Name: tenant.Name,
 	}
-	_, err := s.db.NewInsert().Model(tenant).Exec(ctx)
+	_, err := s.db.NewInsert().Model(tenantModel).Exec(ctx)
 	return err
 }
 
-func (s *sqlDataStore) ListTenants(ctx context.Context) ([]*fencev1.UID, error) {
+func (s *sqlDataStore) ListTenants(ctx context.Context) ([]*fencev1.Tenant, error) {
 	var tenants []models.Tenant
 	err := s.db.NewSelect().Model(&tenants).Scan(ctx)
 	if err != nil {
 		return nil, err
 	}
-	tenantIds := make([]*fencev1.UID, len(tenants))
+	tenantIds := make([]*fencev1.Tenant, len(tenants))
 	for i, tenant := range tenants {
-		tenantIds[i] = &fencev1.UID{
-			Type: "Tenant",
-			Id:   tenant.ID,
+		tenantIds[i] = &fencev1.Tenant{
+			Id: &fencev1.UID{
+				Type: "Tenant",
+				Id:   tenant.ID,
+			},
+			Name: tenant.Name,
 		}
 	}
 	return tenantIds, nil
+}
+
+func (s *sqlDataStore) GetTenant(ctx context.Context, id *fencev1.UID) (*fencev1.Tenant, error) {
+	var tenant models.Tenant
+	err := s.db.NewSelect().Model(&tenant).Where("id = ?", id.Id).Scan(ctx)
+	if err != nil {
+		slog.Error("failed to get tenant from sqlite", "error", err)
+		return nil, err
+	}
+	return &fencev1.Tenant{
+		Id: &fencev1.UID{
+			Type: "Tenant",
+			Id:   tenant.ID,
+		},
+		Name: tenant.Name,
+	}, nil
 }

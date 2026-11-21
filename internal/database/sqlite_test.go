@@ -103,32 +103,37 @@ func TestGetEntities(t *testing.T) {
 		alice.UID: alice,
 		photo.UID: photo,
 	}
-	em, err := ds.GetEntityMap(ctx)
+	em, err := ds.GetEntityMap(ctx, &fencev1.UID{Id: "1"})
 	must.NoError(t, err)
 	must.Eq(t, expectedMap, em)
 }
 
-func TestAddEntity(t *testing.T) {
+func TestAddTenant(t *testing.T) {
 	ctx := context.Background()
 	db := setupDB(t, true)
 	defer db.Close()
 	ds := NewSqlDatastore(db)
-	err := ds.AddTenant(ctx, &fencev1.UID{Type: "Tenant", Id: "2"})
+	fenceTenant := &fencev1.Tenant{
+		Id:   &fencev1.UID{Type: "Tenant", Id: "2"},
+		Name: "Test",
+	}
+	err := ds.AddTenant(ctx, fenceTenant)
 	must.NoError(t, err)
 	var tenant models.Tenant
 	err = db.NewSelect().Model(&tenant).Where("id = ?", "2").Scan(ctx)
 	must.NoError(t, err)
 	must.Eq(t, "2", tenant.ID)
+	must.Eq(t, "Test", tenant.Name)
 }
-func TestListEntities(t *testing.T) {
+func TestListTenants(t *testing.T) {
 	ctx := context.Background()
 	db := setupDB(t, true)
 	defer db.Close()
 	ds := NewSqlDatastore(db)
 	records, err := ds.ListTenants(ctx)
 	must.NoError(t, err)
-	expected := []*fencev1.UID{
-		{Type: "Tenant", Id: "1"},
+	expected := []*fencev1.Tenant{
+		{Id: &fencev1.UID{Type: "Tenant", Id: "1"}, Name: "FixtureTenant"},
 	}
 	must.Eq(t, expected, records, must.Cmp(protocmp.Transform()))
 }

@@ -21,6 +21,7 @@ service FenceAdminService {
   rpc DeleteRole(DeleteRoleRequest) returns (DeleteRoleResponse) {}
   rpc ListRoles(ListRolesRequest) returns (ListRolesResponse) {}
 
+  rpc ListTenants(ListTenantRequest) returns (ListTenantResponse) {}
   rpc CreateTenant(CreateTenantRequest) returns (CreateTenantResponse) {}
   rpc GetTenant(GetTenantRequest) returns (GetTenantResponse) {}
 
@@ -53,28 +54,33 @@ message GetPolicyRequest {
 message GetPolicyResponse {
   Policy policy = 1;
 }
-
-message CreateTenantRequest {
-  Entity tenant = 1 [(buf.validate.field).required = true];
-  // tenant UID must have Tenant as type and no parents
-  option (buf.validate.message).cel = {
-    id: "tenant.type"
+// Tenant definitions
+message Tenant {
+  UID id = 1 [(buf.validate.field).cel = {
     message: "must be tenant entity"
-    expression: "this.tenant.uid.type == 'Tenant'"
-  };
-  option (buf.validate.message).cel = {
-    id: "tenant.no.parents"
-    message: "must have no parents"
-    expression: "this.tenant.parents == []"
-  };
+    expression: "this.type == 'Tenant'"
+  }];
+  string name = 2;
+}
+message ListTenantRequest {}
+message ListTenantResponse {
+  repeated Tenant tenants = 1;
+}
+message CreateTenantRequest {
+  Tenant tenant = 1;
 }
 message CreateTenantResponse {}
 
 message GetTenantRequest {
   UID id = 1 [(buf.validate.field).required = true];
+  option (buf.validate.message).cel = {
+    id: "tenant.type"
+    message: "must be tenant entity"
+    expression: "this.id.type == 'Tenant'"
+  };
 }
 message GetTenantResponse {
-  UID tenant = 1;
+  Tenant tenant = 1;
 }
 
 message CreateUserRequest {
@@ -89,7 +95,8 @@ message CreateUserRequest {
 message CreateUserResponse {}
 
 message DeleteUserRequest {
-  UID uid = 1 [(buf.validate.field).required = true];
+  UID tenant = 1 [(buf.validate.field).required = true];
+  UID uid = 2 [(buf.validate.field).required = true];
 }
 message DeleteUserResponse {}
 message ListUsersRequest {
@@ -120,7 +127,8 @@ message ListRolesResponse {
 }
 
 message CreateResourceRequest {
-  repeated Entity resources = 1 [
+  UID tenant = 1 [(buf.validate.field).required = true];
+  repeated Entity resources = 2 [
     (buf.validate.field).repeated.min_items = 1,
     (buf.validate.field).repeated.max_items = 100
   ];

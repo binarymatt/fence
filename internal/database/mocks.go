@@ -49,12 +49,12 @@ func (_m *MockDataStore) EXPECT() *MockDataStore_Expecter {
 }
 
 // AddEntities provides a mock function for the type MockDataStore
-func (_mock *MockDataStore) AddEntities(ctx context.Context, entities ...*fencev1.Entity) error {
+func (_mock *MockDataStore) AddEntities(ctx context.Context, tenant *fencev1.UID, entities ...*fencev1.Entity) error {
 	var tmpRet mock.Arguments
 	if len(entities) > 0 {
-		tmpRet = _mock.Called(ctx, entities)
+		tmpRet = _mock.Called(ctx, tenant, entities)
 	} else {
-		tmpRet = _mock.Called(ctx)
+		tmpRet = _mock.Called(ctx, tenant)
 	}
 	ret := tmpRet
 
@@ -63,8 +63,8 @@ func (_mock *MockDataStore) AddEntities(ctx context.Context, entities ...*fencev
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, ...*fencev1.Entity) error); ok {
-		r0 = returnFunc(ctx, entities...)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *fencev1.UID, ...*fencev1.Entity) error); ok {
+		r0 = returnFunc(ctx, tenant, entities...)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -78,27 +78,33 @@ type MockDataStore_AddEntities_Call struct {
 
 // AddEntities is a helper method to define mock.On call
 //   - ctx context.Context
+//   - tenant *fencev1.UID
 //   - entities ...*fencev1.Entity
-func (_e *MockDataStore_Expecter) AddEntities(ctx any, entities ...any) *MockDataStore_AddEntities_Call {
+func (_e *MockDataStore_Expecter) AddEntities(ctx any, tenant any, entities ...any) *MockDataStore_AddEntities_Call {
 	return &MockDataStore_AddEntities_Call{Call: _e.mock.On("AddEntities",
-		append([]any{ctx}, entities...)...)}
+		append([]any{ctx, tenant}, entities...)...)}
 }
 
-func (_c *MockDataStore_AddEntities_Call) Run(run func(ctx context.Context, entities ...*fencev1.Entity)) *MockDataStore_AddEntities_Call {
+func (_c *MockDataStore_AddEntities_Call) Run(run func(ctx context.Context, tenant *fencev1.UID, entities ...*fencev1.Entity)) *MockDataStore_AddEntities_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
 			arg0 = args[0].(context.Context)
 		}
-		var arg1 []*fencev1.Entity
-		var variadicArgs []*fencev1.Entity
-		if len(args) > 1 {
-			variadicArgs = args[1].([]*fencev1.Entity)
+		var arg1 *fencev1.UID
+		if args[1] != nil {
+			arg1 = args[1].(*fencev1.UID)
 		}
-		arg1 = variadicArgs
+		var arg2 []*fencev1.Entity
+		var variadicArgs []*fencev1.Entity
+		if len(args) > 2 {
+			variadicArgs = args[2].([]*fencev1.Entity)
+		}
+		arg2 = variadicArgs
 		run(
 			arg0,
-			arg1...,
+			arg1,
+			arg2...,
 		)
 	})
 	return _c
@@ -109,7 +115,7 @@ func (_c *MockDataStore_AddEntities_Call) Return(err error) *MockDataStore_AddEn
 	return _c
 }
 
-func (_c *MockDataStore_AddEntities_Call) RunAndReturn(run func(ctx context.Context, entities ...*fencev1.Entity) error) *MockDataStore_AddEntities_Call {
+func (_c *MockDataStore_AddEntities_Call) RunAndReturn(run func(ctx context.Context, tenant *fencev1.UID, entities ...*fencev1.Entity) error) *MockDataStore_AddEntities_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -178,16 +184,16 @@ func (_c *MockDataStore_AddPolicy_Call) RunAndReturn(run func(ctx context.Contex
 }
 
 // AddTenant provides a mock function for the type MockDataStore
-func (_mock *MockDataStore) AddTenant(ctx context.Context, uid *fencev1.UID) error {
-	ret := _mock.Called(ctx, uid)
+func (_mock *MockDataStore) AddTenant(ctx context.Context, tenant *fencev1.Tenant) error {
+	ret := _mock.Called(ctx, tenant)
 
 	if len(ret) == 0 {
 		panic("no return value specified for AddTenant")
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, *fencev1.UID) error); ok {
-		r0 = returnFunc(ctx, uid)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *fencev1.Tenant) error); ok {
+		r0 = returnFunc(ctx, tenant)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -201,20 +207,20 @@ type MockDataStore_AddTenant_Call struct {
 
 // AddTenant is a helper method to define mock.On call
 //   - ctx context.Context
-//   - uid *fencev1.UID
-func (_e *MockDataStore_Expecter) AddTenant(ctx any, uid any) *MockDataStore_AddTenant_Call {
-	return &MockDataStore_AddTenant_Call{Call: _e.mock.On("AddTenant", ctx, uid)}
+//   - tenant *fencev1.Tenant
+func (_e *MockDataStore_Expecter) AddTenant(ctx any, tenant any) *MockDataStore_AddTenant_Call {
+	return &MockDataStore_AddTenant_Call{Call: _e.mock.On("AddTenant", ctx, tenant)}
 }
 
-func (_c *MockDataStore_AddTenant_Call) Run(run func(ctx context.Context, uid *fencev1.UID)) *MockDataStore_AddTenant_Call {
+func (_c *MockDataStore_AddTenant_Call) Run(run func(ctx context.Context, tenant *fencev1.Tenant)) *MockDataStore_AddTenant_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
 			arg0 = args[0].(context.Context)
 		}
-		var arg1 *fencev1.UID
+		var arg1 *fencev1.Tenant
 		if args[1] != nil {
-			arg1 = args[1].(*fencev1.UID)
+			arg1 = args[1].(*fencev1.Tenant)
 		}
 		run(
 			arg0,
@@ -229,22 +235,22 @@ func (_c *MockDataStore_AddTenant_Call) Return(err error) *MockDataStore_AddTena
 	return _c
 }
 
-func (_c *MockDataStore_AddTenant_Call) RunAndReturn(run func(ctx context.Context, uid *fencev1.UID) error) *MockDataStore_AddTenant_Call {
+func (_c *MockDataStore_AddTenant_Call) RunAndReturn(run func(ctx context.Context, tenant *fencev1.Tenant) error) *MockDataStore_AddTenant_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // DeleteEntity provides a mock function for the type MockDataStore
-func (_mock *MockDataStore) DeleteEntity(ctx context.Context, uid *fencev1.UID) error {
-	ret := _mock.Called(ctx, uid)
+func (_mock *MockDataStore) DeleteEntity(ctx context.Context, tenant *fencev1.UID, uid *fencev1.UID) error {
+	ret := _mock.Called(ctx, tenant, uid)
 
 	if len(ret) == 0 {
 		panic("no return value specified for DeleteEntity")
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, *fencev1.UID) error); ok {
-		r0 = returnFunc(ctx, uid)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *fencev1.UID, *fencev1.UID) error); ok {
+		r0 = returnFunc(ctx, tenant, uid)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -258,12 +264,13 @@ type MockDataStore_DeleteEntity_Call struct {
 
 // DeleteEntity is a helper method to define mock.On call
 //   - ctx context.Context
+//   - tenant *fencev1.UID
 //   - uid *fencev1.UID
-func (_e *MockDataStore_Expecter) DeleteEntity(ctx any, uid any) *MockDataStore_DeleteEntity_Call {
-	return &MockDataStore_DeleteEntity_Call{Call: _e.mock.On("DeleteEntity", ctx, uid)}
+func (_e *MockDataStore_Expecter) DeleteEntity(ctx any, tenant any, uid any) *MockDataStore_DeleteEntity_Call {
+	return &MockDataStore_DeleteEntity_Call{Call: _e.mock.On("DeleteEntity", ctx, tenant, uid)}
 }
 
-func (_c *MockDataStore_DeleteEntity_Call) Run(run func(ctx context.Context, uid *fencev1.UID)) *MockDataStore_DeleteEntity_Call {
+func (_c *MockDataStore_DeleteEntity_Call) Run(run func(ctx context.Context, tenant *fencev1.UID, uid *fencev1.UID)) *MockDataStore_DeleteEntity_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -273,9 +280,14 @@ func (_c *MockDataStore_DeleteEntity_Call) Run(run func(ctx context.Context, uid
 		if args[1] != nil {
 			arg1 = args[1].(*fencev1.UID)
 		}
+		var arg2 *fencev1.UID
+		if args[2] != nil {
+			arg2 = args[2].(*fencev1.UID)
+		}
 		run(
 			arg0,
 			arg1,
+			arg2,
 		)
 	})
 	return _c
@@ -286,7 +298,7 @@ func (_c *MockDataStore_DeleteEntity_Call) Return(err error) *MockDataStore_Dele
 	return _c
 }
 
-func (_c *MockDataStore_DeleteEntity_Call) RunAndReturn(run func(ctx context.Context, uid *fencev1.UID) error) *MockDataStore_DeleteEntity_Call {
+func (_c *MockDataStore_DeleteEntity_Call) RunAndReturn(run func(ctx context.Context, tenant *fencev1.UID, uid *fencev1.UID) error) *MockDataStore_DeleteEntity_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -349,8 +361,8 @@ func (_c *MockDataStore_DeletePolicy_Call) RunAndReturn(run func(ctx context.Con
 }
 
 // GetEntities provides a mock function for the type MockDataStore
-func (_mock *MockDataStore) GetEntities(ctx context.Context, parent *fencev1.UID) ([]*fencev1.Entity, error) {
-	ret := _mock.Called(ctx, parent)
+func (_mock *MockDataStore) GetEntities(ctx context.Context, tenantId *fencev1.UID) ([]*fencev1.Entity, error) {
+	ret := _mock.Called(ctx, tenantId)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetEntities")
@@ -359,17 +371,17 @@ func (_mock *MockDataStore) GetEntities(ctx context.Context, parent *fencev1.UID
 	var r0 []*fencev1.Entity
 	var r1 error
 	if returnFunc, ok := ret.Get(0).(func(context.Context, *fencev1.UID) ([]*fencev1.Entity, error)); ok {
-		return returnFunc(ctx, parent)
+		return returnFunc(ctx, tenantId)
 	}
 	if returnFunc, ok := ret.Get(0).(func(context.Context, *fencev1.UID) []*fencev1.Entity); ok {
-		r0 = returnFunc(ctx, parent)
+		r0 = returnFunc(ctx, tenantId)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*fencev1.Entity)
 		}
 	}
 	if returnFunc, ok := ret.Get(1).(func(context.Context, *fencev1.UID) error); ok {
-		r1 = returnFunc(ctx, parent)
+		r1 = returnFunc(ctx, tenantId)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -383,12 +395,12 @@ type MockDataStore_GetEntities_Call struct {
 
 // GetEntities is a helper method to define mock.On call
 //   - ctx context.Context
-//   - parent *fencev1.UID
-func (_e *MockDataStore_Expecter) GetEntities(ctx any, parent any) *MockDataStore_GetEntities_Call {
-	return &MockDataStore_GetEntities_Call{Call: _e.mock.On("GetEntities", ctx, parent)}
+//   - tenantId *fencev1.UID
+func (_e *MockDataStore_Expecter) GetEntities(ctx any, tenantId any) *MockDataStore_GetEntities_Call {
+	return &MockDataStore_GetEntities_Call{Call: _e.mock.On("GetEntities", ctx, tenantId)}
 }
 
-func (_c *MockDataStore_GetEntities_Call) Run(run func(ctx context.Context, parent *fencev1.UID)) *MockDataStore_GetEntities_Call {
+func (_c *MockDataStore_GetEntities_Call) Run(run func(ctx context.Context, tenantId *fencev1.UID)) *MockDataStore_GetEntities_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -411,14 +423,14 @@ func (_c *MockDataStore_GetEntities_Call) Return(entitys []*fencev1.Entity, err 
 	return _c
 }
 
-func (_c *MockDataStore_GetEntities_Call) RunAndReturn(run func(ctx context.Context, parent *fencev1.UID) ([]*fencev1.Entity, error)) *MockDataStore_GetEntities_Call {
+func (_c *MockDataStore_GetEntities_Call) RunAndReturn(run func(ctx context.Context, tenantId *fencev1.UID) ([]*fencev1.Entity, error)) *MockDataStore_GetEntities_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetEntity provides a mock function for the type MockDataStore
-func (_mock *MockDataStore) GetEntity(ctx context.Context, uid *fencev1.UID) (*fencev1.Entity, error) {
-	ret := _mock.Called(ctx, uid)
+func (_mock *MockDataStore) GetEntity(ctx context.Context, tenant *fencev1.UID, uid *fencev1.UID) (*fencev1.Entity, error) {
+	ret := _mock.Called(ctx, tenant, uid)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetEntity")
@@ -426,18 +438,18 @@ func (_mock *MockDataStore) GetEntity(ctx context.Context, uid *fencev1.UID) (*f
 
 	var r0 *fencev1.Entity
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, *fencev1.UID) (*fencev1.Entity, error)); ok {
-		return returnFunc(ctx, uid)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *fencev1.UID, *fencev1.UID) (*fencev1.Entity, error)); ok {
+		return returnFunc(ctx, tenant, uid)
 	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context, *fencev1.UID) *fencev1.Entity); ok {
-		r0 = returnFunc(ctx, uid)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *fencev1.UID, *fencev1.UID) *fencev1.Entity); ok {
+		r0 = returnFunc(ctx, tenant, uid)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*fencev1.Entity)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func(context.Context, *fencev1.UID) error); ok {
-		r1 = returnFunc(ctx, uid)
+	if returnFunc, ok := ret.Get(1).(func(context.Context, *fencev1.UID, *fencev1.UID) error); ok {
+		r1 = returnFunc(ctx, tenant, uid)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -451,12 +463,86 @@ type MockDataStore_GetEntity_Call struct {
 
 // GetEntity is a helper method to define mock.On call
 //   - ctx context.Context
+//   - tenant *fencev1.UID
 //   - uid *fencev1.UID
-func (_e *MockDataStore_Expecter) GetEntity(ctx any, uid any) *MockDataStore_GetEntity_Call {
-	return &MockDataStore_GetEntity_Call{Call: _e.mock.On("GetEntity", ctx, uid)}
+func (_e *MockDataStore_Expecter) GetEntity(ctx any, tenant any, uid any) *MockDataStore_GetEntity_Call {
+	return &MockDataStore_GetEntity_Call{Call: _e.mock.On("GetEntity", ctx, tenant, uid)}
 }
 
-func (_c *MockDataStore_GetEntity_Call) Run(run func(ctx context.Context, uid *fencev1.UID)) *MockDataStore_GetEntity_Call {
+func (_c *MockDataStore_GetEntity_Call) Run(run func(ctx context.Context, tenant *fencev1.UID, uid *fencev1.UID)) *MockDataStore_GetEntity_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 *fencev1.UID
+		if args[1] != nil {
+			arg1 = args[1].(*fencev1.UID)
+		}
+		var arg2 *fencev1.UID
+		if args[2] != nil {
+			arg2 = args[2].(*fencev1.UID)
+		}
+		run(
+			arg0,
+			arg1,
+			arg2,
+		)
+	})
+	return _c
+}
+
+func (_c *MockDataStore_GetEntity_Call) Return(entity *fencev1.Entity, err error) *MockDataStore_GetEntity_Call {
+	_c.Call.Return(entity, err)
+	return _c
+}
+
+func (_c *MockDataStore_GetEntity_Call) RunAndReturn(run func(ctx context.Context, tenant *fencev1.UID, uid *fencev1.UID) (*fencev1.Entity, error)) *MockDataStore_GetEntity_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetEntityMap provides a mock function for the type MockDataStore
+func (_mock *MockDataStore) GetEntityMap(ctx context.Context, tenant *fencev1.UID) (cedar.EntityMap, error) {
+	ret := _mock.Called(ctx, tenant)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetEntityMap")
+	}
+
+	var r0 cedar.EntityMap
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *fencev1.UID) (cedar.EntityMap, error)); ok {
+		return returnFunc(ctx, tenant)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *fencev1.UID) cedar.EntityMap); ok {
+		r0 = returnFunc(ctx, tenant)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(cedar.EntityMap)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, *fencev1.UID) error); ok {
+		r1 = returnFunc(ctx, tenant)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockDataStore_GetEntityMap_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetEntityMap'
+type MockDataStore_GetEntityMap_Call struct {
+	*mock.Call
+}
+
+// GetEntityMap is a helper method to define mock.On call
+//   - ctx context.Context
+//   - tenant *fencev1.UID
+func (_e *MockDataStore_Expecter) GetEntityMap(ctx any, tenant any) *MockDataStore_GetEntityMap_Call {
+	return &MockDataStore_GetEntityMap_Call{Call: _e.mock.On("GetEntityMap", ctx, tenant)}
+}
+
+func (_c *MockDataStore_GetEntityMap_Call) Run(run func(ctx context.Context, tenant *fencev1.UID)) *MockDataStore_GetEntityMap_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -474,81 +560,19 @@ func (_c *MockDataStore_GetEntity_Call) Run(run func(ctx context.Context, uid *f
 	return _c
 }
 
-func (_c *MockDataStore_GetEntity_Call) Return(entity *fencev1.Entity, err error) *MockDataStore_GetEntity_Call {
-	_c.Call.Return(entity, err)
-	return _c
-}
-
-func (_c *MockDataStore_GetEntity_Call) RunAndReturn(run func(ctx context.Context, uid *fencev1.UID) (*fencev1.Entity, error)) *MockDataStore_GetEntity_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// GetEntityMap provides a mock function for the type MockDataStore
-func (_mock *MockDataStore) GetEntityMap(ctx context.Context) (cedar.EntityMap, error) {
-	ret := _mock.Called(ctx)
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetEntityMap")
-	}
-
-	var r0 cedar.EntityMap
-	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context) (cedar.EntityMap, error)); ok {
-		return returnFunc(ctx)
-	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context) cedar.EntityMap); ok {
-		r0 = returnFunc(ctx)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(cedar.EntityMap)
-		}
-	}
-	if returnFunc, ok := ret.Get(1).(func(context.Context) error); ok {
-		r1 = returnFunc(ctx)
-	} else {
-		r1 = ret.Error(1)
-	}
-	return r0, r1
-}
-
-// MockDataStore_GetEntityMap_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetEntityMap'
-type MockDataStore_GetEntityMap_Call struct {
-	*mock.Call
-}
-
-// GetEntityMap is a helper method to define mock.On call
-//   - ctx context.Context
-func (_e *MockDataStore_Expecter) GetEntityMap(ctx any) *MockDataStore_GetEntityMap_Call {
-	return &MockDataStore_GetEntityMap_Call{Call: _e.mock.On("GetEntityMap", ctx)}
-}
-
-func (_c *MockDataStore_GetEntityMap_Call) Run(run func(ctx context.Context)) *MockDataStore_GetEntityMap_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 context.Context
-		if args[0] != nil {
-			arg0 = args[0].(context.Context)
-		}
-		run(
-			arg0,
-		)
-	})
-	return _c
-}
-
 func (_c *MockDataStore_GetEntityMap_Call) Return(entityMap cedar.EntityMap, err error) *MockDataStore_GetEntityMap_Call {
 	_c.Call.Return(entityMap, err)
 	return _c
 }
 
-func (_c *MockDataStore_GetEntityMap_Call) RunAndReturn(run func(ctx context.Context) (cedar.EntityMap, error)) *MockDataStore_GetEntityMap_Call {
+func (_c *MockDataStore_GetEntityMap_Call) RunAndReturn(run func(ctx context.Context, tenant *fencev1.UID) (cedar.EntityMap, error)) *MockDataStore_GetEntityMap_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetPolicies provides a mock function for the type MockDataStore
-func (_mock *MockDataStore) GetPolicies(ctx context.Context, tenant *fencev1.UID) ([]*fencev1.Policy, error) {
-	ret := _mock.Called(ctx, tenant)
+func (_mock *MockDataStore) GetPolicies(ctx context.Context, tenantID *fencev1.UID) ([]*fencev1.Policy, error) {
+	ret := _mock.Called(ctx, tenantID)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetPolicies")
@@ -557,17 +581,17 @@ func (_mock *MockDataStore) GetPolicies(ctx context.Context, tenant *fencev1.UID
 	var r0 []*fencev1.Policy
 	var r1 error
 	if returnFunc, ok := ret.Get(0).(func(context.Context, *fencev1.UID) ([]*fencev1.Policy, error)); ok {
-		return returnFunc(ctx, tenant)
+		return returnFunc(ctx, tenantID)
 	}
 	if returnFunc, ok := ret.Get(0).(func(context.Context, *fencev1.UID) []*fencev1.Policy); ok {
-		r0 = returnFunc(ctx, tenant)
+		r0 = returnFunc(ctx, tenantID)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*fencev1.Policy)
 		}
 	}
 	if returnFunc, ok := ret.Get(1).(func(context.Context, *fencev1.UID) error); ok {
-		r1 = returnFunc(ctx, tenant)
+		r1 = returnFunc(ctx, tenantID)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -581,12 +605,12 @@ type MockDataStore_GetPolicies_Call struct {
 
 // GetPolicies is a helper method to define mock.On call
 //   - ctx context.Context
-//   - tenant *fencev1.UID
-func (_e *MockDataStore_Expecter) GetPolicies(ctx any, tenant any) *MockDataStore_GetPolicies_Call {
-	return &MockDataStore_GetPolicies_Call{Call: _e.mock.On("GetPolicies", ctx, tenant)}
+//   - tenantID *fencev1.UID
+func (_e *MockDataStore_Expecter) GetPolicies(ctx any, tenantID any) *MockDataStore_GetPolicies_Call {
+	return &MockDataStore_GetPolicies_Call{Call: _e.mock.On("GetPolicies", ctx, tenantID)}
 }
 
-func (_c *MockDataStore_GetPolicies_Call) Run(run func(ctx context.Context, tenant *fencev1.UID)) *MockDataStore_GetPolicies_Call {
+func (_c *MockDataStore_GetPolicies_Call) Run(run func(ctx context.Context, tenantID *fencev1.UID)) *MockDataStore_GetPolicies_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -609,7 +633,7 @@ func (_c *MockDataStore_GetPolicies_Call) Return(policys []*fencev1.Policy, err 
 	return _c
 }
 
-func (_c *MockDataStore_GetPolicies_Call) RunAndReturn(run func(ctx context.Context, tenant *fencev1.UID) ([]*fencev1.Policy, error)) *MockDataStore_GetPolicies_Call {
+func (_c *MockDataStore_GetPolicies_Call) RunAndReturn(run func(ctx context.Context, tenantID *fencev1.UID) ([]*fencev1.Policy, error)) *MockDataStore_GetPolicies_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -683,8 +707,8 @@ func (_c *MockDataStore_GetPolicy_Call) RunAndReturn(run func(ctx context.Contex
 }
 
 // GetPolicySet provides a mock function for the type MockDataStore
-func (_mock *MockDataStore) GetPolicySet(ctx context.Context, tenant *fencev1.UID) (*cedar.PolicySet, error) {
-	ret := _mock.Called(ctx, tenant)
+func (_mock *MockDataStore) GetPolicySet(ctx context.Context, tenantID *fencev1.UID) (*cedar.PolicySet, error) {
+	ret := _mock.Called(ctx, tenantID)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetPolicySet")
@@ -693,17 +717,17 @@ func (_mock *MockDataStore) GetPolicySet(ctx context.Context, tenant *fencev1.UI
 	var r0 *cedar.PolicySet
 	var r1 error
 	if returnFunc, ok := ret.Get(0).(func(context.Context, *fencev1.UID) (*cedar.PolicySet, error)); ok {
-		return returnFunc(ctx, tenant)
+		return returnFunc(ctx, tenantID)
 	}
 	if returnFunc, ok := ret.Get(0).(func(context.Context, *fencev1.UID) *cedar.PolicySet); ok {
-		r0 = returnFunc(ctx, tenant)
+		r0 = returnFunc(ctx, tenantID)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*cedar.PolicySet)
 		}
 	}
 	if returnFunc, ok := ret.Get(1).(func(context.Context, *fencev1.UID) error); ok {
-		r1 = returnFunc(ctx, tenant)
+		r1 = returnFunc(ctx, tenantID)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -717,12 +741,12 @@ type MockDataStore_GetPolicySet_Call struct {
 
 // GetPolicySet is a helper method to define mock.On call
 //   - ctx context.Context
-//   - tenant *fencev1.UID
-func (_e *MockDataStore_Expecter) GetPolicySet(ctx any, tenant any) *MockDataStore_GetPolicySet_Call {
-	return &MockDataStore_GetPolicySet_Call{Call: _e.mock.On("GetPolicySet", ctx, tenant)}
+//   - tenantID *fencev1.UID
+func (_e *MockDataStore_Expecter) GetPolicySet(ctx any, tenantID any) *MockDataStore_GetPolicySet_Call {
+	return &MockDataStore_GetPolicySet_Call{Call: _e.mock.On("GetPolicySet", ctx, tenantID)}
 }
 
-func (_c *MockDataStore_GetPolicySet_Call) Run(run func(ctx context.Context, tenant *fencev1.UID)) *MockDataStore_GetPolicySet_Call {
+func (_c *MockDataStore_GetPolicySet_Call) Run(run func(ctx context.Context, tenantID *fencev1.UID)) *MockDataStore_GetPolicySet_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -745,29 +769,97 @@ func (_c *MockDataStore_GetPolicySet_Call) Return(policySet *cedar.PolicySet, er
 	return _c
 }
 
-func (_c *MockDataStore_GetPolicySet_Call) RunAndReturn(run func(ctx context.Context, tenant *fencev1.UID) (*cedar.PolicySet, error)) *MockDataStore_GetPolicySet_Call {
+func (_c *MockDataStore_GetPolicySet_Call) RunAndReturn(run func(ctx context.Context, tenantID *fencev1.UID) (*cedar.PolicySet, error)) *MockDataStore_GetPolicySet_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetTenant provides a mock function for the type MockDataStore
+func (_mock *MockDataStore) GetTenant(ctx context.Context, uid *fencev1.UID) (*fencev1.Tenant, error) {
+	ret := _mock.Called(ctx, uid)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetTenant")
+	}
+
+	var r0 *fencev1.Tenant
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *fencev1.UID) (*fencev1.Tenant, error)); ok {
+		return returnFunc(ctx, uid)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *fencev1.UID) *fencev1.Tenant); ok {
+		r0 = returnFunc(ctx, uid)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*fencev1.Tenant)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, *fencev1.UID) error); ok {
+		r1 = returnFunc(ctx, uid)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockDataStore_GetTenant_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetTenant'
+type MockDataStore_GetTenant_Call struct {
+	*mock.Call
+}
+
+// GetTenant is a helper method to define mock.On call
+//   - ctx context.Context
+//   - uid *fencev1.UID
+func (_e *MockDataStore_Expecter) GetTenant(ctx any, uid any) *MockDataStore_GetTenant_Call {
+	return &MockDataStore_GetTenant_Call{Call: _e.mock.On("GetTenant", ctx, uid)}
+}
+
+func (_c *MockDataStore_GetTenant_Call) Run(run func(ctx context.Context, uid *fencev1.UID)) *MockDataStore_GetTenant_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 *fencev1.UID
+		if args[1] != nil {
+			arg1 = args[1].(*fencev1.UID)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockDataStore_GetTenant_Call) Return(tenant *fencev1.Tenant, err error) *MockDataStore_GetTenant_Call {
+	_c.Call.Return(tenant, err)
+	return _c
+}
+
+func (_c *MockDataStore_GetTenant_Call) RunAndReturn(run func(ctx context.Context, uid *fencev1.UID) (*fencev1.Tenant, error)) *MockDataStore_GetTenant_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ListTenants provides a mock function for the type MockDataStore
-func (_mock *MockDataStore) ListTenants(ctx context.Context) ([]*fencev1.UID, error) {
+func (_mock *MockDataStore) ListTenants(ctx context.Context) ([]*fencev1.Tenant, error) {
 	ret := _mock.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListTenants")
 	}
 
-	var r0 []*fencev1.UID
+	var r0 []*fencev1.Tenant
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context) ([]*fencev1.UID, error)); ok {
+	if returnFunc, ok := ret.Get(0).(func(context.Context) ([]*fencev1.Tenant, error)); ok {
 		return returnFunc(ctx)
 	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context) []*fencev1.UID); ok {
+	if returnFunc, ok := ret.Get(0).(func(context.Context) []*fencev1.Tenant); ok {
 		r0 = returnFunc(ctx)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*fencev1.UID)
+			r0 = ret.Get(0).([]*fencev1.Tenant)
 		}
 	}
 	if returnFunc, ok := ret.Get(1).(func(context.Context) error); ok {
@@ -802,12 +894,12 @@ func (_c *MockDataStore_ListTenants_Call) Run(run func(ctx context.Context)) *Mo
 	return _c
 }
 
-func (_c *MockDataStore_ListTenants_Call) Return(uIDs []*fencev1.UID, err error) *MockDataStore_ListTenants_Call {
-	_c.Call.Return(uIDs, err)
+func (_c *MockDataStore_ListTenants_Call) Return(tenants []*fencev1.Tenant, err error) *MockDataStore_ListTenants_Call {
+	_c.Call.Return(tenants, err)
 	return _c
 }
 
-func (_c *MockDataStore_ListTenants_Call) RunAndReturn(run func(ctx context.Context) ([]*fencev1.UID, error)) *MockDataStore_ListTenants_Call {
+func (_c *MockDataStore_ListTenants_Call) RunAndReturn(run func(ctx context.Context) ([]*fencev1.Tenant, error)) *MockDataStore_ListTenants_Call {
 	_c.Call.Return(run)
 	return _c
 }
