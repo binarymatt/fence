@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"log/slog"
-	"strings"
 
 	"connectrpc.com/connect/v2"
 	"github.com/cedar-policy/cedar-go"
@@ -80,13 +79,4 @@ func (s *Service) IsAllowed(ctx context.Context, req *fencev1.IsAllowedRequest) 
 	slog.Debug("authorize call finished", "decision", decision, "diagnostics", diag, "request", req)
 	resp := translation.TranslateAuthorizeResponse(decision, diag)
 	return resp, nil
-}
-func parseUIDString(uidStr string) cedar.EntityUID {
-	parts := strings.Split(uidStr, "::")
-	uidType := parts[0]
-	id := parts[1]
-	if strings.HasPrefix(id, "\"") && strings.HasSuffix(id, "\"") {
-		id = id[1 : len(id)-1]
-	}
-	return cedar.NewEntityUID(cedar.EntityType(uidType), cedar.String(id))
 }

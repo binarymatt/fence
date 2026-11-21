@@ -51,11 +51,6 @@ func entityMap() cedar.EntityMap {
 	json.Unmarshal([]byte(entitiesJSON), &entities)
 	return entities
 }
-func TestParseUIDString(t *testing.T) {
-	uid := parseUIDString(`User::"bob"`)
-	expectedUID := cedar.NewEntityUID(cedar.EntityType("User"), cedar.String("bob"))
-	must.Eq(t, expectedUID, uid)
-}
 func setupDB(t *testing.T, loadFixtures bool) *bun.DB {
 
 	t.Helper()
